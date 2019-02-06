@@ -2,7 +2,7 @@
 
 require 'set'
 
-module OPDService
+module MaternityService
   class WorkflowEngine
     include ModelUtils
 
@@ -62,7 +62,7 @@ module OPDService
         when /Social history/i
           SOCIAL_HISTORY
         else
-          Rails.logger.warn "Invalid OPD activity in user properties: #{activity}"
+          Rails.logger.warn "Invalid Maternity activity in user properties: #{activity}"
         end
       end
 
