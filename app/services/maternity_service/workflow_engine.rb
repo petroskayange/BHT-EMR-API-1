@@ -36,6 +36,8 @@ module MaternityService
     # Encounter types
     INITIAL_STATE = 0 # Start terminal for encounters graph
     END_STATE = 1 # End terminal for encounters graph
+    UPDATE_OUTCOME = 'UPDATE OUTCOME'
+    UPDATE_HIV_STATUS = 'UPDATE HIV STATUS'
     SOCIAL_HISTORY = 'SOCIAL HISTORY'
     PATIENT_REGISTRATION = 'PATIENT REGISTRATION'
 
@@ -43,7 +45,8 @@ module MaternityService
     ENCOUNTER_SM = {
         INITIAL_STATE => PATIENT_REGISTRATION,
         PATIENT_REGISTRATION => SOCIAL_HISTORY,
-        SOCIAL_HISTORY => END_STATE
+        SOCIAL_HISTORY => UPDATE_OUTCOME,
+        UPDATE_OUTCOME => END_STATE
     }.freeze
 
     STATE_CONDITIONS = {
