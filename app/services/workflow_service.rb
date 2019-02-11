@@ -6,7 +6,7 @@ class WorkflowService
     # Table mapping program concept name to engine
     'HIV PROGRAM' => ARTService::WorkflowEngine,
     'OPD PROGRAM' => OPDService::WorkflowEngine,
-    'MATERNITY' => MaternityService::WorkflowEngine
+    'MATERNITY PROGRAM' => MaternityService::WorkflowEngine
   }.freeze
 
   def initialize(program_id:, patient_id:, date: nil)
