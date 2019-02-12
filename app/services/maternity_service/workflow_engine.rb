@@ -59,7 +59,12 @@ module MaternityService
         INITIAL_STATE => SOCIAL_HISTORY,
         SOCIAL_HISTORY => VITALS,
         VITALS => PATIENT_HISTORY,
-        PATIENT_HISTORY => END_STATE
+        PATIENT_HISTORY => PMTCT,
+        PMTCT => PHYSICAL_EXAMINATION,
+        PHYSICAL_EXAMINATION => VAGINAL_EXAMINATION,
+        VAGINAL_EXAMINATION => CLINICAL_EXAMINATION,
+        CLINICAL_EXAMINATION => ADMISION_DIAGNOSIS,
+        ADMISION_DIAGNOSIS => END_STATE
     }.freeze
 
     STATE_CONDITIONS = {
@@ -81,6 +86,16 @@ module MaternityService
           VITALS
         when /Medical History/i
           PATIENT_HISTORY
+        when /PMTCT History/i
+          PMTCT
+        when /Physical Examination/i
+          PHYSICAL_EXAMINATION
+        when /Vaginal Examination/i
+          VAGINAL_EXAMINATION
+        when /Clinical Examination/i
+          CLINICAL_EXAMINATION
+        when /Admission Details/i
+          ADMISSION_DETAILS
         else
           Rails.logger.warn "Invalid Maternity activity in user properties: #{activity}"
         end
