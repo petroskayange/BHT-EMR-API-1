@@ -57,7 +57,8 @@ module MaternityService
     # Encounters graph
     ENCOUNTER_SM = {
         INITIAL_STATE => SOCIAL_HISTORY,
-        SOCIAL_HISTORY => END_STATE
+        SOCIAL_HISTORY => UPDATE_OUTCOME,
+        UPDATE_OUTCOME => END_STATE
     }.freeze
 
     STATE_CONDITIONS = {
@@ -68,18 +69,20 @@ module MaternityService
                       }.freeze
 
     def load_user_activities
-      activities = ['Social history']
+      activities = user_property('Activities')&.property_value
       encounters = (activities&.split(',') || []).collect do |activity|
         # Re-map activities to encounters
         puts activity
         case activity
         when /Social history/i
           SOCIAL_HISTORY
+        when /Update outcome/i
+          UPDATE_OUTCOME
         else
           Rails.logger.warn "Invalid Maternity activity in user properties: #{activity}"
         end
       end
-
+  #    Set.new(encounters + [FAST_TRACK])
     end
 
     def next_state(current_state)
