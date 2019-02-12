@@ -57,8 +57,9 @@ module MaternityService
     # Encounters graph
     ENCOUNTER_SM = {
         INITIAL_STATE => SOCIAL_HISTORY,
-        SOCIAL_HISTORY => UPDATE_OUTCOME,
-        UPDATE_OUTCOME => END_STATE
+        SOCIAL_HISTORY => VITALS,
+        VITALS => PATIENT_HISTORY,
+        PATIENT_HISTORY => END_STATE
     }.freeze
 
     STATE_CONDITIONS = {
@@ -76,8 +77,10 @@ module MaternityService
         case activity
         when /Social History/i
           SOCIAL_HISTORY
-        when /Update Outcome/i
-          UPDATE_OUTCOME
+        when /Vitals/i
+          VITALS
+        when /Medical History/i
+          PATIENT_HISTORY
         else
           Rails.logger.warn "Invalid Maternity activity in user properties: #{activity}"
         end
