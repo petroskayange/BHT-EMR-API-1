@@ -63,8 +63,8 @@ module MaternityService
         PMTCT => PHYSICAL_EXAMINATION,
         PHYSICAL_EXAMINATION => VAGINAL_EXAMINATION,
         VAGINAL_EXAMINATION => CLINICAL_EXAMINATION,
-        CLINICAL_EXAMINATION => ADMISION_DIAGNOSIS,
-        ADMISION_DIAGNOSIS => END_STATE
+        CLINICAL_EXAMINATION => ADMISSION_DETAILS,
+        ADMISSION_DETAILS => END_STATE
     }.freeze
 
     STATE_CONDITIONS = {
@@ -92,9 +92,9 @@ module MaternityService
           PHYSICAL_EXAMINATION
         when /Vaginal Examination/i
           VAGINAL_EXAMINATION
-        when /Clinical Examination/i
+        when /Maternity Examination/i
           CLINICAL_EXAMINATION
-        when /Admission Details/i
+        when /Obstetric History/i
           ADMISSION_DETAILS
         else
           Rails.logger.warn "Invalid Maternity activity in user properties: #{activity}"
