@@ -74,15 +74,15 @@ module MaternityService
         # Re-map activities to encounters
         puts activity
         case activity
-        when /Social history/i
+        when /Social History/i
           SOCIAL_HISTORY
-        when /Update outcome/i
+        when /Update Outcome/i
           UPDATE_OUTCOME
         else
           Rails.logger.warn "Invalid Maternity activity in user properties: #{activity}"
         end
       end
-  #    Set.new(encounters + [FAST_TRACK])
+     Set.new(encounters)
     end
 
     def next_state(current_state)
