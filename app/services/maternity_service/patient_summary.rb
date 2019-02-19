@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module MaternityService
-  # Provides various summary statistics for an Maternity patient
+  # Provides various summary statistics for a Maternity patient
   class PatientSummary
     NPID_TYPE = 'National id'
 
@@ -50,7 +50,7 @@ module MaternityService
           "SELECT patient_outcome(#{patient_id}, #{quoted_date}) as outcome"
       )['outcome'] || 'UNKNOWN'
     rescue ActiveRecord::StatementInvalid => e
-      Rails.logger.error("Failed tor retrieve patient current outcome: #{e}:")
+      Rails.logger.error("Failed to retrieve patient current outcome: #{e}:")
       'UNKNOWN'
     end
 

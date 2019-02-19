@@ -52,19 +52,20 @@ module MaternityService
     NOTES = 'NOTES'
     ADMIT_PATIENT = 'ADMIT PATIENT'
     ADMISSION_DETAILS = 'OBSTETRIC HISTORY'
-
+    ADMISSION_DIAGNOSIS = 'ADMISSION DIAGNOSIS'
 
     # Encounters graph
     ENCOUNTER_SM = {
         INITIAL_STATE => SOCIAL_HISTORY,
-        SOCIAL_HISTORY => VITALS,
+        SOCIAL_HISTORY => ADMISSION_DETAILS,
+        ADMISSION_DETAILS => VITALS,
         VITALS => PATIENT_HISTORY,
         PATIENT_HISTORY => PMTCT,
         PMTCT => PHYSICAL_EXAMINATION,
         PHYSICAL_EXAMINATION => VAGINAL_EXAMINATION,
         VAGINAL_EXAMINATION => CLINICAL_EXAMINATION,
-        CLINICAL_EXAMINATION => ADMISSION_DETAILS,
-        ADMISSION_DETAILS => END_STATE
+        CLINICAL_EXAMINATION => ADMISSION_DIAGNOSIS,
+        ADMISSION_DIAGNOSIS => END_STATE
     }.freeze
 
     STATE_CONDITIONS = {
@@ -82,6 +83,8 @@ module MaternityService
         case activity
         when /Social History/i
           SOCIAL_HISTORY
+        when /Admission Diagnosis/i
+          ADMISSION_DIAGNOSIS
         when /Vitals/i
           VITALS
         when /Medical History/i
