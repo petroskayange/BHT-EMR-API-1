@@ -3,7 +3,8 @@ class ReportService
   # A factory for workflow engines.
   ENGINES = {
     # Table mapping program concept name to engine
-    'OPD PROGRAM' => OPDService::ReportEngine
+    'OPD PROGRAM' => OPDService::ReportEngine,
+    'MATERNITY PROGRAM' => MaternityService::ReportEngine
   }.freeze
 
   def initialize(program_id:, date:)
