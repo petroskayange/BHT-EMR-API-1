@@ -188,7 +188,7 @@ module MaternityService
         joins('INNER JOIN obs USING(encounter_id)').\
         select('count(*) AS total')
       when 'this_year'
-        
+
         start_date = Date.today.beginning_of_year
         end_date = Date.today.end_of_year
 
