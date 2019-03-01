@@ -20,8 +20,6 @@ module MaternityService
         stats[encounter] = map_stats(encounter,true)
       end
 
-      stats[:observations] = map_stats('observations')
-
       stats[:patients_delivered] = map_stats('patients_delivered')
 
       stats[:referrals_out] = map_stats('referrals_out')
@@ -43,11 +41,6 @@ module MaternityService
 
       else
         case stats_type
-        when 'observations'
-          stats_by_user = observations('by_user')
-          stats_today = observations('today')
-          stats_this_year = observations('this_year')
-          stats_total_to_date = observations('total')
         when 'patients_delivered'
           stats_by_user = patients_delivered('by_user')
           stats_today = patients_delivered('today')
