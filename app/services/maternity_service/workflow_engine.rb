@@ -40,7 +40,7 @@ module MaternityService
     UPDATE_HIV_STATUS = 'UPDATE HIV STATUS'
     SOCIAL_HISTORY = 'SOCIAL HISTORY'
     VITALS = 'VITALS'
-    PATIENT_HISTORY = 'MEDICAL HISTORY'
+    PATIENT_HISTORY = 'OBSTETRIC HISTORY'
     PMTCT = 'PMTCT HISTORY'
     PHYSICAL_EXAMINATION = 'PHYSICAL EXAMINATION'
     VAGINAL_EXAMINATION = 'VAGINAL EXAMINATION'
@@ -51,7 +51,7 @@ module MaternityService
     ABDOMINAL_EXAMINATION = 'ABDOMINAL EXAMINATION'
     NOTES = 'NOTES'
     ADMIT_PATIENT = 'ADMIT PATIENT'
-    ADMISSION_DETAILS = 'OBSTETRIC HISTORY'
+    ADMISSION_DETAILS = 'PATIENT ADMISSIONS'
     ADMISSION_DIAGNOSIS = 'ADMISSION DIAGNOSIS'
 
     # Encounters graph
@@ -87,8 +87,8 @@ module MaternityService
           ADMISSION_DIAGNOSIS
         when /Vitals/i
           VITALS
-        when /Medical History/i
-          PATIENT_HISTORY
+        when /Patient Admissions/i
+          ADMISSION_DETAILS
         when /PMTCT History/i
           PMTCT
         when /Physical Examination/i
@@ -98,7 +98,7 @@ module MaternityService
         when /Maternity Examination/i
           CLINICAL_EXAMINATION
         when /Obstetric History/i
-          ADMISSION_DETAILS
+          PATIENT_HISTORY
         else
           Rails.logger.warn "Invalid Maternity activity in user properties: #{activity}"
         end
