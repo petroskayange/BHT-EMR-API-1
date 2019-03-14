@@ -69,11 +69,16 @@ module MaternityService
     }.freeze
 
     STATE_CONDITIONS = {
-        # PATIENT_REGISTRATION => %i[patient_not_registered?],
-        # VITALS => %i[patient_checked_in?
-        #            patient_not_on_fast_track?
-        #            patient_has_not_completed_fast_track_visit?]
-                      }.freeze
+        SOCIAL_HISTORY => %i[social_history_not_collected?],
+        ADMISSION_DETAILS => %i[admission_details_not_collected?],
+        VITALS => %i[vitals_not_collected?],
+        PATIENT_HISTORY => %i[patient_history_not_collected?],
+        PMTCT => %i[pmtct_not_collected?],
+        PHYSICAL_EXAMINATION => %i[physical_examination_not_collected?],
+        VAGINAL_EXAMINATION => %i[vaginal_examination_not_collected?],
+        CLINICAL_EXAMINATION => %i[clinical_examination_not_collected?],
+        ADMISSION_DIAGNOSIS => %i[admission_diagnosis_not_collected?]
+    }.freeze
 
     def load_user_activities
       activities = user_property('Activities')&.property_value
@@ -128,11 +133,86 @@ module MaternityService
       end
     end
 
-     # Check if patient is not registered
+    # check if patient has social history
+    def social_history_not_collected?
+      encounter = Encounter.joins(:type).where(
+          'encounter_type.name = ? AND encounter.patient_id = ?',
+          SOCIAL_HISTORY, @patient.patient_id)
 
-    # Checks if patient has checked in today
+      encounter.blank?
+    end
 
-    # Check if patient is not registere
+    # check if patient has admission history
+    def admission_details_not_collected?
+      encounter = Encounter.joins(:type).where(
+          'encounter_type.name = ? AND encounter.patient_id = ?',
+          ADMISSION_DETAILS, @patient.patient_id)
+
+      encounter.blank?
+    end
+
+    # check if patient has vitals
+    def vitals_not_collected?
+      encounter = Encounter.joins(:type).where(
+          'encounter_type.name = ? AND encounter.patient_id = ?',
+          VITALS, @patient.patient_id)
+
+      encounter.blank?
+    end
+
+    # Check if patient has patient history
+    def patient_history_not_collected?
+      encounter = Encounter.joins(:type).where(
+          'encounter_type.name = ? AND encounter.patient_id = ?',
+          PATIENT_HISTORY, @patient.patient_id)
+
+      encounter.blank?
+    end
+
+    # check if patient has pmtct history
+    def pmtct_not_collected?
+      encounter = Encounter.joins(:type).where(
+          'encounter_type.name = ? AND encounter.patient_id = ?',
+          PMTCT, @patient.patient_id)
+
+      encounter.blank?
+    end
+
+    # check if patient has physical examination
+    def physical_examination_not_collected?
+      encounter = Encounter.joins(:type).where(
+          'encounter_type.name = ? AND encounter.patient_id = ?',
+          PHYSICAL_EXAMINATION, @patient.patient_id)
+
+      encounter.blank?
+    end
+
+    # check if patient has vaginal examination
+    def vaginal_examination_not_collected?
+      encounter = Encounter.joins(:type).where(
+          'encounter_type.name = ? AND encounter.patient_id = ?',
+          VAGINAL_EXAMINATION, @patient.patient_id)
+
+      encounter.blank?
+    end
+
+    # check if patient has clinical examination
+    def clinical_examination_not_collected?
+      encounter = Encounter.joins(:type).where(
+          'encounter_type.name = ? AND encounter.patient_id = ?',
+          CLINICAL_EXAMINATION, @patient.patient_id)
+
+      encounter.blank?
+    end
+
+    # check if patient has admission diagnosis
+    def admission_diagnosis_not_collected?
+      encounter = Encounter.joins(:type).where(
+          'encounter_type.name = ? AND encounter.patient_id = ?',
+          ADMISSION_DIAGNOSIS, @patient.patient_id)
+
+      encounter.blank?
+    end
 
   end
 end
