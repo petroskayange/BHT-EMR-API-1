@@ -40,3 +40,4 @@ db/schema.rb
 *.DS_Store
 
 *.swp
+.idea/
