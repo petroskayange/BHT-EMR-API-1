@@ -27,6 +27,10 @@ module MaternityService
       return stats
     end
 
+    def monthly_report
+      
+    end
+
     private
 
     # stats_mapping
