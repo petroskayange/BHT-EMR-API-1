@@ -15,6 +15,10 @@ class ReportService
     @engine.dashboard_stats
   end
 
+  def monthly_report
+    @engine.monthly_report
+  end
+
   private
 
   # Creates a report engine for the given program_id and date

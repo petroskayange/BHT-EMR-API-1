@@ -184,4 +184,5 @@ Rails.application.routes.draw do
   get '/api/v1/booked_appointments' => 'api/v1/patient_appointments#booked_appointments'
   get '/api/v1/concept_set' => 'api/v1/concept_sets#show'
   get '/api/v1/dashboard_stats' => 'api/v1/reports#index'
+	get '/api/v1/monthly_report' => 'api/v1/monthly_reports#index'
 end
