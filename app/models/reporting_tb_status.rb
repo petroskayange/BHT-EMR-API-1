@@ -1,0 +1,2 @@
+class ReportingTbStatus < ApplicationRecord
+end

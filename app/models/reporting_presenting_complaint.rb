@@ -1,0 +1,2 @@
+class ReportingPresentingComplaint < ApplicationRecord
+end

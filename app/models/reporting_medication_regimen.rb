@@ -1,0 +1,2 @@
+class ReportingMedicationRegimen < ApplicationRecord
+end

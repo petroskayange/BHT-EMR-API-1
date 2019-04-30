@@ -1,0 +1,2 @@
+class ReportingSideEffect < ApplicationRecord
+end

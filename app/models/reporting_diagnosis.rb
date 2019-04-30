@@ -1,0 +1,2 @@
+class ReportingDiagnosis < ApplicationRecord
+end

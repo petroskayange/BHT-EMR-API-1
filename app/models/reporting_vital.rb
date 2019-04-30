@@ -1,0 +1,2 @@
+class ReportingVital < ApplicationRecord
+end

@@ -1,0 +1,2 @@
+class ReportingMedicationDispensation < ApplicationRecord
+end

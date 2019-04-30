@@ -1,0 +1,2 @@
+class ReportingSymptom < ApplicationRecord
+end

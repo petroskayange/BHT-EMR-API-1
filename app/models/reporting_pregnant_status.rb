@@ -1,0 +1,2 @@
+class ReportingPregnantStatus < ApplicationRecord
+end

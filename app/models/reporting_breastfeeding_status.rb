@@ -1,0 +1,2 @@
+class ReportingBreastfeedingStatus < ApplicationRecord
+end

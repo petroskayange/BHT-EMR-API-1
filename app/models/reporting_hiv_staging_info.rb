@@ -1,0 +1,2 @@
+class ReportingHivStagingInfo < ApplicationRecord
+end
