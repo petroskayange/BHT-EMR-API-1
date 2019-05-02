@@ -1,0 +1,2 @@
+class ReportingMigrationTracker < ApplicationRecord
+end
