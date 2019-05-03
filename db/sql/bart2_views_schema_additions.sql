@@ -1497,7 +1497,7 @@ BEGIN
   IF @drug_ids IN(@regimen_zero_p_three) AND (length(@drug_ids) = length(@regimen_zero_p_three)) THEN
     SET regimen_cat = ('0P');
   END IF;
-  
+
   IF @drug_ids IN(@regimen_zero_p_one) AND (length(@drug_ids) = length(@regimen_zero_p_one)) THEN
     SET regimen_cat = ('0P');
   END IF;
@@ -1521,7 +1521,7 @@ BEGIN
   IF @drug_ids IN(@regimen_two_p_four) AND (length(@drug_ids) = length(@regimen_two_p_four)) THEN
     SET regimen_cat = ('2P');
   END IF;
-  
+
   IF @drug_ids IN(@regimen_two_p_one) AND (length(@drug_ids) = length(@regimen_two_p_one)) THEN
     SET regimen_cat = ('2P');
   END IF;
@@ -1546,7 +1546,7 @@ BEGIN
   IF @drug_ids IN(@regimen_four_p_three) AND (length(@drug_ids) = length(@regimen_four_p_three)) THEN
     SET regimen_cat = ('4P');
   END IF;
-  
+
   IF @drug_ids IN(@regimen_four_p_one) AND (length(@drug_ids) = length(@regimen_four_p_one)) THEN
     SET regimen_cat = ('4P');
   END IF;
@@ -1591,7 +1591,7 @@ BEGIN
   IF @drug_ids IN(@regimen_nine_p_four) AND (length(@drug_ids) = length(@regimen_nine_p_four)) THEN
     SET regimen_cat = ('9P');
   END IF;
-  
+
   IF @drug_ids IN(@regimen_nine_p_one) AND (length(@drug_ids) = length(@regimen_nine_p_one)) THEN
     SET regimen_cat = ('9P');
   END IF;
@@ -1622,7 +1622,7 @@ BEGIN
   IF @drug_ids IN(@regimen_eleven_p_two) AND (length(@drug_ids) = length(@regimen_eleven_p_two)) THEN
     SET regimen_cat = ('11P');
   END IF;
-  
+
   IF @drug_ids IN(@regimen_eleven_p_three) AND (length(@drug_ids) = length(@regimen_eleven_p_three)) THEN
     SET regimen_cat = ('11P');
   END IF;
@@ -2007,7 +2007,7 @@ RETURN set_outcome;
 END;
 
 
-    
+
 DROP FUNCTION IF EXISTS `re_initiated_check`;
 
 CREATE FUNCTION re_initiated_check(set_patient_id INT, set_date_enrolled DATE) RETURNS VARCHAR(15)
@@ -2032,7 +2032,7 @@ if check_one >= 1 then set re_initiated ="Re-initiated";
 elseif check_two >= 1 then set re_initiated ="Re-initiated";
 end if;
 
-if check_one = 'N/A' then 
+if check_one = 'N/A' then
   set taken_arvs_concept = (SELECT concept_id FROM concept_name WHERE name ='HAS THE PATIENT TAKEN ART IN THE LAST TWO MONTHS' LIMIT 1);
   set check_two = (SELECT e.patient_id FROM clinic_registration_encounter e INNER JOIN ever_registered_obs AS ero ON e.encounter_id = ero.encounter_id INNER JOIN obs o ON o.encounter_id = e.encounter_id AND o.concept_id = taken_arvs_concept AND o.voided = 0 WHERE  ((o.concept_id = taken_arvs_concept AND o.value_coded = no_concept)) AND patient_date_enrolled(e.patient_id) = set_date_enrolled AND e.patient_id = set_patient_id GROUP BY e.patient_id);
 
@@ -2043,7 +2043,7 @@ end if;
 RETURN re_initiated;
 END;
 
-    
+
 DROP FUNCTION IF EXISTS `died_in`;
 
 
