@@ -67,7 +67,7 @@ class ARTService::LabTestsEngine
       accession_number = lims_order['tracking_number']
 
       local_order = create_local_order(patient, encounter, date, accession_number)
-      create_result_given_observation(local_order) if test_type.match?(/Viral Load/i)
+      create_result_given_observation(encounter, local_order) if test_type.match?(/Viral Load/i)
       save_reason_for_test(encounter, local_order, test['reason'])
 
       { order: local_order, lims_order: lims_order }
@@ -82,7 +82,7 @@ class ARTService::LabTestsEngine
 
     encounter = find_lab_encounter(patient, date_sample_drawn)
     local_order = create_local_order(patient, encounter, date_sample_drawn, lims_order['tracking_number'])
-    create_result_given_observation(local_order)
+    create_result_given_observation(encounter, local_order)
     save_reason_for_test(encounter, local_order, reason_for_test)
 
     { order: local_order, lims_order: lims_order }
@@ -156,9 +156,12 @@ class ARTService::LabTestsEngine
     )
   end
 
-  def create_result_given_observation(order)
+  def create_result_given_observation(encounter, order)
     Observation.create(concept_id: ConceptName.find_by(name: 'Result available').concept_id,
-                       person_id: order.patient_id, order_id: order.id,
+                       person_id: order.patient_id,
+                       order_id: order.id,
+                       encounter_id: encounter.id,
+                       obs_datetime: encounter.encounter_datetime,
                        value_coded: ConceptName.find_by(name: 'No').concept_id)
   end
 
