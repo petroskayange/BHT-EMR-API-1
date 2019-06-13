@@ -158,7 +158,7 @@ class ARTService::LabTestsEngine
 
   def create_result_given_observation(order)
     Observation.create(concept_id: ConceptName.find_by(name: 'Result available').concept_id,
-                       order_id: order.id,
+                       person_id: order.patient_id, order_id: order.id,
                        value_coded: ConceptName.find_by(name: 'No').concept_id)
   end
 
