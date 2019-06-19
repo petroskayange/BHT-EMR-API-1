@@ -22,9 +22,9 @@ module HTSService
      # day_start, day_end = TimeUtils.day_bounds(start_date)
       Patient.find_by_sql(
         [
-          'SELECT patient.* FROM patient INNER JOIN encounter USING (patient_id)
+          'SELECT patient.* FROM patient INNER JOIN encounter USING (patient_id) INNER JOIN patient_program USING (patient_id)
           WHERE encounter.encounter_datetime BETWEEN ? AND ?
-            AND encounter.voided = 0 AND patient.voided = 0
+            AND encounter.voided = 0 AND patient.voided = 0 AND patient_program.program_id = 18
           GROUP BY patient.patient_id',
           start_date, end_date
         ]
