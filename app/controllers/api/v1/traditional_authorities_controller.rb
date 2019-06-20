@@ -10,6 +10,10 @@ class Api::V1::TraditionalAuthoritiesController < ApplicationController
     end
   end
 
+  def show
+    render json: TraditionalAuthority.find(params[:id])
+  end
+
   def index
     filters = params.permit(%i[district_id name])
 
