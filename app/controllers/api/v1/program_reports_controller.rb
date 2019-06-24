@@ -4,17 +4,15 @@ class Api::V1::ProgramReportsController < ApplicationController
   include ModelUtils
 
   def show
-    name = params[:name]
-    type, start_date, end_date = parse_report_name(name)
+    type, start_date, end_date = parse_report_name(params[:name])
+
     type ||= params[:id]
-    start_date ||= params.require(%i[start_date])[0]
-    end_date ||= (params[:end_date] || Date.today.strftime('%Y-%m-%d'))
+    start_date ||= params.require(:start_date)&.to_date
+    end_date ||= (params[:end_date]&.to_date || Date.today.strftime('%Y-%m-%d'))
 
     report = service.generate_report(
-      name: name,
-      type: type,
-      start_date: Date.strptime(start_date.to_s),
-      end_date: Date.strptime(end_date.to_s)
+      name: params[:name], type: type, start_date: Date.strptime(start_date.to_s),
+      end_date: Date.strptime(end_date.to_s), request_params: params.permit!
     )
 
     if report

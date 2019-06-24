@@ -42,11 +42,7 @@ module ANCService
         type: type, name: name, start_date: start_date, end_date: end_date
       )
       method = report_manager.method(method)
-      if kwargs.empty?
-        method.call
-      else
-        method.call(**kwargs)
-      end
+      method.call
     end
   end
 end

@@ -16,9 +16,9 @@ class ReportService
   end
 
   def generate_report(name:, type:, start_date: Date.strptime('1900-01-01'),
-                      end_date: Date.today, kwargs: {})
+                      end_date: Date.today, request_params: {})
     LOGGER.debug "Retrieving report, #{name}, for period #{start_date} to #{end_date}"
-    report = find_report(type, name, start_date, end_date)
+    report = find_report(type, name, start_date, end_date, request_params)
 
     if report && @overwrite_mode
       report.void('Over-written by new report')
@@ -32,7 +32,7 @@ class ReportService
 
     LOGGER.debug("#{name} report not found... Queueing one...")
     queue_report(name: name, type: type, start_date: start_date,
-                 end_date: end_date, lock: lock, **kwargs)
+                 end_date: end_date, lock: lock, request_params: request_params)
     nil
   end
 
@@ -133,9 +133,10 @@ class ReportService
     end
   end
 
-  def find_report(type, name, start_date, end_date)
+  def find_report(type, name, start_date, end_date, request_params)
     engine(@program).find_report(type: type, name: name,
-                                 start_date: start_date, end_date: end_date)
+                                 start_date: start_date, end_date: end_date,
+                                 request_params: request_params)
   end
 
   def queue_report(start_date:, end_date:, lock:, **kwargs)
