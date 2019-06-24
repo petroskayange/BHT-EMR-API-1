@@ -1,35 +1,32 @@
-
-require 'set'
+# frozen_string_literal: true
 
 module HTSService
   class ReportEngine
     include ModelUtils
+    include QueryPaginateUtils
 
-    def initialize
-      # @program = program
-      # @date = date
-      # @name = name
-      # @type = type
-      # @start_date = start_date.to_date
-      # @end_date = end_date.to_date
+    ALL_PATIENTS_REPORT_PAGE_SIZE = 3
+
+    def find_report(type:, name:, start_date:, end_date:, **kwargs)
+      method(type.to_sym).call(name, start_date, end_date, kwargs)
     end
 
-    def find_report(name:, **kwargs)
-      method(name.to_sym).call(**kwargs)
+    def patients(_name, start_date, end_date, kwargs)
+      query = Patient.joins(:encounters)\
+                     .where(encounter: { program_id: hts_program.id })\
+                     .where('encounter_datetime BETWEEN ? AND ?', start_date, end_date)
+
+      params = kwargs[:request_params]
+      page = params[:page] || 0
+      page_size = params[:page_size] || ALL_PATIENTS_REPORT_PAGE_SIZE
+
+      paginate_query(query, page: page, page_size: page_size)
     end
 
-    def find_all_patients(start_date:, end_date:, **kwargs)
-     # day_start, day_end = TimeUtils.day_bounds(start_date)
-      Patient.find_by_sql(
-        [
-          'SELECT patient.* FROM patient INNER JOIN encounter USING (patient_id) INNER JOIN patient_program USING (patient_id)
-          WHERE encounter.encounter_datetime BETWEEN ? AND ?
-            AND encounter.voided = 0 AND patient.voided = 0 AND patient_program.program_id = 18
-          GROUP BY patient.patient_id',
-          start_date, end_date
-        ]
-      )
-    end
+    private
 
+    def hts_program
+      @hts_program = program('HTC Program')
+    end
   end
 end
