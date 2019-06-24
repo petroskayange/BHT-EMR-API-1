@@ -7,9 +7,17 @@ class ProgramPatientsService
     'HTS PROGRAM' => HTSService::PatientsEngine
   }.freeze
 
+  attr_reader :program
+
   def initialize(program:)
+    @program = program
     clazz = ENGINES[program.name.upcase]
     @engine = clazz.new(program: program)
+  end
+
+  def patients
+    Patient.joins(:patient_programs)\
+           .where(patient_program: { program_id: program.id })
   end
 
   def method_missing(method, *args, &block)
@@ -23,5 +31,4 @@ class ProgramPatientsService
     Rails.logger.debug "Engine responds to #{method}? #{@engine.respond_to?(method)}"
     @engine.respond_to?(method)
   end
-
 end

@@ -5,6 +5,10 @@ class Api::V1::ProgramPatientsController < ApplicationController
                                           print_patient_history_label print_history_label
                                           print_lab_results_label]
 
+  def index
+    render json: paginate(service.patients)
+  end
+
   def show
     date = params[:date]&.to_date || Date.today
     render json: service.patient(params[:id], date)

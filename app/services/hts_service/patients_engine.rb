@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module MaternityService
+module HTSService
   # Patients sub service.
   #
   # Basically provides Maternity specific patient-centric functionality
