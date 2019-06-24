@@ -11,6 +11,7 @@ class ApplicationController < ActionController::API
 
   include RequireParams
   include ExceptionHandler
+  include QueryPaginateUtils
 
   CURRENT_LOCATION_PROPERTY = 'current_health_center_id'
   DEFAULT_PAGE_SIZE = 10
@@ -45,13 +46,11 @@ class ApplicationController < ActionController::API
     true
   end
 
-  def paginate(queryset)
-    return queryset if params[:paginate] == 'false'
+  def paginate(query)
+    return query.all if params[:paginate] == 'false'
 
-    limit = (params[:page_size] || DEFAULT_PAGE_SIZE).to_i
-    offset = (params[:page] || 0).to_i * DEFAULT_PAGE_SIZE
-
-    queryset.offset(offset).limit(limit)
+    paginate_query(query, page: (params[:page] || 0).to_i,
+                          page_size: (params[:page_size] || DEFAULT_PAGE_SIZE).to_i)
   end
 
   def parse_date(str_date)
