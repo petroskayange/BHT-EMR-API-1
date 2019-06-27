@@ -14,7 +14,7 @@ module HTSService
     def patients(_name, start_date, end_date, kwargs)
       query = Patient.joins(:encounters)\
                      .where(encounter: { program_id: hts_program.id })\
-                     .where('encounter_datetime BETWEEN ? AND ?', start_date, end_date)
+                     .where('encounter_datetime BETWEEN ? AND ?', start_date, end_date)\
                      .group('patient_id')
 
       params = kwargs[:request_params]
@@ -25,6 +25,8 @@ module HTSService
         patients: paginate_query(query, page: page, page_size: page_size),
         count: Patient.joins(:encounters)\
                       .where(encounter: { program_id: hts_program.id })\
+                      .where('encounter_datetime BETWEEN ? AND ?', start_date, end_date)\
+                      .group('patient_id')\
                       .size
       }
     end
