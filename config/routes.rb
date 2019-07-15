@@ -68,6 +68,8 @@ Rails.application.routes.draw do
 
       resources :person_attributes
 
+      resources :registers
+
       resources :concepts, only: %i[index show]
 
       # Locations
