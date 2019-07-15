@@ -8,16 +8,16 @@ RSpec.describe EncounterService do
   let(:type) { EncounterType.first }
   let(:encounter_datetime) { Time.now }
   let(:provider) { nil }
-  let(:program) { Program.first}
+  let(:program) { Program.first }
 
   describe :create do
     it "creates new encounter if a matching encounter doesn't already exist" do
       expect(Encounter.all).to be_empty
-      
+
       created = encounter_service.create(patient: patient, type: type,
                                          encounter_datetime: encounter_datetime,
                                          provider: provider, program: program)
-      
+
       retrieved = Encounter.all
       expect(retrieved.size).to be(1)
       expect(retrieved[0]).to eq(created)
@@ -45,8 +45,8 @@ RSpec.describe EncounterService do
 
     it 'will autogenerate encounter_datetime if not provided' do
       created = encounter_service.create(patient: patient, type: type,
-                               encounter_datetime: nil,
-                               provider: provider, program: program)
+                                         encounter_datetime: nil,
+                                         provider: provider, program: program)
 
       encounters = Encounter.all
       expect(encounters.size).to eq(1)
@@ -54,18 +54,16 @@ RSpec.describe EncounterService do
     end
 
     it 'will Update From one Encounter to another' do
-
       created_encounter = encounter_service.create(patient: patient, type: type,
-                               encounter_datetime: nil,
-                               provider: provider, program: fetch_program('HIV PROGRAM'))
-      updated = encounter_service.update(created_encounter, patient: patient,type: type,
-                                encounter_datetime: nil,
-                                provider: provider, program: fetch_program('TB PROGRAM'))
+                                                   encounter_datetime: nil,
+                                                   provider: provider, program: fetch_program('HIV PROGRAM'))
+      updated = encounter_service.update(created_encounter, patient: patient, type: type,
+                                                            encounter_datetime: nil,
+                                                            provider: provider, program: fetch_program('TB PROGRAM'))
 
       program = Program.find(updated.program_id)
       expect(program.name).to eq(fetch_program('TB PROGRAM').name)
     end
-
   end
 
   describe :update do
@@ -89,9 +87,9 @@ RSpec.describe EncounterService do
   describe :void do
     it 'deletes encounter' do
       created = encounter_service.create(patient: patient, type: type,
-                               encounter_datetime: encounter_datetime,
-                               provider: provider, program: program)
-    
+                                         encounter_datetime: encounter_datetime,
+                                         provider: provider, program: program)
+
       delete_encounter = -> { encounter_service.void(Encounter.first, 'No reason') }
 
       encounter_count = -> { Encounter.count }
@@ -108,13 +106,13 @@ RSpec.describe EncounterService do
 
       retrieved = EncounterService.recent_encounter(encounter_type_name: created.type.name,
                                                     patient_id: created.patient_id)
-      
+
       expect(retrieved).to eq(created)
     end
   end
 end
 
-#Helpers
+# Helpers
 
 def fetch_program(name)
   program = Program.find_by(name: name)
