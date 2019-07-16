@@ -8,5 +8,8 @@ class Register < ApplicationRecord
                            date_voided: :date_closed,
                            voided_by: :closed_by)
 
+  belongs_to :service_delivery_point, class_name: 'RegisterServiceDeliveryPoint'
+  belongs_to :location_type, class_name: 'RegisterLocationType'
+
   has_and_belongs_to_many :encounters
 end
