@@ -3,9 +3,9 @@
 require 'securerandom'
 
 FactoryBot.define do
-  factory :encounter_type do
+  factory :program do
     name { SecureRandom.alphanumeric(20) }
-    description { SecureRandom.alphanumeric(255) }
+    association :concept
     creator { 1 }
     date_created { Time.now }
   end

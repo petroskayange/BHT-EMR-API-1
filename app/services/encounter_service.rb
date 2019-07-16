@@ -9,8 +9,8 @@ class EncounterService
 
     query = Encounter.where(type: type, patient_id: patient_id)\
                      .where('encounter_datetime BETWEEN ? AND ?',
-                      start_date.to_date.strftime('%Y-%m-%d 00:00:00'),
-                      date.to_date.strftime('%Y-%m-%d 23:59:59'))
+                            start_date.to_date.strftime('%Y-%m-%d 00:00:00'),
+                            date.to_date.strftime('%Y-%m-%d 23:59:59'))
     query = query.where(program_id: program_id) if program_id
     query.order(encounter_datetime: :desc).first
   end
@@ -53,5 +53,37 @@ class EncounterService
 
   def void(encounter, reason)
     encounter.void(reason)
+  end
+
+  # Associate an encounter with a register
+  def bind_encounter_to_register(encounter, register)
+    if register.closed?
+      raise InvalidParameterError, "Can't add encounter to closed register(#{register.id})"
+    end
+
+    unbind_encounter_from_register(encounter)
+
+    EncounterRegister.create(encounter: encounter, register: register,
+                             creator: User.current.id)
+  end
+
+  # Dissociates an encounter from bound register(s)
+  def unbind_encounter_from_register(encounter)
+    EncounterRegister.where(encounter: encounter).each(&:destroy)
+  end
+
+  # Returns register that is bound to encounter with given encounter_id.
+  #
+  # Raises NotFoundError if no register is bound to the encounter
+  def find_encounter_register(encounter_id)
+    register = Register.joins('INNER JOIN encounter_registers')
+                       .where('encounter_id = ?', encounter_id)
+                       .first
+
+    unless register
+      raise NotFoundError, "Encounter (##{encounter_id}) is not bound to any register"
+    end
+
+    register
   end
 end

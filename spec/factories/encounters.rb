@@ -7,6 +7,7 @@ FactoryBot.define do
 
     encounter_datetime { Time.now }
     date_created { Time.now }
+    type { create :encounter_type }
     creator { 1 }
     provider_id { 1 }
     location_id { 700 }

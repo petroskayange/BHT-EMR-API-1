@@ -110,6 +110,60 @@ RSpec.describe EncounterService do
       expect(retrieved).to eq(created)
     end
   end
+
+  describe :bind_encounter_to_register do
+    it 'binds an encounter to an open register' do
+      register = create :register
+      encounter = create :encounter
+
+      encounter_service.bind_encounter_to_register(encounter, register)
+
+      expect(encounter.registers.first).to eq(register)
+      expect(register.encounters.first).to eq(encounter)
+    end
+
+    it 'does not bind an encounter to a closed register' do
+      encounter = create :encounter
+      register = create :register
+
+      register.update(closed: true)
+
+      expect(-> { encounter_service.bind_encounter_to_register(encounter, register) })
+        .to raise_exception(InvalidParameterError, /Can't add encounter to closed register/i)
+    end
+  end
+
+  describe :unbind_encounter_from_register do
+    it 'unbinds an encounter from the register it is bound to' do
+      encounter = create :encounter
+      register = create :register
+
+      encounter_service.bind_encounter_to_register(encounter, register)
+      encounter_service.unbind_encounter_from_register(encounter)
+
+      expect(encounter.registers).to be_empty
+      expect(register.encounters).to be_empty
+    end
+  end
+
+  describe :find_encounter_register do
+    it "returns an encounter's bound register" do
+      encounter = create :encounter
+      register = create :register
+
+      encounter_service.bind_encounter_to_register(encounter, register)
+      bound_register = encounter_service.find_encounter_register(encounter.id)
+
+      expect(bound_register).to eq(register)
+    end
+
+    it 'raise NotFoundError if encounter has no bound register' do
+      encounter = create :encounter
+
+      expect(-> { encounter_service.find_encounter_register(encounter.id) })
+        .to raise_exception(NotFoundError, /Encounter .* is not bound to any register/)
+    end
+  end
 end
 
 # Helpers
