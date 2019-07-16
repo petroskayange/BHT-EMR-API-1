@@ -12,4 +12,6 @@ class Register < ApplicationRecord
   belongs_to :location_type, class_name: 'RegisterLocationType'
 
   has_and_belongs_to_many :encounters
+
+  validates_presence_of :register_type, :service_delivery_point_id, :location_type_id
 end
