@@ -17,12 +17,15 @@ class Api::V1::RegistersController < ApplicationController
 
   # POST /registers
   def create
-    @register = Register.new(register_params)
+    permitted_params = register_params
+    permitted_params[:location_id] ||= Location.current.id
 
-    if @register.save
-      render json: @register, status: :created, location: @register
+    @register = Register.create(permitted_params)
+
+    if @register.errors.empty?
+      render json: @register, status: :created
     else
-      render json: @register.errors, status: :unprocessable_entity
+      render json: @register.errors, status: :bad_request
     end
   end
 
@@ -31,7 +34,7 @@ class Api::V1::RegistersController < ApplicationController
     if @register.update(register_params)
       render json: @register
     else
-      render json: @register.errors, status: :unprocessable_entity
+      render json: @register.errors, status: :bad_request
     end
   end
 
