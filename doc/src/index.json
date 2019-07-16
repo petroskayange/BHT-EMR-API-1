@@ -32,9 +32,24 @@
 	],
 	"folders_order": [
 		"a4f1f12d-26b9-4f12-9eb7-27ea67af805b",
-		"7180b759-b504-44b9-8763-f2e8624b9114"
+		"7180b759-b504-44b9-8763-f2e8624b9114",
+		"d501ced8-0bf0-4443-926d-e1d9da704f74"
 	],
 	"folders": [
+		{
+			"id": "d501ced8-0bf0-4443-926d-e1d9da704f74",
+			"name": "Registry Management",
+			"description": null,
+			"auth": null,
+			"events": null,
+			"collection": "666fd3ae-c41c-b4b3-e1a2-8e1f5b3572ff",
+			"folder": null,
+			"order": [
+				"43a40c6e-306d-43af-acf2-2506437df08e",
+				"ae2b357a-32f4-4760-a1a3-422e09f6adef"
+			],
+			"folders_order": []
+		},
 		{
 			"id": "7180b759-b504-44b9-8763-f2e8624b9114",
 			"name": "Search",
@@ -1402,6 +1417,130 @@
 			"pathVariables": {}
 		},
 		{
+			"id": "43a40c6e-306d-43af-acf2-2506437df08e",
+			"name": "Create Register",
+			"url": "http://localhost:3000/api/v1/registers",
+			"description": "",
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "Authorization",
+					"value": "zdeRDBHCl4zD",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "Content-Type",
+					"name": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"type": "text"
+				}
+			],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": "d501ced8-0bf0-4443-926d-e1d9da704f74",
+			"responses": [
+				{
+					"id": "b578b4fd-faca-41d8-87d0-e78a74cca785",
+					"name": "Create Register",
+					"status": null,
+					"mime": null,
+					"language": "json",
+					"text": "{\n    \"id\": 2,\n    \"uuid\": \"b614d1ef-0d7e-41f8-8836-b1982803803d\",\n    \"number\": \"1234567890\",\n    \"location_type_id\": 1,\n    \"service_delivery_point_id\": 10,\n    \"location_id\": 120,\n    \"register_type\": \"Register type\",\n    \"closed\": false,\n    \"date_closed\": null,\n    \"closed_by\": null,\n    \"close_reason\": null,\n    \"date_created\": null,\n    \"created_at\": \"2019-07-16T11:58:16.000+02:00\",\n    \"updated_at\": \"2019-07-16T11:58:16.000+02:00\"\n}",
+					"responseCode": {
+						"code": 201,
+						"name": "Created"
+					},
+					"requestObject": {
+						"data": "{\n\t\"number\": \"1234567890\",\n\t\"service_delivery_point_id\": 10,\n\t\"location_type_id\": 1,\n\t\"register_type\": \"Register type\"\n}",
+						"dataMode": "raw",
+						"headerData": [
+							{
+								"key": "Authorization",
+								"value": "zdeRDBHCl4zD",
+								"description": "",
+								"type": "text",
+								"enabled": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"description": "",
+								"type": "text"
+							}
+						],
+						"method": "POST",
+						"pathVariableData": [],
+						"queryParams": [],
+						"url": "http://localhost:3000/api/v1/registers"
+					},
+					"headers": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Status",
+							"value": "201 Created"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "max-age=0, private, must-revalidate"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"9ee55bdb9970cc4e359475e58db5678e\""
+						},
+						{
+							"key": "X-Runtime",
+							"value": "0.666850"
+						},
+						{
+							"key": "X-Request-Id",
+							"value": "cf7be1be-c0e7-425d-8ca3-87e180bda64c"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 16 Jul 2019 09:58:16 GMT"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "Phusion Passenger 6.0.2"
+						},
+						{
+							"key": "Server",
+							"value": "nginx/1.15.8 + Phusion Passenger 6.0.2"
+						}
+					],
+					"cookies": null,
+					"request": "43a40c6e-306d-43af-acf2-2506437df08e",
+					"collection": "666fd3ae-c41c-b4b3-e1a2-8e1f5b3572ff"
+				}
+			],
+			"rawModeData": "{\n\t\"number\": \"1234567890\",\n\t\"service_delivery_point_id\": 10,\n\t\"location_type_id\": 1,\n\t\"register_type\": \"Register type\"\n}",
+			"headers": "Authorization: zdeRDBHCl4zD\nContent-Type: application/json\n",
+			"pathVariables": {}
+		},
+		{
 			"id": "4701e570-e2be-4c9c-bdce-c4bad8ba0370",
 			"name": "Retrieve dispensations",
 			"url": "localhost:3000/api/v1/dispensations?patient_id=1000",
@@ -1752,9 +1891,6 @@
 					"enabled": true
 				}
 			],
-			"method": "POST",
-			"pathVariableData": [],
-			"queryParams": [],
 			"auth": null,
 			"events": null,
 			"folder": null,
@@ -1767,9 +1903,8 @@
 					"language": "json",
 					"text": "{\"person_id\":1,\"gender\":\"M\",\"birthdate\":null,\"birthdate_estimated\":0,\"dead\":0,\"death_date\":null,\"cause_of_death\":null,\"creator\":1,\"date_created\":\"2005-01-01T00:00:00.000Z\",\"changed_by\":1,\"date_changed\":\"2009-09-04T16:37:23.000Z\",\"voided\":0,\"voided_by\":null,\"date_voided\":null,\"void_reason\":null,\"uuid\":\"10661cb8-b6c1-11e0-bc9e-544249e32ba2\",\"names\":[{\"person_name_id\":1,\"preferred\":1,\"person_id\":1,\"prefix\":null,\"given_name\":\"Super\",\"middle_name\":\"\",\"family_name_prefix\":null,\"family_name\":\"User\",\"family_name2\":null,\"family_name_suffix\":null,\"degree\":null,\"creator\":1,\"date_created\":\"2005-01-01T00:00:00.000Z\",\"voided\":0,\"voided_by\":null,\"date_voided\":null,\"void_reason\":null,\"changed_by\":null,\"date_changed\":null,\"uuid\":\"109f4cb8-b6c1-11e0-bc9e-544249e32ba2\"},{\"person_name_id\":104,\"preferred\":0,\"person_id\":1,\"prefix\":null,\"given_name\":\"tionge\",\"middle_name\":null,\"family_name_prefix\":null,\"family_name\":\"banda\",\"family_name2\":null,\"family_name_suffix\":null,\"degree\":null,\"creator\":1,\"date_created\":\"2011-09-14T00:00:00.000Z\",\"voided\":0,\"voided_by\":null,\"date_voided\":null,\"void_reason\":null,\"changed_by\":null,\"date_changed\":null,\"uuid\":\"350af0d9-59ca-11e3-b7e9-003018a9e11f\"}],\"addresses\":[{\"person_address_id\":24,\"person_id\":1,\"preferred\":0,\"address1\":\"Unknown\",\"address2\":null,\"city_village\":\"Area 10\",\"state_province\":null,\"postal_code\":null,\"country\":null,\"latitude\":null,\"longitude\":null,\"creator\":1,\"date_created\":\"2011-09-14T00:00:00.000Z\",\"voided\":0,\"voided_by\":null,\"date_voided\":null,\"void_reason\":null,\"county_district\":null,\"neighborhood_cell\":null,\"region\":null,\"subregion\":null,\"township_division\":null,\"uuid\":\"350b0426-59ca-11e3-b7e9-003018a9e11f\"}],\"person_attributes\":[{\"person_attribute_id\":271,\"person_id\":1,\"value\":\"Area 10\",\"person_attribute_type_id\":18,\"creator\":1,\"date_created\":\"2011-09-14T00:00:00.000Z\",\"changed_by\":null,\"date_changed\":null,\"voided\":0,\"voided_by\":null,\"date_voided\":null,\"void_reason\":null,\"uuid\":\"350b0502-59ca-11e3-b7e9-003018a9e11f\"},{\"person_attribute_id\":272,\"person_id\":1,\"value\":\"Unknown\",\"person_attribute_type_id\":19,\"creator\":1,\"date_created\":\"2011-09-14T00:00:00.000Z\",\"changed_by\":null,\"date_changed\":null,\"voided\":0,\"voided_by\":null,\"date_voided\":null,\"void_reason\":null,\"uuid\":\"350b0426-59ca-11e3-b7e9-003018a9e11f\"},{\"person_attribute_id\":273,\"person_id\":1,\"value\":\"Other\",\"person_attribute_type_id\":13,\"creator\":1,\"date_created\":\"2011-09-14T00:00:00.000Z\",\"changed_by\":null,\"date_changed\":null,\"voided\":0,\"voided_by\":null,\"date_voided\":null,\"void_reason\":null,\"uuid\":\"350b0fab-59ca-11e3-b7e9-003018a9e11f\"},{\"person_attribute_id\":274,\"person_id\":1,\"value\":\"Not Available\",\"person_attribute_type_id\":14,\"creator\":1,\"date_created\":\"2011-09-14T00:00:00.000Z\",\"changed_by\":null,\"date_changed\":null,\"voided\":0,\"voided_by\":null,\"date_voided\":null,\"void_reason\":null,\"uuid\":\"350b11b7-59ca-11e3-b7e9-003018a9e11f\"}]}",
 					"responseCode": {
-						"code": 201,
-						"name": "Created",
-						"detail": "The request has been fulfilled and resulted in a new resource being created."
+						"code": 200,
+						"name": "OK"
 					},
 					"requestObject": {
 						"url": "http://127.0.0.1:3000/api/v1/people/1?page=0&page_size=2",
@@ -2646,16 +2781,16 @@
 					},
 					"headers": [
 						{
-							"key": "Cache-Control",
+							"key": "cache-control",
 							"value": "max-age=0, private, must-revalidate",
-							"name": "Cache-Control",
-							"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+							"name": "cache-control",
+							"description": ""
 						},
 						{
-							"key": "Content-Type",
+							"key": "content-type",
 							"value": "application/json; charset=utf-8",
-							"name": "Content-Type",
-							"description": "The mime type of this content"
+							"name": "content-type",
+							"description": ""
 						},
 						{
 							"key": "etag",
@@ -2910,6 +3045,122 @@
 			],
 			"rawModeData": "{\n\t\"concept_id\": 1,\n\t\"name\": \"foobar\",\n\t\"description\": \"A foobar program under concept #1\"\n}",
 			"headers": "Content-Type: application/json\nAuthorization: LkBuS3be13tX\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "ae2b357a-32f4-4760-a1a3-422e09f6adef",
+			"name": "Binding an encounter to a register",
+			"url": "http://localhost:3000/api/v1/encounters/1/register",
+			"description": "",
+			"data": [],
+			"dataMode": "raw",
+			"headerData": [
+				{
+					"key": "Authorization",
+					"value": "zdeRDBHCl4zD",
+					"enabled": true
+				},
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"enabled": true
+				}
+			],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": "d501ced8-0bf0-4443-926d-e1d9da704f74",
+			"responses": [
+				{
+					"id": "0b78919c-5248-406a-933e-9ce45c70686b",
+					"name": "Binding an encounter to a register",
+					"status": null,
+					"mime": null,
+					"language": "json",
+					"text": "{\n    \"id\": 1,\n    \"encounter_id\": 1,\n    \"register_id\": 2,\n    \"date_created\": null,\n    \"creator\": 1\n}",
+					"responseCode": {
+						"code": 201,
+						"name": "Created"
+					},
+					"requestObject": {
+						"data": "{\n\t\"register_id\": 2\n}",
+						"dataMode": "raw",
+						"headerData": [
+							{
+								"key": "Authorization",
+								"value": "zdeRDBHCl4zD",
+								"enabled": true
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"enabled": true
+							}
+						],
+						"method": "POST",
+						"pathVariableData": [],
+						"queryParams": [],
+						"url": "http://localhost:3000/api/v1/encounters/1/register"
+					},
+					"headers": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Status",
+							"value": "201 Created"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "max-age=0, private, must-revalidate"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"693b1c8a71d6cea76e6d367807cb8c1d\""
+						},
+						{
+							"key": "X-Runtime",
+							"value": "0.060411"
+						},
+						{
+							"key": "X-Request-Id",
+							"value": "4a958d7a-8e4e-4427-a6eb-7fbc77770c5a"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 16 Jul 2019 09:59:49 GMT"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "Phusion Passenger 6.0.2"
+						},
+						{
+							"key": "Server",
+							"value": "nginx/1.15.8 + Phusion Passenger 6.0.2"
+						}
+					],
+					"cookies": null,
+					"request": "ae2b357a-32f4-4760-a1a3-422e09f6adef",
+					"collection": "666fd3ae-c41c-b4b3-e1a2-8e1f5b3572ff"
+				}
+			],
+			"rawModeData": "{\n\t\"register_id\": 2\n}",
+			"headers": "Authorization: zdeRDBHCl4zD\nContent-Type: application/json\n",
 			"pathVariables": {}
 		},
 		{
