@@ -107,6 +107,8 @@ Rails.application.routes.draw do
           redirect_url = "/api/v1/observations?encounter_id=#{params[:encounter_id]}"
           paginate_url redirect_url, request.params
         end)
+
+        resource :encounter_registers, path: :register, only: %i[create show destroy]
       end
 
       resources :observations
