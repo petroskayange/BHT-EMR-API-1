@@ -12,8 +12,6 @@ class CreateRegisters < ActiveRecord::Migration[5.2]
       t.integer :closed_by
       t.string :close_reason
       t.datetime :date_created, null: false, default: -> { 'CURRENT_TIMESTAMP()' }
-
-      t.timestamps
     end
   end
 end
