@@ -5,6 +5,7 @@ require 'set'
 module TBService
   class WorkflowEngine
     include ModelUtils
+    include TimeUtils
 
     def initialize(program:, patient:, date:)
       @patient = patient
@@ -38,6 +39,7 @@ module TBService
     INITIAL_STATE = 0 # Start terminal for encounters graph
     END_STATE = 1 # End terminal for encounters graph
     TB_INITIAL = 'TB_INITIAL'
+    REFERRAL = 'Referral'
     VITALS = 'VITALS'
     LAB_ORDERS = 'LAB ORDERS'
     TREATMENT = 'TREATMENT'
@@ -60,17 +62,18 @@ module TBService
     # Encounters graph
     ENCOUNTER_SM = {
       INITIAL_STATE => TB_INITIAL,
-      TB_INITIAL => LAB_ORDERS,
+      TB_INITIAL => REFERRAL,
+      REFERRAL => LAB_ORDERS,
       LAB_ORDERS => DIAGNOSIS,
       DIAGNOSIS => LAB_RESULTS,
       LAB_RESULTS => TB_RECEPTION,
       TB_RECEPTION => TB_REGISTRATION,
       TB_REGISTRATION => VITALS,
-      VITALS => TREATMENT,
+      VITALS => TB_ADHERENCE,
+      TB_ADHERENCE => TREATMENT,
       TREATMENT => DISPENSING,
       DISPENSING => APPOINTMENT,
-      APPOINTMENT => TB_ADHERENCE,
-      TB_ADHERENCE => END_STATE
+      APPOINTMENT => END_STATE
     }.freeze
 
     STATE_CONDITIONS = {
@@ -90,8 +93,7 @@ module TBService
                                     patient_recent_lab_order_has_no_results?
                                     patient_not_transferred_in_today?],
 
-      TB_RECEPTION => %i[patient_has_no_tb_reception?
-                                    patient_should_proceed_for_treatment?],
+      TB_RECEPTION => %i[patient_has_no_tb_reception? patient_should_proceed_for_treatment?],
 
       TB_REGISTRATION => %i[patient_has_no_tb_registration?
                                     patient_is_not_a_transfer_out?
@@ -113,8 +115,9 @@ module TBService
                                     patient_should_proceed_for_treatment?],
 
       TB_ADHERENCE => %i[patient_has_appointment?
-                                    patient_has_no_adherence?]
+                                    patient_has_no_adherence?],
 
+      REFERRAL => %i[patient_transferred_in_today?]
     }.freeze
 
     # Concepts
@@ -126,17 +129,17 @@ module TBService
         # Re-map activities to encounters
         puts activity
       case activity
-        when /TB initial/i
+        when /Initial Visit/i
           TB_INITIAL
-        when /TB lab orders/i
+        when /Lab Order/i
           LAB_ORDERS
         when /Vitals/i
           VITALS
         when /Treatment/i
           TREATMENT
-        when /Dispensing/i
+        when /Dispense/i
           DISPENSING
-        when /TB Adherence/i
+        when /Adherence/i
           TB_ADHERENCE
         when /Diagnosis/i
           DIAGNOSIS
@@ -148,6 +151,8 @@ module TBService
           TB_REGISTRATION
         when /TB Reception/i
           TB_RECEPTION
+        when /Referral/i
+          REFERRAL
         else
           Rails.logger.warn "Invalid TB activity in user properties: #{activity}"
         end
@@ -246,7 +251,7 @@ module TBService
         VITALS,
         @patient.patient_id,
         @date
-      ).order(encounter_datetime: :desc).first.nil?
+      ).blank?
     end
 
     def patient_has_appointment?
@@ -510,12 +515,14 @@ module TBService
     end
 
     def patient_has_no_tb_reception?
+      encounter = encounter_type('TB Reception')
       Encounter.joins(:type).where(
-        'encounter_type.name = ? AND encounter.patient_id = ? AND DATE(encounter_datetime) = DATE(?)',
-        TB_RECEPTION,
+        'patient_id = ? AND program_id = ? AND encounter_type = ? AND DATE(encounter_datetime) = ?',
         @patient.patient_id,
+        @program.program_id,
+        encounter.encounter_type_id,
         @date
-      ).order(encounter_datetime: :desc).first.nil?
+      ).blank?
     end
 
     def patient_current_tb_status_is_negative?
@@ -557,23 +564,36 @@ module TBService
     def patient_not_transferred_in_today?
       patient_type = concept('Type of patient')
       referral = concept 'Referral'
-      Observation.where(
-        'person_id = ? AND concept_id = ? AND value_coded = ? AND DATE(obs_datetime) = DATE(?)',
-        @patient.patient_id, patient_type.concept_id, referral.concept_id, @date
-      ).order(obs_datetime: :desc).first.nil?
+      day_start, day_end = TimeUtils.day_bounds(Time.now)
+      Observation.where('person_id = ? AND concept_id = ? AND value_coded = ? AND DATE(obs_datetime) = ?',
+                        @patient.patient_id,
+                        patient_type.concept_id,
+                        referral.concept_id,
+                        @date).blank?
     end
 
     def patient_transferred_in_today?
       patient_type = concept('Type of patient')
       referral = concept 'Referral'
-      Observation.where(
-        'person_id = ? AND concept_id = ? AND value_coded = ? AND DATE(obs_datetime) = DATE(?)',
-        @patient.patient_id, patient_type.concept_id, referral.concept_id, @date
-      ).order(obs_datetime: :desc).first.present?
+      day_start, day_end = TimeUtils.day_bounds(Time.now)
+      Observation.where('person_id = ? AND concept_id = ? AND value_coded = ? AND DATE(obs_datetime) = ?',
+                        @patient.patient_id,
+                        patient_type.concept_id,
+                        referral.concept_id,
+                        @date).exists?
     end
 
     def patient_should_proceed_for_treatment?
-      (patient_diagnosed? && patient_examined? && patient_should_get_treated? && patient_has_valid_test_results?) || patient_transferred_in_today?
+      (patient_diagnosed? && patient_examined? && patient_should_get_treated? && patient_has_valid_test_results?) || patient_transferred_in_today? || has_previous_treatment?
+    end
+
+    def has_previous_treatment?
+      encounter = encounter_type('Treatment')
+      Encounter.where('patient_id = ? AND program_id = ? AND encounter_type = ? AND DATE(encounter_datetime) < ?',
+                      @patient.patient_id,
+                      @program.program_id,
+                      encounter.encounter_type_id,
+                      @date).exists?
     end
   end
 end
