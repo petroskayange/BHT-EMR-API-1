@@ -7,15 +7,19 @@ class Api::V1::ProgramReportsController < ApplicationController
     name = params[:name]
     type, start_date, end_date = parse_report_name(name)
     type ||= params[:id]
-    start_date ||= params.require(%i[start_date])[0]
-    end_date ||= (params[:end_date] || Date.today.strftime('%Y-%m-%d'))
+    start_date = start_date&.to_date || params.require(:start_date).to_date
+    end_date = end_date&.to_date || Date.today
 
-    report = service.generate_report(
-      name: name,
-      type: type,
-      start_date: Date.strptime(start_date.to_s),
-      end_date: Date.strptime(end_date.to_s)
-    )
+    extra_params = {}
+    params.permit!.each do |key, value|
+      # Keep only the extra arguments passed by the client
+      next if %w[type name start_date end_date action controller program_id id].include?(key)
+
+      extra_params[key.to_sym] = value
+    end
+
+    report = service.generate_report(name: name, type: type, start_date: start_date.to_date,
+                                     end_date: end_date.to_date, **extra_params)
 
     if report
       render json: report
@@ -50,6 +54,7 @@ class Api::V1::ProgramReportsController < ApplicationController
       nil, "#{year}-01-01", "#{year}-04-01", "#{year}-07-01", "#{year}-10-01",
       "#{year + 1}-01-01"
     ][index]
-    Date.strptime(sdate)
+
+    sdate.to_date
   end
 end

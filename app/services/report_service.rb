@@ -4,6 +4,7 @@ class ReportService
   ENGINES = {
     'HIV PROGRAM' => ARTService::ReportEngine,
     'ANC PROGRAM' => ANCService::ReportEngine,
+    'HTC PROGRAM' => HTSService::ReportEngine,
     'OPD PROGRAM' => OPDService::ReportEngine
   }.freeze
   LOGGER = Rails.logger
@@ -15,9 +16,9 @@ class ReportService
   end
 
   def generate_report(name:, type:, start_date: Date.strptime('1900-01-01'),
-                      end_date: Date.today, kwargs: {})
+                      end_date: Date.today, **kwargs)
     LOGGER.debug "Retrieving report, #{name}, for period #{start_date} to #{end_date}"
-    report = find_report(type, name, start_date, end_date)
+    report = find_report(type, name, start_date, end_date, kwargs)
 
     if report && @overwrite_mode
       report.void('Over-written by new report')
@@ -106,7 +107,7 @@ class ReportService
   def anc_cohort_disaggregated(date, start_date)
     engine(@program).cohort_disaggregated(date, start_date)
   end
-  
+
   def ipt_coverage(start_date, end_date)
     engine(@program).ipt_coverage(start_date, end_date)
   end
@@ -136,9 +137,10 @@ class ReportService
     end
   end
 
-  def find_report(type, name, start_date, end_date)
-    engine(@program).find_report(type: type, name: name,
-                                 start_date: start_date, end_date: end_date)
+  def find_report(type, name, start_date, end_date, kwargs)
+    kwargs = kwargs.transform_keys(&:to_sym)
+    engine(@program).find_report(type: type, name: name, start_date: start_date,
+                                 end_date: end_date, **kwargs)
   end
 
   def queue_report(start_date:, end_date:, lock:, **kwargs)
