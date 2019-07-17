@@ -24,7 +24,7 @@ DATABASE=`ruby -ryaml -e "puts YAML::load_file('config/database.yml')['${ENV}'][
 ANCDATABASE=`ruby -ryaml -e "puts YAML::load_file('config/database.yml')['anc_database']['database']"`
 HOST=`ruby -ryaml -e "puts YAML::load_file('config/database.yml')['${ENV}']['host']"`
 
-echo "=================merging patients in ANC only into ART database"
+echo "=================merging patients with same identifier but different gender"
 
 start_now=$(date +”%T”)
 echo "the script is starting at: " start_now 
