@@ -69,6 +69,8 @@ Rails.application.routes.draw do
       resources :person_attributes
 
       resources :registers
+      resources :register_location_types, only: %i[index]
+      resources :register_service_delivery_points, only: %i[index]
 
       resources :concepts, only: %i[index show]
 
