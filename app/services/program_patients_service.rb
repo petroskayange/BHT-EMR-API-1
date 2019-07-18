@@ -1,9 +1,10 @@
 class ProgramPatientsService
   ENGINES = {
-    'HIV PROGRAM' => ARTService::PatientsEngine,
-    'TB PROGRAM' => TBService::PatientsEngine,
     'ANC PROGRAM' => ANCService::PatientsEngine,
-    'OPD PROGRAM' => OPDService::PatientsEngine
+    'HIV PROGRAM' => ARTService::PatientsEngine,
+    'HTC PROGRAM' => HTSService::PatientsEngine,
+    'OPD PROGRAM' => OPDService::PatientsEngine,
+    'TB PROGRAM' => TBService::PatientsEngine
   }.freeze
 
   def initialize(program:)
@@ -22,5 +23,4 @@ class ProgramPatientsService
     Rails.logger.debug "Engine responds to #{method}? #{@engine.respond_to?(method)}"
     @engine.respond_to?(method)
   end
-
 end
