@@ -8,16 +8,16 @@ RSpec.describe EncounterService do
   let(:type) { EncounterType.first }
   let(:encounter_datetime) { Time.now }
   let(:provider) { nil }
-  let(:program) { Program.first}
+  let(:program) { Program.first }
 
   describe :create do
     it "creates new encounter if a matching encounter doesn't already exist" do
       expect(Encounter.all).to be_empty
-      
+
       created = encounter_service.create(patient: patient, type: type,
                                          encounter_datetime: encounter_datetime,
                                          provider: provider, program: program)
-      
+
       retrieved = Encounter.all
       expect(retrieved.size).to be(1)
       expect(retrieved[0]).to eq(created)
@@ -45,8 +45,8 @@ RSpec.describe EncounterService do
 
     it 'will autogenerate encounter_datetime if not provided' do
       created = encounter_service.create(patient: patient, type: type,
-                               encounter_datetime: nil,
-                               provider: provider, program: program)
+                                         encounter_datetime: nil,
+                                         provider: provider, program: program)
 
       encounters = Encounter.all
       expect(encounters.size).to eq(1)
@@ -54,18 +54,16 @@ RSpec.describe EncounterService do
     end
 
     it 'will Update From one Encounter to another' do
-
       created_encounter = encounter_service.create(patient: patient, type: type,
-                               encounter_datetime: nil,
-                               provider: provider, program: fetch_program('HIV PROGRAM'))
-      updated = encounter_service.update(created_encounter, patient: patient,type: type,
-                                encounter_datetime: nil,
-                                provider: provider, program: fetch_program('TB PROGRAM'))
+                                                   encounter_datetime: nil,
+                                                   provider: provider, program: fetch_program('HIV PROGRAM'))
+      updated = encounter_service.update(created_encounter, patient: patient, type: type,
+                                                            encounter_datetime: nil,
+                                                            provider: provider, program: fetch_program('TB PROGRAM'))
 
       program = Program.find(updated.program_id)
       expect(program.name).to eq(fetch_program('TB PROGRAM').name)
     end
-
   end
 
   describe :update do
@@ -89,9 +87,9 @@ RSpec.describe EncounterService do
   describe :void do
     it 'deletes encounter' do
       created = encounter_service.create(patient: patient, type: type,
-                               encounter_datetime: encounter_datetime,
-                               provider: provider, program: program)
-    
+                                         encounter_datetime: encounter_datetime,
+                                         provider: provider, program: program)
+
       delete_encounter = -> { encounter_service.void(Encounter.first, 'No reason') }
 
       encounter_count = -> { Encounter.count }
@@ -108,13 +106,67 @@ RSpec.describe EncounterService do
 
       retrieved = EncounterService.recent_encounter(encounter_type_name: created.type.name,
                                                     patient_id: created.patient_id)
-      
+
       expect(retrieved).to eq(created)
+    end
+  end
+
+  describe :bind_encounter_to_register do
+    it 'binds an encounter to an open register' do
+      register = create :register
+      encounter = create :encounter
+
+      encounter_service.bind_encounter_to_register(encounter, register)
+
+      expect(encounter.registers.first).to eq(register)
+      expect(register.encounters.first).to eq(encounter)
+    end
+
+    it 'does not bind an encounter to a closed register' do
+      encounter = create :encounter
+      register = create :register
+
+      register.update(closed: true)
+
+      expect(-> { encounter_service.bind_encounter_to_register(encounter, register) })
+        .to raise_exception(InvalidParameterError, /Can't add encounter to closed register/i)
+    end
+  end
+
+  describe :unbind_encounter_from_register do
+    it 'unbinds an encounter from the register it is bound to' do
+      encounter = create :encounter
+      register = create :register
+
+      encounter_service.bind_encounter_to_register(encounter, register)
+      encounter_service.unbind_encounter_from_register(encounter)
+
+      expect(encounter.registers).to be_empty
+      expect(register.encounters).to be_empty
+    end
+  end
+
+  describe :find_encounter_register do
+    it "returns an encounter's bound register" do
+      encounter = create :encounter
+      register = create :register
+
+      encounter_service.bind_encounter_to_register(encounter, register)
+      bound_register = encounter_service.find_encounter_register(encounter.id)
+
+      expect(bound_register).to eq(register)
+    end
+
+    it 'raise NotFoundError if encounter has no bound register' do
+      encounter = create :encounter
+
+      expect(-> { encounter_service.find_encounter_register(encounter.id) })
+        .to raise_exception(NotFoundError, /Encounter .* is not bound to any register/)
     end
   end
 end
 
-#Helpers
+# Helpers
 
 def fetch_program(name)
   program = Program.find_by(name: name)

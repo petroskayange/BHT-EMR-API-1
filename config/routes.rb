@@ -68,6 +68,8 @@ Rails.application.routes.draw do
 
       resources :person_attributes
 
+      resources :registers
+
       resources :concepts, only: %i[index show]
 
       # Locations
@@ -105,6 +107,8 @@ Rails.application.routes.draw do
           redirect_url = "/api/v1/observations?encounter_id=#{params[:encounter_id]}"
           paginate_url redirect_url, request.params
         end)
+
+        resource :encounter_registers, path: :register, only: %i[create show destroy]
       end
 
       resources :observations
@@ -146,6 +150,8 @@ Rails.application.routes.draw do
         resources :lab_test_types, path: 'lab_tests/types'
         get '/lab_tests/panels' => 'lab_test_types#panels' # TODO: Move this into own controller
         resources :lab_test_orders, path: 'lab_tests/orders'
+        post '/lab_tests/orders/external' => 'lab_test_orders#create_external_order'
+        post '/lab_tests/orders/lims-old' => 'lab_test_orders#create_legacy_order' # Temporary path for creating legacy LIMS orders
         resources :lab_test_results, path: 'lab_tests/results'
         post '/lab_tests/order_and_results' => 'lab_test_results#create_order_and_results'
         get '/lab_tests/locations' => 'lab_test_orders#locations'
@@ -160,7 +166,10 @@ Rails.application.routes.draw do
 
       namespace :pharmacy do
         resources :batches
-        resources :items
+        resources :items do
+          post '/reallocate', to: 'items#reallocate'
+          post '/dispose', to: 'items#dispose'
+        end
         get 'earliest_expiring_item', to: 'items#earliest_expiring'
       end
 
@@ -211,6 +220,7 @@ Rails.application.routes.draw do
       get '/search/patients' => 'patients#search_by_name_and_gender'
       get '/search/properties' => 'properties#search'
       get '/search/landmarks' => 'landmarks#search'
+      get '/search/identifiers/duplicates' => 'patient_identifiers#duplicates'
 
       get '/dde/patients/find_by_npid', to: 'dde#find_patients_by_npid'
       get '/dde/patients/find_by_name_and_gender', to: 'dde#find_patients_by_name_and_gender'
@@ -270,4 +280,6 @@ Rails.application.routes.draw do
   get '/api/v1/cohort_report_drill_down' => 'api/v1/reports#cohort_report_drill_down'
   post '/api/v1/swap_active_number' => 'api/v1/patient_identifiers#swap_active_number'
   get '/api/v1/regimen_switch' => 'api/v1/reports#regimen_switch'
+  get '/api/v1/last_drugs_pill_count' => 'api/v1/patients#last_drugs_pill_count'
+  get '/api/v1/regimen_report' => 'api/v1/reports#regimen_report'
 end
