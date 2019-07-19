@@ -1,10 +1,11 @@
 class ProgramPatientsService
+
   ENGINES = {
-    'HIV PROGRAM' => ARTService::PatientsEngine,
-    'TB PROGRAM' => TBService::PatientsEngine,
     'ANC PROGRAM' => ANCService::PatientsEngine,
+    'HIV PROGRAM' => ARTService::PatientsEngine,
+    'HTC PROGRAM' => HTSService::PatientsEngine,
     'OPD PROGRAM' => OPDService::PatientsEngine,
-    'HTS PROGRAM' => HTSService::PatientsEngine
+    'TB PROGRAM' => TBService::PatientsEngine
   }.freeze
 
   attr_reader :program
