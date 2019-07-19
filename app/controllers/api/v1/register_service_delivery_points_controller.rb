@@ -2,6 +2,6 @@
 
 class Api::V1::RegisterServiceDeliveryPointsController < ApplicationController
   def index
-    render json: RegisterLocationType.all
+    render json: RegisterServiceDeliveryPoint.all
   end
 end
