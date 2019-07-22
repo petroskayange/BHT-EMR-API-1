@@ -9,8 +9,8 @@ class HTSService::Reports::Patients
                    .where('encounter_datetime BETWEEN ? AND ?', start_date, end_date)\
                    .group('patient_id')
 
-    page = kwargs[:page] || 0
-    page_size = kwargs[:page_size] || ALL_PATIENTS_REPORT_PAGE_SIZE
+    page = kwargs[:page]&.to_i || 0
+    page_size = kwargs[:page_size]&.to_i || ALL_PATIENTS_REPORT_PAGE_SIZE
 
     {
       patients: paginate_query(query, page: page, page_size: page_size),
