@@ -14,7 +14,9 @@ class HTSService::Reports::Patients
 
     {
       patients: paginate_query(query, page: page, page_size: page_size),
-      count: query.count.size
+      page: page,
+      page_size: page_size,
+      total_pages: page_size.zero? ? 0 : query.count.size / page_size
       # NOTE: query.count returns encounter counts for each patient individually.
       #       This could be somewhat inefficient though, optimise it.
     }
