@@ -3,7 +3,8 @@
 module HTSService
   class ReportEngine
     REPORTS = {
-      'user_stats' => HTSService::Reports::UserStats
+      'user_stats' => HTSService::Reports::UserStats,
+      'patients' => HTSService::Reports::Patients
     }.freeze
 
     def find_report(type:, name:, **kwargs)
