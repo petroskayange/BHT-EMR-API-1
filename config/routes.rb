@@ -14,6 +14,9 @@ Rails.application.routes.draw do
       # Routes down here ... Best we move everything above into own modules
 
       resources :appointments
+
+      get '/codes/:program_id/:code_type', to: 'codes#index'
+
       resources :dispensations, only: %i[index create destroy]
       resources :users do
         post '/activate', to: 'users#activate'
