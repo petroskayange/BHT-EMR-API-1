@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'luhn'
+
 class PatientIdentifierType < RetirableRecord
   self.table_name = :patient_identifier_type
   self.primary_key = :patient_identifier_type_id
@@ -40,9 +42,7 @@ class PatientIdentifierType < RetirableRecord
     puts "Last id number: #{last_id_number(id_prefix)}"
     next_number = (last_id_number(id_prefix)[id_prefix.size..-2].to_i + 1).to_s.rjust(7, '0')
     new_national_id_no_check_digit = "#{id_prefix}#{next_number}"
-    check_digit = PatientIdentifier.calculate_checkdigit(
-      new_national_id_no_check_digit[1..-1]
-    )
+    check_digit = Luhn.checksum(new_national_id_no_check_digit[1..-1])
     "#{new_national_id_no_check_digit}#{check_digit}"
   end
 
