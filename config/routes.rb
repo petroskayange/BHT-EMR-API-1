@@ -15,8 +15,6 @@ Rails.application.routes.draw do
 
       resources :appointments
 
-      get '/codes/:program_id/:code_type', to: 'codes#index'
-
       resources :dispensations, only: %i[index create destroy]
       resources :users do
         post '/activate', to: 'users#activate'
@@ -121,8 +119,12 @@ Rails.application.routes.draw do
       resources :programs do
         resources :program_workflows, path: :workflows
         resources :program_regimens, path: :regimens
+
+        post '/codes/:code_type', to: 'codes#create'
+
         get 'booked_appointments' => 'program_appointments#booked_appointments'
         get 'scheduled_appointments' => 'program_appointments#scheduled_appointments'
+
         get 'pellets_regimen' => 'program_regimens#pellets_regimen'
         get 'next_available_arv_number' => 'program_patients#find_next_available_arv_number'
         get 'lookup_arv_number/:arv_number' => 'program_patients#lookup_arv_number'
