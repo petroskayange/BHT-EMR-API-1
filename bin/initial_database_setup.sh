@@ -73,14 +73,18 @@ mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/sql/revi
 
 bundle exec rake db:migrate
 
-# The following must run after all migrations have been run
-
-mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/sql/add_regimens_13_and_above.sql
-mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/sql/add_cpt_and_inh_to_regimen_ingredients.sql
-
 # For applications with long list of encounters e.g. ANC
 mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/sql/alter_user_property_table.sql
 
+# The following must run after all migrations have been run
+mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/sql/add_regimens_13_and_above.sql
+mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/sql/add_cpt_and_inh_to_regimen_ingredients.sql
+mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/sql/alternative_drug_names.sql
+mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/sql/fix_weight_and_height_obs.sql
+mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/sql/index_obs_value_datetime.sql
+mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/sql/moh_regimens_v2018.sql
+mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/sql/bart2_views_schema_additions.sql
+mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/sql/add_hts_service_extensions.sql
 
 echo "After completing database setup, you are advised to run the following:"
 echo "rake test"
