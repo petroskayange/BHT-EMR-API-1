@@ -166,7 +166,7 @@ Rails.application.routes.draw do
         get '/labs/:resource', to: 'lab#dispatch_request'
         resources :program_reports, path: 'reports'
 
-
+        post '/validations/username', to: 'validations#validate_username'
       end
 
       namespace :pharmacy do
