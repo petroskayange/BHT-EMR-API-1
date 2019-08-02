@@ -6,8 +6,9 @@ class Api::V1::ObservationSearchController < ApplicationController
   def find_sibling_observations
     search_params = params.permit(%i[concept_id value_text value_datetime value_numeric value_drug])
     observations = search_service.find_sibling_observations(search_params)
+    observations = observations.empty? ? [] : paginate(observations)
 
-    render json: paginate(observations)
+    render json: observations
   end
 
   private
