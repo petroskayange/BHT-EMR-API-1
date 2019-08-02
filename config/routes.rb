@@ -230,6 +230,7 @@ Rails.application.routes.draw do
       get '/search/properties' => 'properties#search'
       get '/search/landmarks' => 'landmarks#search'
       get '/search/identifiers/duplicates' => 'patient_identifiers#duplicates'
+      get '/search/observations/siblings' => 'observation_search#find_sibling_observations'
 
       get '/dde/patients/find_by_npid', to: 'dde#find_patients_by_npid'
       get '/dde/patients/find_by_name_and_gender', to: 'dde#find_patients_by_name_and_gender'
