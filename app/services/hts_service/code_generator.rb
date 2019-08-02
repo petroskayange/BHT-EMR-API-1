@@ -7,6 +7,7 @@ module HTSService::CodeGenerator
   class << self
     ENTRY_CODE_PREFIX = 'ec'
     ENTRY_CODE_MUTEX = Monitor.new
+    HTS_ENTRY_CODE_CONCEPT_ID = ConceptName.find_by_name('HTS Entry Code').concept_id
 
     def generate(code_type, args)
       generator = method(code_type.to_sym)
@@ -22,6 +23,9 @@ module HTSService::CodeGenerator
     def entry_code(encounter_id:, prefix: ENTRY_CODE_PREFIX)
       ENTRY_CODE_MUTEX.synchronize do
         ActiveRecord::Base.connection.transaction do
+          code = find_encounter_entry_code(encounter_id)
+          return code if code
+
           code = generate_entry_code(prefix)
           save_entry_code(code, encounter_id)
           code
@@ -52,10 +56,17 @@ module HTSService::CodeGenerator
       current_code
     end
 
+    def find_encounter_entry_code(encounter_id)
+      Observation.where(encounter_id: encounter_id, concept_id: HTS_ENTRY_CODE_CONCEPT_ID)\
+                 .where.not(value_text: nil)\
+                 .first\
+                 &.value_text
+    end
+
     def save_entry_code(code, encounter_id)
       encounter = Encounter.find(encounter_id)
       Observation.create(encounter_id: encounter_id,
-                         concept_id: ConceptName.find_by_name('HTS Entry Code').id,
+                         concept_id: HTS_ENTRY_CODE_CONCEPT_ID,
                          person_id: encounter.patient_id,
                          value_text: code,
                          obs_datetime: Time.now)
