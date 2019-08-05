@@ -65,7 +65,8 @@ class HTSService::Reports::UserStats
       <<~SQL
         SELECT encounter.creator AS user_id, users.username AS username,
                person_name.given_name AS given_name, person_name.family_name AS family_name,
-               encounter.patient_id AS patient_id, DATE(encounter.encounter_datetime) AS visit_date
+               encounter.patient_id AS patient_id, DATE(encounter.encounter_datetime) AS visit_date,
+               encounter.location_id AS location_id
         FROM encounter INNER JOIN users ON encounter.creator = users.user_id
                        INNER JOIN person_name ON encounter.creator = person_name.person_id
         WHERE #{start_date} <= encounter.encounter_datetime
@@ -84,7 +85,7 @@ class HTSService::Reports::UserStats
       daily_user_stats[key] ||= {
         date: stats['visit_date'], username: stats['username'],
         given_name: stats['given_name'], family_name: stats['family_name'],
-        total_visits: 0, visits: []
+        total_visits: 0, visits: [], location_id: stats['location_id']
       }
 
       daily_user_stats[key][:total_visits] += 1
