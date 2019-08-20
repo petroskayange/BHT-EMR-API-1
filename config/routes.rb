@@ -157,9 +157,8 @@ Rails.application.routes.draw do
         get '/lab_tests/orders_without_results' => 'lab_test_orders#orders_without_results'
         get '/lab_tests/measures' => 'lab_test_types#measures'
         get '/labs/:resource', to: 'lab#dispatch_request'
-        resources :program_reports, path: 'reports'
 
-
+        match '/reports/:id' => 'program_reports#show', via: %i[get post]
       end
 
       namespace :pharmacy do

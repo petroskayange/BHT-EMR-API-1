@@ -6,6 +6,7 @@ class ReportService
     'ANC PROGRAM' => ANCService::ReportEngine,
     'OPD PROGRAM' => OPDService::ReportEngine
   }.freeze
+
   LOGGER = Rails.logger
 
   def initialize(program_id:, immediate_mode: false, overwrite_mode: false)
@@ -15,9 +16,9 @@ class ReportService
   end
 
   def generate_report(name:, type:, start_date: Date.strptime('1900-01-01'),
-                      end_date: Date.today, kwargs: {})
+                      end_date: Date.today, extras: {})
     LOGGER.debug "Retrieving report, #{name}, for period #{start_date} to #{end_date}"
-    report = find_report(type, name, start_date, end_date)
+    report = find_report(type, name, start_date, end_date, extras)
 
     if report && @overwrite_mode
       report.void('Over-written by new report')
@@ -31,7 +32,7 @@ class ReportService
 
     LOGGER.debug("#{name} report not found... Queueing one...")
     queue_report(name: name, type: type, start_date: start_date,
-                 end_date: end_date, lock: lock, **kwargs)
+                 end_date: end_date, lock: lock, extras: extras)
     nil
   end
 
@@ -106,7 +107,7 @@ class ReportService
   def anc_cohort_disaggregated(date, start_date)
     engine(@program).cohort_disaggregated(date, start_date)
   end
-  
+
   def ipt_coverage(start_date, end_date)
     engine(@program).ipt_coverage(start_date, end_date)
   end
@@ -136,9 +137,15 @@ class ReportService
     end
   end
 
-  def find_report(type, name, start_date, end_date)
-    engine(@program).find_report(type: type, name: name,
-                                 start_date: start_date, end_date: end_date)
+  def find_report(type, name, start_date, end_date, extras)
+    if extras.empty?
+      engine(@program).find_report(type: type, name: name, start_date: start_date,
+                                   end_date: end_date, extras: extras)
+    else
+      # Retain ANC reports compatibility
+      engine(@program).find_report(type: type, name: name, start_date: start_date,
+                                   end_date: end_date)
+    end
   end
 
   def queue_report(start_date:, end_date:, lock:, **kwargs)
@@ -146,6 +153,7 @@ class ReportService
     kwargs[:end_date] = end_date.to_s
     kwargs[:user] = User.current.user_id
     kwargs[:lock] = lock.to_s
+    kwargs.delete(:extras) if kwargs[:extras].empty? # ANC and OPD don't expect this.
 
     LOGGER.debug("Queueing #{kwargs['type']} report: #{kwargs}")
     if @immediate_mode

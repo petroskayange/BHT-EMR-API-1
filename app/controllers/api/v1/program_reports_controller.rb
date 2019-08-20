@@ -7,14 +7,13 @@ class Api::V1::ProgramReportsController < ApplicationController
     name = params[:name]
     type, start_date, end_date = parse_report_name(name)
     type ||= params[:id]
-    start_date ||= params.require(%i[start_date])[0]
+    start_date ||= params.require(:start_date)
     end_date ||= (params[:end_date] || Date.today.strftime('%Y-%m-%d'))
+    extras = params[:extras] || {}
 
     report = service.generate_report(
-      name: name,
-      type: type,
-      start_date: Date.strptime(start_date.to_s),
-      end_date: Date.strptime(end_date.to_s)
+      name: name, type: type, start_date: Date.strptime(start_date.to_s),
+      end_date: Date.strptime(end_date.to_s), extras: extras
     )
 
     if report

@@ -4,12 +4,12 @@ class ARTService::Reports::Cohort
   include ModelUtils
 
   # Methods to be exported as sub reports.
-  SUB_REPORTS = Set.new(%i[cummulative_total_registered
+  SUB_REPORTS = Set.new(%i[total_registered_patients
                            patients_reason_for_starting_art
                            patients_outcome
                            patients_with_side_effects
-                           current_episode_of_tb
-                           tb_within_last_2_years]).freeze
+                           patients_currently_with_tb
+                           patients_with_tb_in_last_2_years]).freeze
 
   attr_reader :name, :start_date, :end_date
 
@@ -21,7 +21,13 @@ class ARTService::Reports::Cohort
   end
 
   def find_report(**kwargs)
-    @sub_report.call(**kwargs)
+    extras = kwargs[:extras]
+
+    if extras.include?(:patient_ids)
+      @sub_report.call(extras[:patient_ids])
+    else
+      @sub_report.call
+    end
   end
 
   private
@@ -38,7 +44,7 @@ class ARTService::Reports::Cohort
     method(name)
   end
 
-  def cummulative_total_registered(*)
+  def total_registered_patients(*)
     ActiveRecord::Base.connection.select_all(
       <<~SQL
         SELECT
@@ -125,7 +131,7 @@ class ARTService::Reports::Cohort
                                 'PULMONARY TUBERCULOSIS',
                                 'PULMONARY TUBERCULOSIS (CURRENT)'].freeze
 
-  def current_episode_of_tb(patient_ids)
+  def patients_currently_with_tb(patient_ids)
     patient_ids = quote_array(patient_ids)
     eptb_concept_ids = concept_ids_from_names(CURRENT_EPTB_CONCEPT_NAMES)
 
@@ -135,7 +141,7 @@ class ARTService::Reports::Cohort
   RETRO_EPTB_CONCEPT_NAMES = ['Pulmonary tuberculosis within the last 2 years',
                               'Ptb within the past two years'].freeze
 
-  def tb_within_last_2_years(patient_ids)
+  def patients_with_tb_in_last_2_years(patient_ids)
     patient_ids = quote_array(patient_ids)
     retro_eptb_concept_ids = concept_ids_from_names(RETRO_EPTB_CONCEPT_NAMES)
 
