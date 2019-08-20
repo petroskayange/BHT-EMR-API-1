@@ -1,255 +1,191 @@
 # frozen_string_literal: true
 
-require 'set'
+class ARTService::Reports::Cohort
+  include ModelUtils
 
-module ARTService
-  module Reports
-    # Cohort report builder class.
-    #
-    # This class only provides one public method (start_build_report) besides
-    # the constructor. This method must be called to build report and save
-    # it to database.
-    class Cohort
-      include ModelUtils
+  # Methods to be exported as sub reports.
+  SUB_REPORTS = Set.new(%i[cummulative_total_registered
+                           patients_reason_for_starting_art
+                           patients_outcome
+                           patients_with_side_effects
+                           current_episode_of_tb
+                           tb_within_last_2_years]).freeze
 
-      def initialize(name:, type:, start_date:, end_date:)
-        @name = name
-        @start_date = start_date
-        @end_date = end_date
-        @type = type
-        @cohort_builder = CohortBuilder.new
-        @cohort_struct = CohortStruct.new
-      end
+  attr_reader :name, :start_date, :end_date
 
-      def build_report
-        @cohort_builder.build(@cohort_struct, @start_date, @end_date)
-        save_report
-      end
-
-      def find_report
-        Report.where(type: @type, name: @name,
-                     start_date: @start_date, end_date: @end_date)\
-              .order(date_created: :desc)\
-              .first
-      end
-
-      def defaulter_list(pepfar)
-        data = ActiveRecord::Base.connection.select_all <<EOF
-        SELECT o.patient_id, min(start_date) start_date FROM orders o                      
-        INNER JOIN drug_order od ON od.order_id = o.order_id AND o.voided = 0
-        INNER JOIN drug d ON d.drug_id = od.drug_inventory_id
-        INNER JOIN concept_set s ON s.concept_id = d.concept_id
-        INNER JOIN patient_program pp ON pp.patient_id = o.patient_id
-        WHERE s.concept_set = 1085 AND od.quantity > 0
-        AND pp.program_id = 1
-        GROUP BY o.patient_id;
-EOF
-
-        patients = []
-
-        (data || []).each do |r|
-          patient_id = r['patient_id'].to_i
-
-          if pepfar == false
-            record = ActiveRecord::Base.connection.select_one <<EOF
-            SELECT patient_outcome(#{patient_id}, DATE('#{@end_date}')) AS outcome,
-            current_defaulter_date(#{patient_id}, TIMESTAMP('#{@end_date.to_date.strftime('%Y-%m-%d 23:59:59')}')) AS defaulter_date;
-EOF
-
-          else
-            record = ActiveRecord::Base.connection.select_one <<EOF
-            SELECT current_pepfar_defaulter(#{patient_id}, TIMESTAMP('#{@end_date}')) AS outcome,
-            current_pepfar_defaulter_date(#{patient_id}, TIMESTAMP('#{@end_date.to_date.strftime('%Y-%m-%d 23:59:59')}')) AS defaulter_date;
-EOF
-
-            record['outcome'] = (record['outcome'].to_i == 1 ? 'Defaulted' : nil)
-          end
-
-          if record['outcome'] == 'Defaulted'
-            defaulter_date = record['defaulter_date'].to_date rescue nil
-            next if defaulter_date.blank?
-
-            date_within = (defaulter_date >= @start_date.to_date && defaulter_date <= @end_date.to_date)
-            next unless date_within
-
-            person = ActiveRecord::Base.connection.select_one <<EOF
-            SELECT i.identifier arv_number, p.birthdate,
-              p.gender, n.given_name, n.family_name, p.person_id patient_id,
-              patient_reason_for_starting_art_text(p.person_id) art_reason,
-              a.value cell_number,
-              s.state_province district, s.county_district ta,
-              s.city_village village
-            FROM person p
-            LEFT JOIN patient_identifier i ON i.patient_id = p.person_id
-            AND i.voided = 0 AND i.identifier_type = 4 
-            INNER JOIN person_name n ON n.person_id = p.person_id AND n.voided = 0
-            LEFT JOIN person_attribute a ON a.person_id = p.person_id
-            AND a.voided = 0 AND a.person_attribute_type_id = 12
-            LEFT JOIN person_address s ON s.person_id = p.person_id  
-            WHERE p.person_id = #{patient_id} GROUP BY p.person_id
-            ORDER BY p.person_id, p.date_created;
-EOF
-
-            next if person.blank?
-
-            patients << {
-              person_id: patient_id,
-              given_name: person['given_name'],
-              family_name: person['family_name'],
-              birthdate: person['birthdate'],
-              gender: person['gender'],
-              arv_number: person['arv_number'],
-              outcome: 'Defaulted',
-              defaulter_date: record['defaulter_date'],
-              art_reason: record['art_reason'],
-              cell_number: person['cell_number'],
-              district: person['district'],
-              ta: person['ta'],
-              village: person['village'],
-              arv_number: person['arv_number']
-            }
-          end
-        end
-
-        return patients
-      end
-
-      def cohort_report_drill_down(id)
-        people = []
-
-        patients = ActiveRecord::Base.connection.select_all <<EOF
-        SELECT i.identifier arv_number, p.birthdate,
-          p.gender, n.given_name, n.family_name, p.person_id patient_id
-        FROM person p
-        INNER JOIN cohort_drill_down c ON c.patient_id = p.person_id
-        LEFT JOIN patient_identifier i ON i.patient_id = p.person_id
-        AND i.voided = 0 AND i.identifier_type = 4 
-        LEFT JOIN person_name n ON n.person_id = p.person_id AND n.voided = 0
-        WHERE c.reporting_report_design_resource_id = #{id} 
-        GROUP BY p.person_id ORDER BY p.person_id, p.date_created;
-EOF
-
-        return {} if patients.blank?
-        
-        patients.select do |person|
-          people << {
-            person_id: person['patient_id'],
-            given_name: person['given_name'],
-            family_name: person['family_name'],
-            birthdate: person['birthdate'],
-            gender: person['gender'],
-            arv_number: person['arv_number']
-          }
-        end
-
-        return people
-      end
-
-      private
-
-      LOGGER = Rails.logger
-
-      # Writes the report to database
-      def save_report
-        report = Report.create(name: @name, start_date: @start_date,
-                               end_date: @end_date, type: @type,
-                               creator: User.current.id,
-                               renderer_type: 'PDF')
-
-        values = save_report_values(report)
-
-        { report: report, values: values }
-      end
-
-      # Writes the report values to database
-      def save_report_values(report)
-        @cohort_struct.values.collect do |value|
-          puts "Saving #{value.name} = #{value_contents_to_json(value.contents)}"
-          report_value = ReportValue.create(report: report,
-                                            name: value.name,
-                                            indicator_name: value.indicator_name,
-                                            indicator_short_name: value.indicator_short_name,
-                                            creator: User.current.id,
-                                            description: value.description,
-                                            contents: value_contents_to_json(value.contents))
-
-          report_value_saved = report_value.errors.empty?
-          unless report_value_saved
-            raise "Failed to save report value: #{report_value.errors.as_json}"
-          else
-            save_patients(report_value, value_contents_to_json(value).contents)
-          end
-
-          report_value
-        end
-      end
-
-      def value_contents_to_json(value_contents)
-        if value_contents.respond_to?(:each) && !value_contents.is_a?(String)
-          if value_contents.respond_to?(:length)
-            value_contents.length
-          elsif value_contents.respond_to?(:size)
-            value_contents.size
-          else
-            value_contents
-          end
-        else
-          value_contents
-        end
-      end
-
-      def save_patients(r, values)
-        return if values.blank?
-        patient_ids = []
-
-        begin
-          
-          (values.rows || []).each do |v|  
-            patient_ids << v[0]
-          end  
-        
-        rescue
-          
-          begin 
-            if values.first.include?(:patient_id)
-              values.select do |obj|
-                patient_ids << obj[:patient_id]
-              end
-            end
-          rescue
-            begin
-              values.select do |patient_id|
-                patient_ids << patient_id
-              end
-            rescue
-              puts "#{r.name} +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #{values.inspect}"
-              return
-            end
-          end
-
-        end
-   
-        sql_insert_statement = nil 
-        patient_ids.select do |patient_id|
-          if sql_insert_statement.blank?
-            sql_insert_statement = "(#{r.id}, #{patient_id})"
-          else
-            sql_insert_statement += ",(#{r.id}, #{patient_id})"
-          end
-        end
-        
-        unless sql_insert_statement.blank?
-          ActiveRecord::Base.connection.execute <<EOF
-          INSERT INTO cohort_drill_down (reporting_report_design_resource_id, patient_id)
-          VALUES #{sql_insert_statement};
-EOF
-
-        end
-
-      end
-
-    end
+  def initialize(name:, start_date:, end_date:, **_kwargs)
+    @name = name
+    @start_date = quote_atom(start_date.strftime('%Y-%m-%d 00:00:00'))
+    @end_date = quote_atom(end_date.strftime('%Y-%m-%d 23:59:59'))
+    @sub_report = load_sub_report(name)
   end
 
-      
+  def find_report(**kwargs)
+    @sub_report.call(**kwargs)
+  end
+
+  private
+
+  def load_sub_report(name)
+    name = name.to_sym
+
+    # NOTE: Ensure name has been exported as a method to prevent clients from
+    # executing methods on this object that they aren't supposed to.
+    unless SUB_REPORTS.include?(name)
+      raise InvalidParameterError, "Invalid cohort sub report: #{name}"
+    end
+
+    method(name)
+  end
+
+  def cummulative_total_registered(*)
+    ActiveRecord::Base.connection.select_all(
+      <<~SQL
+        SELECT
+          `p`.`patient_id` AS `patient_id`,
+          CAST(patient_date_enrolled(`p`.`patient_id`) AS DATE) AS `date_enrolled`,
+          date_antiretrovirals_started(`p`.`patient_id`, MIN(`s`.`start_date`)) AS `earliest_start_date`,
+          `pe`.`birthdate`,
+          `pe`.`birthdate_estimated`,
+          `person`.`death_date` AS `death_date`,
+          `pe`.`gender` AS `gender`,
+          (SELECT timestampdiff(year, `pe`.`birthdate`, MIN(`s`.`start_date`))) AS `age_at_initiation`,
+          (SELECT timestampdiff(day, `pe`.`birthdate`, MIN(`s`.`start_date`))) AS `age_in_days`
+        FROM
+          ((`patient_program` `p`
+          LEFT JOIN `person` `pe` ON ((`pe`.`person_id` = `p`.`patient_id`))
+          LEFT JOIN `patient_state` `s` ON ((`p`.`patient_program_id` = `s`.`patient_program_id`)))
+          LEFT JOIN `person` ON ((`person`.`person_id` = `p`.`patient_id`)))
+        WHERE
+          ((`p`.`voided` = 0)
+              AND (`s`.`voided` = 0)
+              AND (`p`.`program_id` = 1)
+              AND (`s`.`state` = #{on_arvs_state_id}))
+              AND (`s`.`start_date` <= #{end_date})
+              AND (DATE(`s`.`start_date`) != '0000-00-00')
+        GROUP BY `p`.`patient_id`
+        HAVING date_enrolled IS NOT NULL;
+      SQL
+    )
+  end
+
+  def patients_reason_for_starting(patient_ids)
+    patient_ids = quote_array(patient_ids)
+
+    ActiveRecord::Base.connection.select_all(
+      <<~SQL
+        SELECT patient_id, patient_reason_for_starting_art(patient_id) AS reason
+        FROM patient_program
+        WHERE program_id = #{hiv_program_id}
+          AND patient_id IN #{patient_ids}
+      SQL
+    )
+  end
+
+  def patients_outcome(patient_ids)
+    patient_ids = quote_array(patient_ids)
+
+    ActiveRecord::Base.connection.select_all(
+      <<~SQL
+        SELECT patient_id, patient_outcome(patient_id, #{end_game}) AS outcome
+        FROM patient_program
+        WHERE patient_id IN #{patient_ids} AND program_id = #{hiv_program_id}
+      SQL
+    )
+  end
+
+  def patients_with_side_effects(patient_ids)
+    patient_ids = quote_array(patient_ids)
+    malawi_art_side_effects_concept_ids = concept_ids_from_names(['Malawi ART side effects'])
+
+    ActiveRecord::Base.connection.select_all(
+      <<~SQL
+        SELECT person_id FROM obs
+        WHERE person_id IN #{patient_ids}
+              AND obs_group_id IN (SELECT obs_id FROM obs
+                                   WHERE obs_datetime = (SELECT MAX(obs_datetime) FROM obs
+                                                         WHERE person_id = person_id
+                                                               AND concept_id IN #{malawi_art_side_effects_concept_ids}
+                                                               AND obs_datetime BETWEEN #{start_date} AND #{end_date}
+                                                               AND voided = 0
+                                                         LIMIT 1)
+                                         AND person_id = person_id
+                                         AND concept_id IN #{malawi_art_side_effects_concept_ids}
+                                         AND voided = 0)
+              AND value_coded = #{yes_concept_id}
+              AND voided = 0
+        GROUP BY person_id
+      SQL
+    )
+  end
+
+  # Stage defining conditions
+
+  CURRENT_EPTB_CONCEPT_NAMES = ['EXTRAPULMONARY TUBERCULOSIS (EPTB)',
+                                'PULMONARY TUBERCULOSIS',
+                                'PULMONARY TUBERCULOSIS (CURRENT)'].freeze
+
+  def current_episode_of_tb(patient_ids)
+    patient_ids = quote_array(patient_ids)
+    eptb_concept_ids = concept_ids_from_names(CURRENT_EPTB_CONCEPT_NAMES)
+
+    query_indicator_variables(patient_ids, who_stages_criteria_concept_id, eptb_concept_ids)
+  end
+
+  RETRO_EPTB_CONCEPT_NAMES = ['Pulmonary tuberculosis within the last 2 years',
+                              'Ptb within the past two years'].freeze
+
+  def tb_within_last_2_years(patient_ids)
+    patient_ids = quote_array(patient_ids)
+    retro_eptb_concept_ids = concept_ids_from_names(RETRO_EPTB_CONCEPT_NAMES)
+
+    query_indicator_variables(patient_ids, who_stages_criteria_concept_id, retro_eptb_concept_ids)
+  end
+
+  def query_indicator_variables(patient_ids, indicator, values)
+    ActiveRecord::Base.connection.select_all(
+      <<~SQL
+        SELECT person_id FROM obs
+        WHERE person_id IN #{patient_ids}
+          AND ((concept_id IN #{values} AND value_coded = #{yes_concept_id})
+               OR (concept_id = #{indicator} AND value_coded IN #{values}))
+          AND obs_datetime = (
+            SELECT MAX(obs_datetime) FROM obs
+            WHERE person_id = person_id AND obs_datetime BETWEEN #{start_date} AND #{end_date}
+              AND (concept_id IN #{values}
+                   OR (concept_id = #{indicator} AND value_coded IN #{values}))
+          )
+        GROUP BY person_id
+      SQL
+    )
+  end
+
+  def quote_atom(atom)
+    ActiveRecord::Base.connection.quote(atom)
+  end
+
+  def quote_array(array)
+    quoted_array = array.map { |item| ActiveRecord::Base.connection.quote(item) }
+    "(#{quoted_array.join(', ')})"
+  end
+
+  def hiv_program_id
+    @hiv_program_id ||= quote_atom(Program.find_by_name('HIV Program').program_id)
+  end
+
+  def on_arvs_state_id
+    @on_arvs_state_id ||= quote_atom(ProgramWorkflowState.find_by(concept: concept('On ARVs')).id)
+  end
+
+  def who_stages_criteria_concept_id
+    @who_stages_criteria_concept_id ||= quote_atom(concept('Who stages criteria present').concept_id)
+  end
+
+  def yes_concept_id
+    @yes_concept_id ||= quote_atom(concept('No').concept_id)
+  end
+
+  def concept_ids_from_names(names)
+    quote_array(ConceptName.where(name: names).collect(&:concept_id))
+  end
 end
