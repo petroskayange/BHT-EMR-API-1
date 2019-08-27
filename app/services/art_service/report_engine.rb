@@ -34,7 +34,7 @@ module ARTService
     end
 
     def cohort_survival_analysis(quarter, age_group, regenerate)
-      cohort = REPORTS['COHORT_SURVIVAL_ANALYSIS'].new(type: 'survival_analysis', 
+      cohort = REPORTS['COHORT_SURVIVAL_ANALYSIS'].new(type: 'survival_analysis',
         name: 'survival_analysis', start_date: Date.today,
         end_date: Date.today, regenerate: regenerate)
       cohort.survival_analysis(quarter, age_group)
@@ -61,7 +61,7 @@ module ARTService
         name: 'drill_down', start_date: Date.today,
         end_date: Date.today).cohort_report_drill_down(id)
     end
-    
+
     def regimen_switch(start_date, end_date, pepfar)
       REPORTS['REGIMEN_SWITCH'].new(start_date: start_date.to_date,
         end_date: end_date.to_date).regimen_switch(pepfar)
@@ -78,7 +78,7 @@ module ARTService
       start_date = kwargs.delete(:start_date)
       end_date = kwargs.delete(:end_date)
       name = kwargs.delete(:name)
-      type  = report_type(type)
+      type = report_type(type)
 
       report_manager = REPORTS[type.name.upcase].new(
         type: type, name: name, start_date: start_date, end_date: end_date
