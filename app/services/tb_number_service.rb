@@ -1,14 +1,14 @@
 include ModelUtils
 
 class TBNumberService
-  class TbNumberAlreadyExistsException < StandardError; end
+  class DuplicateIdentifierError < StandardError; end
 
   NORMAL_TYPE = 'District TB Number'
   IPT_TYPE = 'District IPT Number'
 
   def self.assign_tb_number (patient_id, date, number = nil)
     suggested = generate_tb_number(patient_id, date, number)
-    raise TbNumberAlreadyExistsException if number && number_exists?(number: suggested)
+    raise DuplicateIdentifierError if number && number_exists?(number: suggested)
 
     PatientIdentifier.create(
       identifier: suggested,
