@@ -42,6 +42,6 @@ class SessionStatsService
   private
 
   def day_stats_service
-    DayStatsService.new date
+    DayStatsService.new(date, program: program)
   end
 end

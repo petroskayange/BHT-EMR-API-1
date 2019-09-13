@@ -36,10 +36,13 @@ class Api::V1::EncountersController < ApplicationController
   #    all - Retrieves all encounters not just those created by current user
   def count
     encounter_types, = params.require(%i[encounter_types])
+    date = params[:date]&.to_date
+    program = params[:program_id] && Program.find(params[:program_id])
 
     complete_report = encounter_types.each_with_object({}) do |type_id, report|
-      male_count = count_by_gender(type_id, 'M', params[:date])
-      fem_count = count_by_gender(type_id, 'F', params[:date])
+      male_count = count_by_gender(type_id, 'M', date, program)
+      fem_count = count_by_gender(type_id, 'F', date, program)
+
       report[type_id] = { 'M': male_count, 'F': fem_count }
     end
 
@@ -72,8 +75,6 @@ class Api::V1::EncountersController < ApplicationController
       program: Program.find(program_id),
       provider: params[:provider_id] ? Person.find(params[:provider_id]) : User.current.person,
       encounter_datetime: TimeUtils.retro_timestamp(params[:encounter_datetime]&.to_time || Time.now),
-      program: Program.find(program_id)
-
     )
 
     if encounter.errors.empty?
@@ -124,19 +125,15 @@ class Api::V1::EncountersController < ApplicationController
     hash.remap_field! :encounter_type_id, :encounter_type
   end
 
-  def count_by_gender(type_id, gender, date = nil)
+  def count_by_gender(type_id, gender, date = nil, program = nil)
     filters = { encounter_type: type_id }
     filters[:creator] = User.current.user_id unless params[:all]
 
-    queryset = Encounter.where(filters)
-    queryset = queryset.joins(
-      'INNER JOIN person ON encounter.patient_id = person.person_id'
-    ).where('person.gender = ?', gender)
-    if params[:date]
-      date = Date.strptime params[:date]
-      queryset = queryset.where '(encounter_datetime BETWEEN (?) AND (?))',
-        date.strftime('%Y-%m-%d 00:00:00'), date.strftime('%Y-%m-%d 23:59:59')
-    end
+    queryset = Encounter.joins('INNER JOIN person ON encounter.patient_id = person.person_id')
+                        .where(filters)
+                        .where('person.gender = ?', gender)
+    queryset = queryset.where(program: program) if program
+    queryset = queryset.where('encounter_datetime BETWEEN ? AND ?', *TimeUtils.day_bounds(date)) if date
 
     queryset.count
   end
