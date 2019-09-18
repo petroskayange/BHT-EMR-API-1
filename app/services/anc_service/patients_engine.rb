@@ -50,6 +50,8 @@ module ANCService
     end
 
     def anc_visit(patient, date)
+      patient_state = patient.current_outcome(@program, date)
+      return [] if (patient_state.downcase == "unknown" || patient_state.downcase == "absconded")
       @visit = []
       last_lmp = date_of_lnmp(patient)
 

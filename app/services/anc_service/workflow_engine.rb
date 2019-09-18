@@ -10,6 +10,8 @@ module ANCService
       @date = date
       @user_activities = ""
       @activities = load_user_activities
+
+      @patient_state = @patient.current_outcome(@program, @date)
     end
 
     # Retrieves the next encounter for bound patient
@@ -57,12 +59,6 @@ module ANCService
     HIV_RECEPTION = 'HIV RECEPTION'
     ART_FOLLOWUP = 'ART_FOLLOWUP'
     HIV_CLINIC_REGISTRATION = 'HIV CLINIC REGISTRATION'
-
-    ONE_TIME_ENCOUNTERS = [
-      OBSTETRIC_HISTORY,MEDICAL_HISTORY,
-      SURGICAL_HISTORY,SOCIAL_HISTORY,
-      CURRENT_PREGNANCY
-    ]
 
     # Encounters graph
     ENCOUNTER_SM = {
@@ -158,6 +154,7 @@ module ANCService
     # NOTE: By `relevant` above we mean encounters that matter in deciding
     # what encounter the patient should go for in this present time.
     def encounter_exists?(type)
+      return false if (@patient_state.downcase == "absconded" || @patient_state.downcase == "unknown")
       if (type == encounter_type("TREATMENT"))
         return patient_has_been_given_drugs?
       end
@@ -171,7 +168,17 @@ module ANCService
         return false
       end
 
-      if is_not_a_subsequent_visit? || !ONE_TIME_ENCOUNTERS.include?(state)
+      @one_time_encounters = [
+        OBSTETRIC_HISTORY,MEDICAL_HISTORY,
+        SURGICAL_HISTORY,SOCIAL_HISTORY,
+        CURRENT_PREGNANCY
+      ]
+
+      if (@patient_state.downcase == "absconded" || @patient_state.downcase == "unknown")
+        @one_time_encounters = []
+      end
+
+      if is_not_a_subsequent_visit? || !@one_time_encounters.include?(state)
         return false if encounter_exists?(encounter_type(state))
       end
 
@@ -269,6 +276,7 @@ module ANCService
     # Checks if this is the subsequent visit
     #
     def is_not_a_subsequent_visit?
+      return true if (@patient_state.downcase == "absconded" || @patient_state.downcase == "unknown")
       lmp_date = date_of_lnmp
       return true if lmp_date.nil?
 

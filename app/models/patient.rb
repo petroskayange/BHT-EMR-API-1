@@ -128,4 +128,24 @@ class Patient < VoidableRecord
   def name
     PersonName.where(person_id: patient_id).order(:date_created).last&.to_s
   end
+
+  def current_outcome(program, date)
+      state = ActiveRecord::Base.connection.select_one(
+        "SELECT state FROM patient_state INNER JOIN patient_program p ON p.patient_program_id = patient_state.patient_program_id
+        AND p.program_id = '#{program.id}' WHERE (patient_state.voided = 0 AND p.voided = 0
+          AND p.program_id = program_id AND DATE(start_date) <= '#{date.to_date}'
+          AND p.patient_id = #{self.id})
+          AND (patient_state.voided = 0)
+          ORDER BY start_date DESC, patient_state.patient_state_id DESC,
+          patient_state.date_created DESC LIMIT 1;"
+      )["state"] rescue nil
+
+      return "Unknown" if state.blank?
+
+      outcome = ActiveRecord::Base.connection.select_one(
+        "SELECT name FROM program_workflow_state INNER JOIN concept_name ON concept_name.concept_id = program_workflow_state.concept_id
+        WHERE program_workflow_state_id = '#{state}';"
+      )["name"]
+
+  end
 end
