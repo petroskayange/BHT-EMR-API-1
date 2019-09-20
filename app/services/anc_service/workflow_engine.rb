@@ -154,7 +154,7 @@ module ANCService
     # NOTE: By `relevant` above we mean encounters that matter in deciding
     # what encounter the patient should go for in this present time.
     def encounter_exists?(type)
-      return false if (@patient_state.downcase == "absconded" || @patient_state.downcase == "unknown")
+      #return false if (@patient_state.downcase == "absconded" || @patient_state.downcase == "unknown")
       if (type == encounter_type("TREATMENT"))
         return patient_has_been_given_drugs?
       end
@@ -263,7 +263,7 @@ module ANCService
 
     def surgical_history_not_collected?
       lmp_date = date_of_lnmp
-      return true if lmp_date.nil?
+      return true if lmp_date.nil? || (@patient_state.downcase == "absconded" || @patient_state.downcase == "unknown")
 
       surgical_history_enc = EncounterType.find_by name: SURGICAL_HISTORY
       surg_history = Encounter.where("encounter_type = ?
@@ -295,7 +295,7 @@ module ANCService
 
     def obstetric_history_not_collected?
       lmp_date = date_of_lnmp
-      return true if lmp_date.nil?
+      return true if lmp_date.nil? || (@patient_state.downcase == "absconded" || @patient_state.downcase == "unknown")
 
       obstetric_encounter = EncounterType.find_by name: OBSTETRIC_HISTORY
 
@@ -309,7 +309,7 @@ module ANCService
 
     def medical_history_not_collected?
       lmp_date = date_of_lnmp
-      return true if lmp_date.nil?
+      return true if lmp_date.nil? || (@patient_state.downcase == "absconded" || @patient_state.downcase == "unknown")
 
       medical_history_enc = EncounterType.find_by name: MEDICAL_HISTORY
 
@@ -323,7 +323,7 @@ module ANCService
 
     def social_history_not_collected?
       lmp_date = date_of_lnmp
-      return true if lmp_date.nil?
+      return true if lmp_date.nil? || (@patient_state.downcase == "absconded" || @patient_state.downcase == "unknown")
 
       social_history_enc = EncounterType.find_by name: SOCIAL_HISTORY
 
@@ -337,7 +337,7 @@ module ANCService
 
     def current_pregnancy_not_collected?
       lmp_date = date_of_lnmp
-      return true if lmp_date.nil?
+      return true if lmp_date.nil? || (@patient_state.downcase == "absconded" || @patient_state.downcase == "unknown")
 
       curr_preg_enc = EncounterType.find_by name: CURRENT_PREGNANCY
 
