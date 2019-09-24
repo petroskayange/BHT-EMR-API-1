@@ -94,7 +94,7 @@ class ARTService::Reports::Cohort
 
     ActiveRecord::Base.connection.select_all(
       <<~SQL
-        SELECT patient_id, patient_outcome(patient_id, #{end_game}) AS outcome
+        SELECT patient_id, patient_outcome(patient_id, #{end_date}) AS outcome
         FROM patient_program
         WHERE patient_id IN #{patient_ids}
           AND program_id = #{hiv_program_id}

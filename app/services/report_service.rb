@@ -140,11 +140,11 @@ class ReportService
   def find_report(type, name, start_date, end_date, extras)
     if extras.empty?
       engine(@program).find_report(type: type, name: name, start_date: start_date,
-                                   end_date: end_date, extras: extras)
+                                   end_date: end_date)
     else
       # Retain ANC reports compatibility
       engine(@program).find_report(type: type, name: name, start_date: start_date,
-                                   end_date: end_date)
+                                   end_date: end_date, extras: extras)
     end
   end
 
