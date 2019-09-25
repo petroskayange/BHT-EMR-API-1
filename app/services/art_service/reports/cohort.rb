@@ -8,7 +8,11 @@ class ARTService::Reports::Cohort
                            patients_reason_for_starting_art
                            patients_outcome
                            patients_with_side_effects
-                           patients_currently_with_tb
+                           re_initiated_on_art
+  												 current_episode_of_tb
+													 kaposis_sarcoma_patients
+													 month_died_in
+													 pregnant_females
                            patients_with_tb_in_last_2_years]).freeze
 
   attr_reader :name, :start_date, :end_date
@@ -21,10 +25,13 @@ class ARTService::Reports::Cohort
   end
 
   def find_report(**kwargs)
-    extras = kwargs[:extras]
-
-    if extras.include?(:patient_ids)
-      @sub_report.call(extras[:patient_ids])
+    if kwargs[:extras]
+      extras = kwargs[:extras]
+      if extras.include?(:patient_ids)
+        @sub_report.call(extras[:patient_ids])
+      else
+        @sub_report.call
+      end
     else
       @sub_report.call
     end
@@ -94,14 +101,51 @@ class ARTService::Reports::Cohort
 
     ActiveRecord::Base.connection.select_all(
       <<~SQL
-        SELECT patient_id, patient_outcome(patient_id, #{end_date}) AS outcome
+        SELECT patient_id, patient_outcome(patient_id, #{@end_date}) AS outcome
         FROM patient_program
         WHERE patient_id IN #{patient_ids}
           AND program_id = #{hiv_program_id}
-          AND date_enrolled <= #{end_date}
+          AND date_enrolled <= #{@end_date}
       SQL
     )
   end
+
+	def month_died_in(patient_ids)
+    patient_ids = quote_array(patient_ids)
+
+    ActiveRecord::Base.connection.select_all(
+      <<~SQL
+        SELECT patient_id, died_in(patient_id, 'Patient died', date_enrolled) died_in
+        FROM patient_program
+        WHERE patient_id IN #{patient_ids}
+          AND program_id = #{hiv_program_id}
+          AND date_enrolled <= #{@end_date}
+      SQL
+		)
+	end
+
+	def pregnant_females(patient_ids)
+		# Pregant when registering
+    patient_ids = quote_array(patient_ids)
+
+		concept_names = ['Is patient pregnant at initiation?','Is patient pregnant?','PATIENT PREGNANT']
+    pregnancy_concept_ids = concept_ids_from_names(concept_names)
+    pregnancy_concept_id = concept_ids_from_names('Patient pregnant')
+
+		who_stages_criteria = concept_ids_from_names('Who stages criteria present')
+
+		ActiveRecord::Base.connection.select_all(
+			<<~SQL
+			SELECT t.patient_id FROM patient_program t
+			INNER JOIN obs ON t.patient_id = obs.person_id
+			WHERE date_enrolled BETWEEN #{@start_date} AND #{@end_date}
+			AND ( (value_coded IN #{pregnancy_concept_id} AND concept_id IN #{who_stages_criteria} )
+			OR (concept_id IN #{pregnancy_concept_ids} AND value_coded = #{yes_concept_id}))
+			AND obs.voided = 0 AND t.voided = 0 AND DATE(obs_datetime) = DATE(date_enrolled) 
+			AND obs.person_id IN #{patient_ids} GROUP BY patient_id;
+		 	SQL
+		)
+	end
 
   def patients_with_side_effects(patient_ids)
     patient_ids = quote_array(patient_ids)
@@ -134,40 +178,99 @@ class ARTService::Reports::Cohort
                                 'PULMONARY TUBERCULOSIS',
                                 'PULMONARY TUBERCULOSIS (CURRENT)'].freeze
 
-  def patients_currently_with_tb(patient_ids)
-    patient_ids = quote_array(patient_ids)
-    eptb_concept_ids = concept_ids_from_names(CURRENT_EPTB_CONCEPT_NAMES)
-
-    query_indicator_variables(patient_ids, who_stages_criteria_concept_id, eptb_concept_ids)
-  end
-
   RETRO_EPTB_CONCEPT_NAMES = ['Pulmonary tuberculosis within the last 2 years',
                               'Ptb within the past two years'].freeze
 
   def patients_with_tb_in_last_2_years(patient_ids)
+		# patients with current episode of tb
     patient_ids = quote_array(patient_ids)
-    retro_eptb_concept_ids = concept_ids_from_names(RETRO_EPTB_CONCEPT_NAMES)
 
-    query_indicator_variables(patient_ids, who_stages_criteria_concept_id, retro_eptb_concept_ids)
+    eptb_concept_ids = concept_ids_from_names(RETRO_EPTB_CONCEPT_NAMES)
+		who_stages_criteria = concept_ids_from_names('Who stages criteria present')
+
+		ActiveRecord::Base.connection.select_all(
+			<<~SQL
+			SELECT t.patient_id FROM patient_program t
+			INNER JOIN obs ON t.patient_id = obs.person_id
+			WHERE date_enrolled BETWEEN #{@start_date} AND #{@end_date}
+			AND ( (value_coded IN #{eptb_concept_ids} AND concept_id IN #{who_stages_criteria} )
+			OR (concept_id IN #{eptb_concept_ids} AND value_coded = #{yes_concept_id}))
+			AND obs.voided = 0 AND t.voided = 0 AND DATE(obs_datetime) <= DATE(date_enrolled) 
+			AND obs.person_id IN #{patient_ids} GROUP BY patient_id;
+			SQL
+		)
   end
 
-  def query_indicator_variables(patient_ids, indicator, values)
+  def kaposis_sarcoma_patients(patient_ids)
+		# Kaposis Sarcoma
+    patient_ids = quote_array(patient_ids)
+
+    eptb_concept_ids = concept_ids_from_names('KAPOSIS SARCOMA')
+		who_stages_criteria = concept_ids_from_names('Who stages criteria present')
+
+		ActiveRecord::Base.connection.select_all(
+			<<~SQL
+			SELECT t.patient_id FROM patient_program t
+			INNER JOIN obs ON t.patient_id = obs.person_id
+			WHERE date_enrolled BETWEEN #{@start_date} AND #{@end_date}
+			AND ( (value_coded IN #{eptb_concept_ids} AND concept_id IN #{who_stages_criteria} )
+			OR (concept_id IN #{eptb_concept_ids} AND value_coded = #{yes_concept_id}))
+			AND obs.voided = 0 AND t.voided = 0 AND DATE(obs_datetime) <= DATE(date_enrolled) 
+			AND obs.person_id IN #{patient_ids} GROUP BY patient_id;
+			SQL
+		)
+  end
+  
+def re_initiated_on_art(patient_ids)
+    patient_ids = quote_array(patient_ids)
+
     ActiveRecord::Base.connection.select_all(
       <<~SQL
-        SELECT person_id FROM obs
-        WHERE person_id IN #{patient_ids}
-          AND ((concept_id IN #{values} AND value_coded = #{yes_concept_id})
-               OR (concept_id = #{indicator} AND value_coded IN #{values}))
-          AND obs_datetime = (
-            SELECT MAX(obs_datetime) FROM obs
-            WHERE person_id = person_id AND obs_datetime BETWEEN #{start_date} AND #{end_date}
-              AND (concept_id IN #{values}
-                   OR (concept_id = #{indicator} AND value_coded IN #{values}))
-          )
-        GROUP BY person_id
+        SELECT patient_id, re_initiated_check(patient_id, DATE(date_enrolled)) AS re_initiated
+        FROM patient_program
+        WHERE patient_id IN #{patient_ids} AND program_id = #{hiv_program_id}
+        AND date_enrolled BETWEEN #{@start_date} AND #{@end_date}
       SQL
     )
   end
+
+  def patients_reason_for_starting_art(patient_ids)
+    patient_ids = quote_array(patient_ids)
+
+    ActiveRecord::Base.connection.select_all(
+      <<~SQL
+        SELECT e.patient_id, patient_reason_for_starting_art(e.patient_id) reason_for_starting_concept_id
+        FROM patient_program e 
+        WHERE e.date_enrolled <= #{@end_date} AND patient_id IN #{patient_ids} 
+        AND program_id = #{hiv_program_id} GROUP BY e.patient_id;
+      SQL
+    )
+  end
+
+	def current_episode_of_tb(patient_ids)
+		# CURRENT EPISODE OF TB
+    patient_ids = quote_array(patient_ids)
+
+    tb_concept_ids = concept_ids_from_names(CURRENT_EPTB_CONCEPT_NAMES)
+		who_stages_criteria = concept_ids_from_names('Who stages criteria present')
+
+		ActiveRecord::Base.connection.select_all(
+			<<~SQL
+			SELECT t.patient_id FROM patient_program t
+			INNER JOIN obs ON t.patient_id = obs.person_id
+			WHERE date_enrolled BETWEEN #{@start_date} AND #{@end_date}
+			AND ( (value_coded IN #{tb_concept_ids} AND concept_id IN #{who_stages_criteria} )
+			OR (concept_id IN #{tb_concept_ids} AND value_coded = #{yes_concept_id}))
+			AND obs.voided = 0 AND t.voided = 0 AND DATE(obs_datetime) <= DATE(date_enrolled) 
+			AND obs.person_id IN #{patient_ids} GROUP BY patient_id;
+			SQL
+		)
+	end
+
+
+
+
+
 
   def quote_atom(atom)
     ActiveRecord::Base.connection.quote(atom)
@@ -191,10 +294,11 @@ class ARTService::Reports::Cohort
   end
 
   def yes_concept_id
-    @yes_concept_id ||= quote_atom(concept('No').concept_id)
+    @yes_concept_id ||= quote_atom(concept('Yes').concept_id)
   end
 
   def concept_ids_from_names(names)
     quote_array(ConceptName.where(name: names).collect(&:concept_id))
   end
+  
 end
