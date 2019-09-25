@@ -100,7 +100,9 @@ module TBService
                           .where('start_date <= ?', date)\
                           .merge(PatientProgram.where(program: program, patient: patient))\
                           .order(start_date: :desc)\
-                          .last
+                          .first
+
+      return if state.nil?
 
       state.program_workflow_state.name
     end
