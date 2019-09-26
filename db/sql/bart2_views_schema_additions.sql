@@ -2016,7 +2016,8 @@ DECLARE num_of_days INT;
 
 IF set_status = 'Patient died' THEN
 
-  SET date_of_death = (SELECT death_date FROM temp_earliest_start_date WHERE patient_id = set_patient_id);
+  /*SET date_of_death = (SELECT death_date FROM temp_earliest_start_date WHERE patient_id = set_patient_id);*/
+  SET date_of_death = (SELECT death_date FROM person WHERE person_id = set_patient_id);
 
   IF date_of_death IS NULL THEN
     RETURN 'Unknown';

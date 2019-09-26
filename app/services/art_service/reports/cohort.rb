@@ -13,6 +13,9 @@ class ARTService::Reports::Cohort
 													 kaposis_sarcoma_patients
 													 month_died_in
 													 pregnant_females
+                           regimens_given
+                           current_pregnant_females
+                           current_breastfeeding_females
                            patients_with_tb_in_last_2_years]).freeze
 
   attr_reader :name, :start_date, :end_date
@@ -74,7 +77,7 @@ class ARTService::Reports::Cohort
               AND (`s`.`voided` = 0)
               AND (`p`.`program_id` = 1)
               AND (`s`.`state` = #{on_arvs_state_id}))
-              AND (`s`.`start_date` <= #{end_date})
+              AND (`s`.`start_date` <= #{@end_date})
               AND (DATE(`s`.`start_date`) != '0000-00-00')
         GROUP BY `p`.`patient_id`
         HAVING date_enrolled IS NOT NULL;
@@ -92,6 +95,7 @@ class ARTService::Reports::Cohort
         WHERE program_id = #{hiv_program_id}
           AND patient_id IN #{patient_ids}
           AND date_enrolled <= #{end_date}
+        GROUP BY patient_id;
       SQL
     )
   end
@@ -106,6 +110,7 @@ class ARTService::Reports::Cohort
         WHERE patient_id IN #{patient_ids}
           AND program_id = #{hiv_program_id}
           AND date_enrolled <= #{@end_date}
+        GROUP BY patient_id;
       SQL
     )
   end
@@ -116,10 +121,12 @@ class ARTService::Reports::Cohort
     ActiveRecord::Base.connection.select_all(
       <<~SQL
         SELECT patient_id, died_in(patient_id, 'Patient died', date_enrolled) died_in
-        FROM patient_program
+        FROM patient_program p 
+        INNER JOIN patient_state s ON s.patient_program_id = p.patient_program_id
         WHERE patient_id IN #{patient_ids}
           AND program_id = #{hiv_program_id}
-          AND date_enrolled <= #{@end_date}
+          AND start_date <= #{@end_date} 
+        GROUP BY patient_id;
       SQL
 		)
 	end
@@ -221,15 +228,17 @@ class ARTService::Reports::Cohort
 		)
   end
   
-def re_initiated_on_art(patient_ids)
+  def re_initiated_on_art(patient_ids)
     patient_ids = quote_array(patient_ids)
 
     ActiveRecord::Base.connection.select_all(
       <<~SQL
         SELECT patient_id, re_initiated_check(patient_id, DATE(date_enrolled)) AS re_initiated
-        FROM patient_program
+        FROM patient_program p
+        INNER JOIN patient_state s ON s.patient_program_id = p.patient_program_id
         WHERE patient_id IN #{patient_ids} AND program_id = #{hiv_program_id}
-        AND date_enrolled BETWEEN #{@start_date} AND #{@end_date}
+        AND start_date BETWEEN #{@start_date} AND #{@end_date} 
+        GROUP BY patient_id;
       SQL
     )
   end
@@ -267,6 +276,58 @@ def re_initiated_on_art(patient_ids)
 		)
 	end
 
+  def regimens_given(patient_ids)
+    patient_ids = quote_array(patient_ids)
+
+		ActiveRecord::Base.connection.select_all(
+			<<~SQL
+			SELECT person_id, 
+        patient_current_regimen(person_id, DATE(#{@end_date})) regimen
+      FROM person WHERE person_id IN #{patient_ids}
+      GROUP BY person_id;
+			SQL
+		)
+  end
+
+  def current_pregnant_females(patient_ids)
+    patient_ids = quote_array(patient_ids)
+    
+    concept_ids = concept_ids_from_names(['Is patient pregnant?','patient pregnant'])
+    return current_pregnant_breastfeeding_females(patient_ids, concept_ids)
+  end
+
+  def current_breastfeeding_females(patient_ids)
+    patient_ids = quote_array(patient_ids)
+    
+    concept_ids = concept_ids_from_names(['Breast feeding?','Breast feeding','Breastfeeding'])
+    return current_pregnant_breastfeeding_females(patient_ids, concept_ids)
+  end
+
+  def current_pregnant_breastfeeding_females(patient_ids, concept_ids)
+    encounter_types = encounter_type_ids_from_names(['HIV CLINIC CONSULTATION','HIV STAGING'])
+
+		ActiveRecord::Base.connection.select_all(
+			<<~SQL
+      SELECT person_id FROM obs t
+        INNER JOIN encounter enc ON enc.encounter_id = t.encounter_id AND enc.voided = 0
+          WHERE t.person_id IN #{patient_ids}
+          AND t.obs_datetime <= #{@end_date}
+          AND t.concept_id IN #{concept_ids} AND t.value_coded = #{yes_concept_id}
+          AND t.voided = 0 AND enc.encounter_type IN #{encounter_types}
+          AND DATE(t.obs_datetime) = (SELECT MAX(DATE(o.obs_datetime)) FROM obs o
+                        WHERE o.concept_id IN #{concept_ids} AND voided = 0
+                        AND o.person_id = t.person_id 
+                        AND o.obs_datetime <= #{@end_date})
+        GROUP BY t.person_id;
+			SQL
+		)
+  end
+
+
+
+
+
+
 
 
 
@@ -299,6 +360,10 @@ def re_initiated_on_art(patient_ids)
 
   def concept_ids_from_names(names)
     quote_array(ConceptName.where(name: names).collect(&:concept_id))
+  end
+  
+  def encounter_type_ids_from_names(names)
+    quote_array(EncounterType.where(name: names).collect(&:encounter_type_id))
   end
   
 end
