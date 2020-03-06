@@ -248,6 +248,98 @@ pre code {
         </li>
         
         
+        
+        <li>
+            <a href="#folder-stock-management">Stock Management</a>
+            <ul>
+                
+                <li>
+                    <a href="#request-stock-management-retrieve-all-batches-in-pharmacy-stock">Retrieve all batches in pharmacy stock</a>
+                </li>
+                
+                <li>
+                    <a href="#request-stock-management-create-or-add-items-to-batch">Create or add items to batch</a>
+                </li>
+                
+                <li>
+                    <a href="#request-stock-management-retrieve-specific-pharmacy-batch-item">Retrieve specific pharmacy batch item</a>
+                </li>
+                
+                <li>
+                    <a href="#request-stock-management-retrieve-all-pharmacy-batch-items">Retrieve all pharmacy batch items</a>
+                </li>
+                
+                <li>
+                    <a href="#request-stock-management-update-batch">Update batch</a>
+                </li>
+                
+                <li>
+                    <a href="#request-stock-management-retrieve-batch-by-batch-number">Retrieve batch by batch number</a>
+                </li>
+                
+                <li>
+                    <a href="#request-stock-management-retrieve-earliest-expiring-item">Retrieve earliest expiring item</a>
+                </li>
+                
+                <li>
+                    <a href="#request-stock-management-delete-batch">Delete batch</a>
+                </li>
+                
+                <li>
+                    <a href="#request-stock-management-reallocate-batch-item-to-another-site">Reallocate batch item to another site</a>
+                </li>
+                
+            </ul>
+        </li>
+        
+        
+        <li>
+            <a href="#folder-search">Search</a>
+            <ul>
+                
+                <li>
+                    <a href="#request-search-find-duplicate-identifiers-of-a-given-type">Find duplicate identifiers of a given type</a>
+                </li>
+                
+                <li>
+                    <a href="#request-search-find-patients-by-identifier">Find patients by identifier</a>
+                </li>
+                
+            </ul>
+        </li>
+        
+        
+        <li>
+            <a href="#folder-registry-management">Registry Management</a>
+            <ul>
+                
+                <li>
+                    <a href="#request-registry-management-create-register">Create Register</a>
+                </li>
+                
+                <li>
+                    <a href="#request-registry-management-binding-an-encounter-to-a-register">Binding an encounter to a register</a>
+                </li>
+                
+            </ul>
+        </li>
+        
+        
+        <li>
+            <a href="#folder-hts">HTS</a>
+            <ul>
+                
+            </ul>
+        </li>
+        
+        
+        <li>
+            <a href="#folder-programs">Programs</a>
+            <ul>
+                
+            </ul>
+        </li>
+        
     </ul>
 </div>
 
@@ -485,12 +577,20 @@ curl 'http://localhost/api/v1/observations?pagination=false'
                         </ul>
                         <div class="tab-content">
                             <div class="tab-pane active" id="request-log-in-example-curl">
-                                <pre><code class="hljs curl">curl -X POST -H "Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW" -H "Content-Type: application/json" "http://127.0.0.1:3000/api/v1/auth/login"</code></pre>
+                                <pre><code class="hljs curl">curl -X POST -H "Content-Type: application/json" -d '{
+	"username": "admin",
+	"password": "test"
+}' "http://127.0.0.1:3000/api/v1/auth/login"</code></pre>
                             </div>
                             <div class="tab-pane" id="request-log-in-example-http">
                                 <pre><code class="hljs http">POST /api/v1/auth/login HTTP/1.1
 Host: 127.0.0.1:3000
-Content-Type: application/json</code></pre>
+Content-Type: application/json
+
+{
+	"username": "admin",
+	"password": "test"
+}</code></pre>
                             </div>
                         </div>
                     </div>
@@ -500,7 +600,7 @@ Content-Type: application/json</code></pre>
                         <ul class="nav nav-tabs" role="tablist">
                             
                             <li role="presentation" class="active">
-                                <a href="#request-log-in-responses-fd9749d7-781c-e591-8888-cf6874b034aa" data-toggle="tab">
+                                <a href="#request-log-in-responses-b2916950-92f5-44f5-ae84-b0d2932bf5d2" data-toggle="tab">
                                     
                                     Response
                                     
@@ -510,9 +610,9 @@ Content-Type: application/json</code></pre>
                         </ul>
                         <div class="tab-content">
                             
-                            <div class="tab-pane active" id="request-log-in-responses-fd9749d7-781c-e591-8888-cf6874b034aa">
+                            <div class="tab-pane active" id="request-log-in-responses-b2916950-92f5-44f5-ae84-b0d2932bf5d2">
                                 <table class="table table-bordered">
-                                    <tr><th style="width: 20%;">Status</th><td>200 </td></tr>
+                                    <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
                                     
                                     <tr><th style="width: 20%;">cache-control</th><td>max-age=0, private, must-revalidate</td></tr>
                                     
@@ -645,1222 +745,6 @@ Authorization: lQUitqOlCOo6</code></pre>
                     </div>
 
                     
-                    <div>
-                        <ul class="nav nav-tabs" role="tablist">
-                            
-                            <li role="presentation" class="active">
-                                <a href="#request-retrieve-registered-people-responses-cc930f1e-df60-83c8-7033-b16b4da1579e" data-toggle="tab">
-                                    
-                                    Retrieve registered people
-                                    
-                                </a>
-                            </li>
-                            
-                            <li role="presentation">
-                                <a href="#request-retrieve-registered-people-responses-dfc591b3-dd68-9495-e155-ee503f6ce63d" data-toggle="tab">
-                                    
-                                    Retrieve a list of registered people
-                                    
-                                </a>
-                            </li>
-                            
-                        </ul>
-                        <div class="tab-content">
-                            
-                            <div class="tab-pane active" id="request-retrieve-registered-people-responses-cc930f1e-df60-83c8-7033-b16b4da1579e">
-                                <table class="table table-bordered">
-                                    <tr><th style="width: 20%;">Status</th><td>200 </td></tr>
-                                    
-                                    <tr><th style="width: 20%;">cache-control</th><td>max-age=0, private, must-revalidate</td></tr>
-                                    
-                                    <tr><th style="width: 20%;">content-type</th><td>application/json; charset=utf-8</td></tr>
-                                    
-                                    <tr><th style="width: 20%;">etag</th><td>W/"31a7b8b0ac7e454b390651bdd39dd495"</td></tr>
-                                    
-                                    <tr><th style="width: 20%;">transfer-encoding</th><td>chunked</td></tr>
-                                    
-                                    <tr><th style="width: 20%;">vary</th><td>Origin</td></tr>
-                                    
-                                    <tr><th style="width: 20%;">x-request-id</th><td>68a1a4cd-c71c-4168-9798-c4f6411d9535</td></tr>
-                                    
-                                    <tr><th style="width: 20%;">x-runtime</th><td>0.102691</td></tr>
-                                    
-                                    
-                                    
-                                    <tr><td class="response-text-sample" colspan="2">
-                                        <pre><code>{
-    "person_id": 1,
-    "gender": "M",
-    "birthdate": null,
-    "birthdate_estimated": 0,
-    "dead": 0,
-    "death_date": null,
-    "cause_of_death": null,
-    "creator": 1,
-    "date_created": "2005-01-01T00:00:00.000Z",
-    "changed_by": 1,
-    "date_changed": "2009-09-04T16:37:23.000Z",
-    "voided": 0,
-    "voided_by": null,
-    "date_voided": null,
-    "void_reason": null,
-    "uuid": "10661cb8-b6c1-11e0-bc9e-544249e32ba2",
-    "names": [
-        {
-            "person_name_id": 1,
-            "preferred": 1,
-            "person_id": 1,
-            "prefix": null,
-            "given_name": "Super",
-            "middle_name": "",
-            "family_name_prefix": null,
-            "family_name": "User",
-            "family_name2": null,
-            "family_name_suffix": null,
-            "degree": null,
-            "creator": 1,
-            "date_created": "2005-01-01T00:00:00.000Z",
-            "voided": 0,
-            "voided_by": null,
-            "date_voided": null,
-            "void_reason": null,
-            "changed_by": null,
-            "date_changed": null,
-            "uuid": "109f4cb8-b6c1-11e0-bc9e-544249e32ba2"
-        },
-        {
-            "person_name_id": 104,
-            "preferred": 0,
-            "person_id": 1,
-            "prefix": null,
-            "given_name": "tionge",
-            "middle_name": null,
-            "family_name_prefix": null,
-            "family_name": "banda",
-            "family_name2": null,
-            "family_name_suffix": null,
-            "degree": null,
-            "creator": 1,
-            "date_created": "2011-09-14T00:00:00.000Z",
-            "voided": 0,
-            "voided_by": null,
-            "date_voided": null,
-            "void_reason": null,
-            "changed_by": null,
-            "date_changed": null,
-            "uuid": "350af0d9-59ca-11e3-b7e9-003018a9e11f"
-        }
-    ],
-    "addresses": [
-        {
-            "person_address_id": 24,
-            "person_id": 1,
-            "preferred": 0,
-            "address1": "Unknown",
-            "address2": null,
-            "city_village": "Area 10",
-            "state_province": null,
-            "postal_code": null,
-            "country": null,
-            "latitude": null,
-            "longitude": null,
-            "creator": 1,
-            "date_created": "2011-09-14T00:00:00.000Z",
-            "voided": 0,
-            "voided_by": null,
-            "date_voided": null,
-            "void_reason": null,
-            "county_district": null,
-            "neighborhood_cell": null,
-            "region": null,
-            "subregion": null,
-            "township_division": null,
-            "uuid": "350b0426-59ca-11e3-b7e9-003018a9e11f"
-        }
-    ],
-    "person_attributes": [
-        {
-            "person_attribute_id": 271,
-            "person_id": 1,
-            "value": "Area 10",
-            "person_attribute_type_id": 18,
-            "creator": 1,
-            "date_created": "2011-09-14T00:00:00.000Z",
-            "changed_by": null,
-            "date_changed": null,
-            "voided": 0,
-            "voided_by": null,
-            "date_voided": null,
-            "void_reason": null,
-            "uuid": "350b0502-59ca-11e3-b7e9-003018a9e11f"
-        },
-        {
-            "person_attribute_id": 272,
-            "person_id": 1,
-            "value": "Unknown",
-            "person_attribute_type_id": 19,
-            "creator": 1,
-            "date_created": "2011-09-14T00:00:00.000Z",
-            "changed_by": null,
-            "date_changed": null,
-            "voided": 0,
-            "voided_by": null,
-            "date_voided": null,
-            "void_reason": null,
-            "uuid": "350b0426-59ca-11e3-b7e9-003018a9e11f"
-        },
-        {
-            "person_attribute_id": 273,
-            "person_id": 1,
-            "value": "Other",
-            "person_attribute_type_id": 13,
-            "creator": 1,
-            "date_created": "2011-09-14T00:00:00.000Z",
-            "changed_by": null,
-            "date_changed": null,
-            "voided": 0,
-            "voided_by": null,
-            "date_voided": null,
-            "void_reason": null,
-            "uuid": "350b0fab-59ca-11e3-b7e9-003018a9e11f"
-        },
-        {
-            "person_attribute_id": 274,
-            "person_id": 1,
-            "value": "Not Available",
-            "person_attribute_type_id": 14,
-            "creator": 1,
-            "date_created": "2011-09-14T00:00:00.000Z",
-            "changed_by": null,
-            "date_changed": null,
-            "voided": 0,
-            "voided_by": null,
-            "date_voided": null,
-            "void_reason": null,
-            "uuid": "350b11b7-59ca-11e3-b7e9-003018a9e11f"
-        }
-    ]
-}</code></pre>
-                                    </td></tr>
-                                    
-                                    
-                                </table>
-                            </div>
-                            
-                            <div class="tab-pane" id="request-retrieve-registered-people-responses-dfc591b3-dd68-9495-e155-ee503f6ce63d">
-                                <table class="table table-bordered">
-                                    <tr><th style="width: 20%;">Status</th><td>200 </td></tr>
-                                    
-                                    <tr><th style="width: 20%;">cache-control</th><td>max-age=0, private, must-revalidate</td></tr>
-                                    
-                                    <tr><th style="width: 20%;">content-type</th><td>application/json; charset=utf-8</td></tr>
-                                    
-                                    <tr><th style="width: 20%;">etag</th><td>W/"dfa1fa3bd078b49122c992cc9d721dbf"</td></tr>
-                                    
-                                    <tr><th style="width: 20%;">transfer-encoding</th><td>chunked</td></tr>
-                                    
-                                    <tr><th style="width: 20%;">x-request-id</th><td>47647e92-6594-4012-98dd-fdfd4817253e</td></tr>
-                                    
-                                    <tr><th style="width: 20%;">x-runtime</th><td>0.314544</td></tr>
-                                    
-                                    
-                                    
-                                    <tr><td class="response-text-sample" colspan="2">
-                                        <pre><code>[
-    {
-        "person_id": 1,
-        "gender": "M",
-        "birthdate": null,
-        "birthdate_estimated": 0,
-        "dead": 0,
-        "death_date": null,
-        "cause_of_death": null,
-        "creator": 1,
-        "date_created": "2005-01-01T00:00:00.000Z",
-        "changed_by": 1,
-        "date_changed": "2009-09-04T16:37:23.000Z",
-        "voided": 0,
-        "voided_by": null,
-        "date_voided": null,
-        "void_reason": null,
-        "uuid": "10661cb8-b6c1-11e0-bc9e-544249e32ba2",
-        "names": [
-            {
-                "person_name_id": 1,
-                "preferred": 1,
-                "person_id": 1,
-                "prefix": null,
-                "given_name": "Super",
-                "middle_name": "",
-                "family_name_prefix": null,
-                "family_name": "User",
-                "family_name2": null,
-                "family_name_suffix": null,
-                "degree": null,
-                "creator": 1,
-                "date_created": "2005-01-01T00:00:00.000Z",
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "changed_by": null,
-                "date_changed": null,
-                "uuid": "109f4cb8-b6c1-11e0-bc9e-544249e32ba2"
-            },
-            {
-                "person_name_id": 104,
-                "preferred": 0,
-                "person_id": 1,
-                "prefix": null,
-                "given_name": "tionge",
-                "middle_name": null,
-                "family_name_prefix": null,
-                "family_name": "banda",
-                "family_name2": null,
-                "family_name_suffix": null,
-                "degree": null,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "changed_by": null,
-                "date_changed": null,
-                "uuid": "350af0d9-59ca-11e3-b7e9-003018a9e11f"
-            }
-        ],
-        "addresses": [
-            {
-                "person_address_id": 24,
-                "person_id": 1,
-                "preferred": 0,
-                "address1": "Unknown",
-                "address2": null,
-                "city_village": "Area 10",
-                "state_province": null,
-                "postal_code": null,
-                "country": null,
-                "latitude": null,
-                "longitude": null,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "county_district": null,
-                "neighborhood_cell": null,
-                "region": null,
-                "subregion": null,
-                "township_division": null,
-                "uuid": "350b0426-59ca-11e3-b7e9-003018a9e11f"
-            }
-        ],
-        "person_attributes": [
-            {
-                "person_attribute_id": 271,
-                "person_id": 1,
-                "value": "Area 10",
-                "person_attribute_type_id": 18,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "350b0502-59ca-11e3-b7e9-003018a9e11f"
-            },
-            {
-                "person_attribute_id": 272,
-                "person_id": 1,
-                "value": "Unknown",
-                "person_attribute_type_id": 19,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "350b0426-59ca-11e3-b7e9-003018a9e11f"
-            },
-            {
-                "person_attribute_id": 273,
-                "person_id": 1,
-                "value": "Other",
-                "person_attribute_type_id": 13,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "350b0fab-59ca-11e3-b7e9-003018a9e11f"
-            },
-            {
-                "person_attribute_id": 274,
-                "person_id": 1,
-                "value": "Not Available",
-                "person_attribute_type_id": 14,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "350b11b7-59ca-11e3-b7e9-003018a9e11f"
-            }
-        ]
-    },
-    {
-        "person_id": 2,
-        "gender": "F",
-        "birthdate": null,
-        "birthdate_estimated": 0,
-        "dead": 0,
-        "death_date": null,
-        "cause_of_death": null,
-        "creator": 1,
-        "date_created": "2011-09-14T00:00:00.000Z",
-        "changed_by": null,
-        "date_changed": null,
-        "voided": 0,
-        "voided_by": null,
-        "date_voided": null,
-        "void_reason": null,
-        "uuid": "3536add6-59ca-11e3-b7e9-003018a9e11f",
-        "names": [
-            {
-                "person_name_id": 105,
-                "preferred": 0,
-                "person_id": 2,
-                "prefix": null,
-                "given_name": "tionge",
-                "middle_name": null,
-                "family_name_prefix": null,
-                "family_name": "binali",
-                "family_name2": null,
-                "family_name_suffix": null,
-                "degree": null,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "changed_by": null,
-                "date_changed": null,
-                "uuid": "3536b15b-59ca-11e3-b7e9-003018a9e11f"
-            }
-        ],
-        "addresses": [],
-        "person_attributes": []
-    },
-    {
-        "person_id": 3,
-        "gender": "F",
-        "birthdate": "1988-07-01",
-        "birthdate_estimated": 1,
-        "dead": 0,
-        "death_date": null,
-        "cause_of_death": null,
-        "creator": 1,
-        "date_created": "2011-09-14T00:00:00.000Z",
-        "changed_by": null,
-        "date_changed": null,
-        "voided": 0,
-        "voided_by": null,
-        "date_voided": null,
-        "void_reason": null,
-        "uuid": "355b1384-59ca-11e3-b7e9-003018a9e11f",
-        "names": [
-            {
-                "person_name_id": 106,
-                "preferred": 0,
-                "person_id": 3,
-                "prefix": null,
-                "given_name": "tionge",
-                "middle_name": null,
-                "family_name_prefix": null,
-                "family_name": "binali",
-                "family_name2": null,
-                "family_name_suffix": null,
-                "degree": null,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "changed_by": null,
-                "date_changed": null,
-                "uuid": "355b16b4-59ca-11e3-b7e9-003018a9e11f"
-            }
-        ],
-        "addresses": [
-            {
-                "person_address_id": 25,
-                "person_id": 3,
-                "preferred": 0,
-                "address1": "Unknown",
-                "address2": null,
-                "city_village": "Amidu",
-                "state_province": null,
-                "postal_code": null,
-                "country": null,
-                "latitude": null,
-                "longitude": null,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "county_district": null,
-                "neighborhood_cell": null,
-                "region": null,
-                "subregion": null,
-                "township_division": null,
-                "uuid": "355b23ae-59ca-11e3-b7e9-003018a9e11f"
-            }
-        ],
-        "person_attributes": [
-            {
-                "person_attribute_id": 275,
-                "person_id": 3,
-                "value": "Amidu",
-                "person_attribute_type_id": 18,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "355b24cb-59ca-11e3-b7e9-003018a9e11f"
-            },
-            {
-                "person_attribute_id": 276,
-                "person_id": 3,
-                "value": "Unknown",
-                "person_attribute_type_id": 19,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "355b23ae-59ca-11e3-b7e9-003018a9e11f"
-            },
-            {
-                "person_attribute_id": 277,
-                "person_id": 3,
-                "value": "Farmer",
-                "person_attribute_type_id": 13,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "355b2d7f-59ca-11e3-b7e9-003018a9e11f"
-            },
-            {
-                "person_attribute_id": 278,
-                "person_id": 3,
-                "value": "Not Available",
-                "person_attribute_type_id": 14,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "355b2f51-59ca-11e3-b7e9-003018a9e11f"
-            }
-        ]
-    },
-    {
-        "person_id": 4,
-        "gender": "F",
-        "birthdate": null,
-        "birthdate_estimated": 0,
-        "dead": 0,
-        "death_date": null,
-        "cause_of_death": null,
-        "creator": 1,
-        "date_created": "2011-09-14T00:00:00.000Z",
-        "changed_by": null,
-        "date_changed": null,
-        "voided": 0,
-        "voided_by": null,
-        "date_voided": null,
-        "void_reason": null,
-        "uuid": "357fe29b-59ca-11e3-b7e9-003018a9e11f",
-        "names": [
-            {
-                "person_name_id": 107,
-                "preferred": 0,
-                "person_id": 4,
-                "prefix": null,
-                "given_name": "tionge",
-                "middle_name": null,
-                "family_name_prefix": null,
-                "family_name": "binali",
-                "family_name2": null,
-                "family_name_suffix": null,
-                "degree": null,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "changed_by": null,
-                "date_changed": null,
-                "uuid": "357fe617-59ca-11e3-b7e9-003018a9e11f"
-            }
-        ],
-        "addresses": [],
-        "person_attributes": []
-    },
-    {
-        "person_id": 5,
-        "gender": "M",
-        "birthdate": "2010-07-01",
-        "birthdate_estimated": 1,
-        "dead": 0,
-        "death_date": null,
-        "cause_of_death": null,
-        "creator": 1,
-        "date_created": "2011-09-14T00:00:00.000Z",
-        "changed_by": null,
-        "date_changed": null,
-        "voided": 0,
-        "voided_by": null,
-        "date_voided": null,
-        "void_reason": null,
-        "uuid": "35a3e4e4-59ca-11e3-b7e9-003018a9e11f",
-        "names": [
-            {
-                "person_name_id": 108,
-                "preferred": 0,
-                "person_id": 5,
-                "prefix": null,
-                "given_name": "dan",
-                "middle_name": null,
-                "family_name_prefix": null,
-                "family_name": "lewis",
-                "family_name2": null,
-                "family_name_suffix": null,
-                "degree": null,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "changed_by": null,
-                "date_changed": null,
-                "uuid": "35a3e814-59ca-11e3-b7e9-003018a9e11f"
-            }
-        ],
-        "addresses": [
-            {
-                "person_address_id": 26,
-                "person_id": 5,
-                "preferred": 0,
-                "address1": "Unknown",
-                "address2": null,
-                "city_village": "Area 12",
-                "state_province": null,
-                "postal_code": null,
-                "country": null,
-                "latitude": null,
-                "longitude": null,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "county_district": null,
-                "neighborhood_cell": null,
-                "region": null,
-                "subregion": null,
-                "township_division": null,
-                "uuid": "35a3f542-59ca-11e3-b7e9-003018a9e11f"
-            }
-        ],
-        "person_attributes": [
-            {
-                "person_attribute_id": 279,
-                "person_id": 5,
-                "value": "Area 12",
-                "person_attribute_type_id": 18,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "35a3f5fd-59ca-11e3-b7e9-003018a9e11f"
-            },
-            {
-                "person_attribute_id": 280,
-                "person_id": 5,
-                "value": "Unknown",
-                "person_attribute_type_id": 19,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "35a3f542-59ca-11e3-b7e9-003018a9e11f"
-            },
-            {
-                "person_attribute_id": 281,
-                "person_id": 5,
-                "value": "Other",
-                "person_attribute_type_id": 13,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "35a3fe9a-59ca-11e3-b7e9-003018a9e11f"
-            },
-            {
-                "person_attribute_id": 282,
-                "person_id": 5,
-                "value": "Not Available",
-                "person_attribute_type_id": 14,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "35a40550-59ca-11e3-b7e9-003018a9e11f"
-            }
-        ]
-    },
-    {
-        "person_id": 6,
-        "gender": "F",
-        "birthdate": null,
-        "birthdate_estimated": 0,
-        "dead": 0,
-        "death_date": null,
-        "cause_of_death": null,
-        "creator": 1,
-        "date_created": "2011-09-14T00:00:00.000Z",
-        "changed_by": null,
-        "date_changed": null,
-        "voided": 0,
-        "voided_by": null,
-        "date_voided": null,
-        "void_reason": null,
-        "uuid": "35c8b4b1-59ca-11e3-b7e9-003018a9e11f",
-        "names": [
-            {
-                "person_name_id": 109,
-                "preferred": 0,
-                "person_id": 6,
-                "prefix": null,
-                "given_name": "tionge",
-                "middle_name": null,
-                "family_name_prefix": null,
-                "family_name": "banda",
-                "family_name2": null,
-                "family_name_suffix": null,
-                "degree": null,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "changed_by": null,
-                "date_changed": null,
-                "uuid": "35c8b77d-59ca-11e3-b7e9-003018a9e11f"
-            }
-        ],
-        "addresses": [],
-        "person_attributes": []
-    },
-    {
-        "person_id": 7,
-        "gender": "M",
-        "birthdate": "1985-05-04",
-        "birthdate_estimated": 1,
-        "dead": 0,
-        "death_date": null,
-        "cause_of_death": null,
-        "creator": 1,
-        "date_created": "2011-09-14T00:00:00.000Z",
-        "changed_by": null,
-        "date_changed": null,
-        "voided": 0,
-        "voided_by": null,
-        "date_voided": null,
-        "void_reason": null,
-        "uuid": "35ecf73d-59ca-11e3-b7e9-003018a9e11f",
-        "names": [
-            {
-                "person_name_id": 110,
-                "preferred": 0,
-                "person_id": 7,
-                "prefix": null,
-                "given_name": "Chikafa",
-                "middle_name": null,
-                "family_name_prefix": null,
-                "family_name": "Kalima",
-                "family_name2": null,
-                "family_name_suffix": null,
-                "degree": null,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "changed_by": null,
-                "date_changed": null,
-                "uuid": "35ecfaa0-59ca-11e3-b7e9-003018a9e11f"
-            }
-        ],
-        "addresses": [
-            {
-                "person_address_id": 27,
-                "person_id": 7,
-                "preferred": 0,
-                "address1": "Unknown",
-                "address2": null,
-                "city_village": "Area 10",
-                "state_province": null,
-                "postal_code": null,
-                "country": null,
-                "latitude": null,
-                "longitude": null,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "county_district": null,
-                "neighborhood_cell": null,
-                "region": null,
-                "subregion": null,
-                "township_division": null,
-                "uuid": "35ed07bf-59ca-11e3-b7e9-003018a9e11f"
-            }
-        ],
-        "person_attributes": [
-            {
-                "person_attribute_id": 283,
-                "person_id": 7,
-                "value": "Area 10",
-                "person_attribute_type_id": 18,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "35ed0875-59ca-11e3-b7e9-003018a9e11f"
-            },
-            {
-                "person_attribute_id": 284,
-                "person_id": 7,
-                "value": "Unknown",
-                "person_attribute_type_id": 19,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "35ed07bf-59ca-11e3-b7e9-003018a9e11f"
-            },
-            {
-                "person_attribute_id": 285,
-                "person_id": 7,
-                "value": "Other",
-                "person_attribute_type_id": 13,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "35ed1137-59ca-11e3-b7e9-003018a9e11f"
-            },
-            {
-                "person_attribute_id": 286,
-                "person_id": 7,
-                "value": "Not Available",
-                "person_attribute_type_id": 14,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "35ed131a-59ca-11e3-b7e9-003018a9e11f"
-            }
-        ]
-    },
-    {
-        "person_id": 8,
-        "gender": "F",
-        "birthdate": "1978-02-17",
-        "birthdate_estimated": 1,
-        "dead": 0,
-        "death_date": null,
-        "cause_of_death": null,
-        "creator": 1,
-        "date_created": "2011-09-14T00:00:00.000Z",
-        "changed_by": null,
-        "date_changed": null,
-        "voided": 0,
-        "voided_by": null,
-        "date_voided": null,
-        "void_reason": null,
-        "uuid": "361106f8-59ca-11e3-b7e9-003018a9e11f",
-        "names": [
-            {
-                "person_name_id": 111,
-                "preferred": 0,
-                "person_id": 8,
-                "prefix": null,
-                "given_name": "Chikafa",
-                "middle_name": null,
-                "family_name_prefix": null,
-                "family_name": "Binauli",
-                "family_name2": null,
-                "family_name_suffix": null,
-                "degree": null,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "changed_by": null,
-                "date_changed": null,
-                "uuid": "36110a36-59ca-11e3-b7e9-003018a9e11f"
-            }
-        ],
-        "addresses": [
-            {
-                "person_address_id": 28,
-                "person_id": 8,
-                "preferred": 0,
-                "address1": "Kauma",
-                "address2": null,
-                "city_village": "Lilongwe City",
-                "state_province": null,
-                "postal_code": null,
-                "country": null,
-                "latitude": null,
-                "longitude": null,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "county_district": null,
-                "neighborhood_cell": null,
-                "region": null,
-                "subregion": null,
-                "township_division": null,
-                "uuid": "36111746-59ca-11e3-b7e9-003018a9e11f"
-            }
-        ],
-        "person_attributes": [
-            {
-                "person_attribute_id": 287,
-                "person_id": 8,
-                "value": "Lilongwe City",
-                "person_attribute_type_id": 18,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "36111801-59ca-11e3-b7e9-003018a9e11f"
-            },
-            {
-                "person_attribute_id": 288,
-                "person_id": 8,
-                "value": "Kauma",
-                "person_attribute_type_id": 19,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "36111746-59ca-11e3-b7e9-003018a9e11f"
-            },
-            {
-                "person_attribute_id": 289,
-                "person_id": 8,
-                "value": "Other",
-                "person_attribute_type_id": 13,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "361120b9-59ca-11e3-b7e9-003018a9e11f"
-            },
-            {
-                "person_attribute_id": 290,
-                "person_id": 8,
-                "value": "0999252525",
-                "person_attribute_type_id": 14,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "36112294-59ca-11e3-b7e9-003018a9e11f"
-            }
-        ]
-    },
-    {
-        "person_id": 9,
-        "gender": "M",
-        "birthdate": "2010-07-01",
-        "birthdate_estimated": 1,
-        "dead": 0,
-        "death_date": null,
-        "cause_of_death": null,
-        "creator": 1,
-        "date_created": "2011-09-14T00:00:00.000Z",
-        "changed_by": null,
-        "date_changed": null,
-        "voided": 0,
-        "voided_by": null,
-        "date_voided": null,
-        "void_reason": null,
-        "uuid": "363571e1-59ca-11e3-b7e9-003018a9e11f",
-        "names": [
-            {
-                "person_name_id": 112,
-                "preferred": 0,
-                "person_id": 9,
-                "prefix": null,
-                "given_name": "simon",
-                "middle_name": null,
-                "family_name_prefix": null,
-                "family_name": "lewis",
-                "family_name2": null,
-                "family_name_suffix": null,
-                "degree": null,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "changed_by": null,
-                "date_changed": null,
-                "uuid": "36357461-59ca-11e3-b7e9-003018a9e11f"
-            }
-        ],
-        "addresses": [
-            {
-                "person_address_id": 29,
-                "person_id": 9,
-                "preferred": 0,
-                "address1": "Unknown",
-                "address2": null,
-                "city_village": "Area 11",
-                "state_province": null,
-                "postal_code": null,
-                "country": null,
-                "latitude": null,
-                "longitude": null,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "county_district": null,
-                "neighborhood_cell": null,
-                "region": null,
-                "subregion": null,
-                "township_division": null,
-                "uuid": "363580c5-59ca-11e3-b7e9-003018a9e11f"
-            }
-        ],
-        "person_attributes": [
-            {
-                "person_attribute_id": 291,
-                "person_id": 9,
-                "value": "Area 11",
-                "person_attribute_type_id": 18,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "3635818b-59ca-11e3-b7e9-003018a9e11f"
-            },
-            {
-                "person_attribute_id": 292,
-                "person_id": 9,
-                "value": "Unknown",
-                "person_attribute_type_id": 19,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "363580c5-59ca-11e3-b7e9-003018a9e11f"
-            },
-            {
-                "person_attribute_id": 293,
-                "person_id": 9,
-                "value": "Other",
-                "person_attribute_type_id": 13,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "36358a85-59ca-11e3-b7e9-003018a9e11f"
-            },
-            {
-                "person_attribute_id": 294,
-                "person_id": 9,
-                "value": "Not Available",
-                "person_attribute_type_id": 14,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "36358c5e-59ca-11e3-b7e9-003018a9e11f"
-            }
-        ]
-    },
-    {
-        "person_id": 10,
-        "gender": "F",
-        "birthdate": null,
-        "birthdate_estimated": 0,
-        "dead": 0,
-        "death_date": null,
-        "cause_of_death": null,
-        "creator": 1,
-        "date_created": "2011-09-14T00:00:00.000Z",
-        "changed_by": null,
-        "date_changed": null,
-        "voided": 0,
-        "voided_by": null,
-        "date_voided": null,
-        "void_reason": null,
-        "uuid": "365a39a9-59ca-11e3-b7e9-003018a9e11f",
-        "names": [
-            {
-                "person_name_id": 113,
-                "preferred": 0,
-                "person_id": 10,
-                "prefix": null,
-                "given_name": "tionge",
-                "middle_name": null,
-                "family_name_prefix": null,
-                "family_name": "lewis",
-                "family_name2": null,
-                "family_name_suffix": null,
-                "degree": null,
-                "creator": 1,
-                "date_created": "2011-09-14T00:00:00.000Z",
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "changed_by": null,
-                "date_changed": null,
-                "uuid": "365a3d26-59ca-11e3-b7e9-003018a9e11f"
-            }
-        ],
-        "addresses": [],
-        "person_attributes": []
-    }
-]</code></pre>
-                                    </td></tr>
-                                    
-                                    
-                                </table>
-                            </div>
-                            
-                        </div>
-                    </div>
-                    
 
                     <hr>
                 </div>
@@ -1883,85 +767,17 @@ Authorization: lQUitqOlCOo6</code></pre>
                         </ul>
                         <div class="tab-content">
                             <div class="tab-pane active" id="request-retrieve-specific-person-names-example-curl">
-                                <pre><code class="hljs curl">curl -X GET -H "Authorization: lQUitqOlCOo6" -H "//Content-Type: application/json" "localhost:3000/api/v1/people/18904/names"</code></pre>
+                                <pre><code class="hljs curl">curl -X GET -H "Authorization: lQUitqOlCOo6" -H "Content-Type: application/json" "localhost:3000/api/v1/people/18904/names"</code></pre>
                             </div>
                             <div class="tab-pane" id="request-retrieve-specific-person-names-example-http">
                                 <pre><code class="hljs http">GET 3000/api/v1/people/18904/names HTTP/1.1
 Host: 
 Authorization: lQUitqOlCOo6
-//Content-Type: application/json</code></pre>
+Content-Type: application/json</code></pre>
                             </div>
                         </div>
                     </div>
 
-                    
-                    <div>
-                        <ul class="nav nav-tabs" role="tablist">
-                            
-                            <li role="presentation" class="active">
-                                <a href="#request-retrieve-specific-person-names-responses-bf6cb84a-1da6-0d1d-cb99-76c4b9591dee" data-toggle="tab">
-                                    
-                                    Response
-                                    
-                                </a>
-                            </li>
-                            
-                        </ul>
-                        <div class="tab-content">
-                            
-                            <div class="tab-pane active" id="request-retrieve-specific-person-names-responses-bf6cb84a-1da6-0d1d-cb99-76c4b9591dee">
-                                <table class="table table-bordered">
-                                    <tr><th style="width: 20%;">Status</th><td>200 </td></tr>
-                                    
-                                    <tr><th style="width: 20%;">cache-control</th><td>max-age=0, private, must-revalidate</td></tr>
-                                    
-                                    <tr><th style="width: 20%;">content-type</th><td>application/json; charset=utf-8</td></tr>
-                                    
-                                    <tr><th style="width: 20%;">etag</th><td>W/"a479514f8b17c5a0591b89b465dbbc0a"</td></tr>
-                                    
-                                    <tr><th style="width: 20%;">transfer-encoding</th><td>chunked</td></tr>
-                                    
-                                    <tr><th style="width: 20%;">vary</th><td>Origin</td></tr>
-                                    
-                                    <tr><th style="width: 20%;">x-request-id</th><td>c5cfde6c-96af-43cf-894f-29bf7e7a5775</td></tr>
-                                    
-                                    <tr><th style="width: 20%;">x-runtime</th><td>0.054193</td></tr>
-                                    
-                                    
-                                    
-                                    <tr><td class="response-text-sample" colspan="2">
-                                        <pre><code>[
-    {
-        "person_name_id": 18872,
-        "preferred": 0,
-        "person_id": 18904,
-        "prefix": null,
-        "given_name": "William",
-        "middle_name": null,
-        "family_name_prefix": null,
-        "family_name": "Kabamkena",
-        "family_name2": null,
-        "family_name_suffix": null,
-        "degree": null,
-        "creator": 26,
-        "date_created": "2012-02-20T00:00:00.000Z",
-        "voided": 0,
-        "voided_by": null,
-        "date_voided": null,
-        "void_reason": null,
-        "changed_by": null,
-        "date_changed": null,
-        "uuid": "ba0fd78b-59d5-11e3-b7e9-003018a9e11f"
-    }
-]</code></pre>
-                                    </td></tr>
-                                    
-                                    
-                                </table>
-                            </div>
-                            
-                        </div>
-                    </div>
                     
 
                     <hr>
@@ -2017,7 +833,7 @@ Authorization: pm93gA9WzEGB
                         <ul class="nav nav-tabs" role="tablist">
                             
                             <li role="presentation" class="active">
-                                <a href="#request-creating-users-responses-57373f80-d359-4fc9-a7f9-1ec2c7a84aa5" data-toggle="tab">
+                                <a href="#request-creating-users-responses-454de3c8-478d-49bb-a3bf-050f8413658a" data-toggle="tab">
                                     
                                     Response
                                     
@@ -2027,9 +843,9 @@ Authorization: pm93gA9WzEGB
                         </ul>
                         <div class="tab-content">
                             
-                            <div class="tab-pane active" id="request-creating-users-responses-57373f80-d359-4fc9-a7f9-1ec2c7a84aa5">
+                            <div class="tab-pane active" id="request-creating-users-responses-454de3c8-478d-49bb-a3bf-050f8413658a">
                                 <table class="table table-bordered">
-                                    <tr><th style="width: 20%;">Status</th><td>201 </td></tr>
+                                    <tr><th style="width: 20%;">Status</th><td>201 Created</td></tr>
                                     
                                     <tr><th style="width: 20%;">Cache-Control</th><td>max-age=0, private, must-revalidate</td></tr>
                                     
@@ -2161,7 +977,7 @@ parse 127.0.0.1:3000/api/v1/users: first path segment in URL cannot contain colo
                         <ul class="nav nav-tabs" role="tablist">
                             
                             <li role="presentation" class="active">
-                                <a href="#request-retrieving-all-users-responses-12a2dfbd-c4da-a5d8-06d8-c159295477b0" data-toggle="tab">
+                                <a href="#request-retrieving-all-users-responses-7589199c-9bd0-49c6-b1a7-beb1594acad5" data-toggle="tab">
                                     
                                     Retrieving all users
                                     
@@ -2169,7 +985,7 @@ parse 127.0.0.1:3000/api/v1/users: first path segment in URL cannot contain colo
                             </li>
                             
                             <li role="presentation">
-                                <a href="#request-retrieving-all-users-responses-1598b1ae-615f-34e6-60e3-369a505b5f27" data-toggle="tab">
+                                <a href="#request-retrieving-all-users-responses-8e4cf498-d6e0-4f32-94aa-8041ae83c1c3" data-toggle="tab">
                                     
                                     Retrieving all users
                                     
@@ -2179,9 +995,9 @@ parse 127.0.0.1:3000/api/v1/users: first path segment in URL cannot contain colo
                         </ul>
                         <div class="tab-content">
                             
-                            <div class="tab-pane active" id="request-retrieving-all-users-responses-12a2dfbd-c4da-a5d8-06d8-c159295477b0">
+                            <div class="tab-pane active" id="request-retrieving-all-users-responses-7589199c-9bd0-49c6-b1a7-beb1594acad5">
                                 <table class="table table-bordered">
-                                    <tr><th style="width: 20%;">Status</th><td>200 </td></tr>
+                                    <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
                                     
                                     <tr><th style="width: 20%;">cache-control</th><td>max-age=0, private, must-revalidate</td></tr>
                                     
@@ -2446,9 +1262,9 @@ parse 127.0.0.1:3000/api/v1/users: first path segment in URL cannot contain colo
                                 </table>
                             </div>
                             
-                            <div class="tab-pane" id="request-retrieving-all-users-responses-1598b1ae-615f-34e6-60e3-369a505b5f27">
+                            <div class="tab-pane" id="request-retrieving-all-users-responses-8e4cf498-d6e0-4f32-94aa-8041ae83c1c3">
                                 <table class="table table-bordered">
-                                    <tr><th style="width: 20%;">Status</th><td>200 </td></tr>
+                                    <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
                                     
                                     <tr><th style="width: 20%;">cache-control</th><td>max-age=0, private, must-revalidate</td></tr>
                                     
@@ -2564,7 +1380,7 @@ Authorization: qTt9Wg2zs3oC</code></pre>
                         <ul class="nav nav-tabs" role="tablist">
                             
                             <li role="presentation" class="active">
-                                <a href="#request-retrieving-all-roles-responses-5fb42807-7509-6509-3d70-1d4e3f0899ef" data-toggle="tab">
+                                <a href="#request-retrieving-all-roles-responses-8553f7b2-a668-405a-9ccb-90e3364e2862" data-toggle="tab">
                                     
                                     Retrieving all roles
                                     
@@ -2572,7 +1388,7 @@ Authorization: qTt9Wg2zs3oC</code></pre>
                             </li>
                             
                             <li role="presentation">
-                                <a href="#request-retrieving-all-roles-responses-6d078446-48e7-8913-fc4f-9de50b0af467" data-toggle="tab">
+                                <a href="#request-retrieving-all-roles-responses-696303c4-21b5-486a-bc82-81571827cabd" data-toggle="tab">
                                     
                                     Retrieving all roles
                                     
@@ -2582,9 +1398,9 @@ Authorization: qTt9Wg2zs3oC</code></pre>
                         </ul>
                         <div class="tab-content">
                             
-                            <div class="tab-pane active" id="request-retrieving-all-roles-responses-5fb42807-7509-6509-3d70-1d4e3f0899ef">
+                            <div class="tab-pane active" id="request-retrieving-all-roles-responses-8553f7b2-a668-405a-9ccb-90e3364e2862">
                                 <table class="table table-bordered">
-                                    <tr><th style="width: 20%;">Status</th><td>200 </td></tr>
+                                    <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
                                     
                                     <tr><th style="width: 20%;">cache-control</th><td>max-age=0, private, must-revalidate</td></tr>
                                     
@@ -2749,9 +1565,9 @@ Authorization: qTt9Wg2zs3oC</code></pre>
                                 </table>
                             </div>
                             
-                            <div class="tab-pane" id="request-retrieving-all-roles-responses-6d078446-48e7-8913-fc4f-9de50b0af467">
+                            <div class="tab-pane" id="request-retrieving-all-roles-responses-696303c4-21b5-486a-bc82-81571827cabd">
                                 <table class="table table-bordered">
-                                    <tr><th style="width: 20%;">Status</th><td>200 </td></tr>
+                                    <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
                                     
                                     <tr><th style="width: 20%;">cache-control</th><td>max-age=0, private, must-revalidate</td></tr>
                                     
@@ -2854,7 +1670,7 @@ Content-Type: application/json
                         <ul class="nav nav-tabs" role="tablist">
                             
                             <li role="presentation" class="active">
-                                <a href="#request-creating-encounters-responses-3be1e6d5-877e-9b83-388b-d30ce2157c59" data-toggle="tab">
+                                <a href="#request-creating-encounters-responses-41e39eef-e1f5-46dd-82b0-baab063c0b6b" data-toggle="tab">
                                     
                                     Response
                                     
@@ -2864,9 +1680,9 @@ Content-Type: application/json
                         </ul>
                         <div class="tab-content">
                             
-                            <div class="tab-pane active" id="request-creating-encounters-responses-3be1e6d5-877e-9b83-388b-d30ce2157c59">
+                            <div class="tab-pane active" id="request-creating-encounters-responses-41e39eef-e1f5-46dd-82b0-baab063c0b6b">
                                 <table class="table table-bordered">
-                                    <tr><th style="width: 20%;">Status</th><td>201 </td></tr>
+                                    <tr><th style="width: 20%;">Status</th><td>201 Created</td></tr>
                                     
                                     <tr><th style="width: 20%;">access-control-allow-methods</th><td>GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD</td></tr>
                                     
@@ -3025,7 +1841,7 @@ Accept: application/json</code></pre>
                         <ul class="nav nav-tabs" role="tablist">
                             
                             <li role="presentation" class="active">
-                                <a href="#request-retrieve-encounters-responses-337c8f2e-3187-43ba-9a40-9aa6f086a9b0" data-toggle="tab">
+                                <a href="#request-retrieve-encounters-responses-17b5cd88-9034-4173-a2db-2d84ee077b05" data-toggle="tab">
                                     
                                     Response
                                     
@@ -3035,9 +1851,9 @@ Accept: application/json</code></pre>
                         </ul>
                         <div class="tab-content">
                             
-                            <div class="tab-pane active" id="request-retrieve-encounters-responses-337c8f2e-3187-43ba-9a40-9aa6f086a9b0">
+                            <div class="tab-pane active" id="request-retrieve-encounters-responses-17b5cd88-9034-4173-a2db-2d84ee077b05">
                                 <table class="table table-bordered">
-                                    <tr><th style="width: 20%;">Status</th><td>200 </td></tr>
+                                    <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
                                     
                                     <tr><th style="width: 20%;">cache-control</th><td>max-age=0, private, must-revalidate</td></tr>
                                     
@@ -3353,324 +2169,16 @@ Accept: application/json</code></pre>
                         </ul>
                         <div class="tab-content">
                             <div class="tab-pane active" id="request-people-search-example-curl">
-                                <pre><code class="hljs curl">curl -X GET -H "Authorization: p6GLbZKqf0Fj" "localhost:3000/api/v1/search/people?given_name=Julius&family_name=Phiri&gender=M&page_size=20&page=0"</code></pre>
+                                <pre><code class="hljs curl">curl -X GET -H "Authorization: MYqCMX507mcc" "localhost:3000/api/v1/search/people?middle_name=Test&gender=M&page_size=20&page=0"</code></pre>
                             </div>
                             <div class="tab-pane" id="request-people-search-example-http">
-                                <pre><code class="hljs http">GET 3000/api/v1/search/people?given_name=Julius&family_name=Phiri&gender=M&page_size=20&page=0 HTTP/1.1
+                                <pre><code class="hljs http">GET 3000/api/v1/search/people?middle_name=Test&gender=M&page_size=20&page=0 HTTP/1.1
 Host: 
-Authorization: p6GLbZKqf0Fj</code></pre>
+Authorization: MYqCMX507mcc</code></pre>
                             </div>
                         </div>
                     </div>
 
-                    
-                    <div>
-                        <ul class="nav nav-tabs" role="tablist">
-                            
-                            <li role="presentation" class="active">
-                                <a href="#request-people-search-responses-382e1511-4edb-92cd-20a5-2a9fdde5124d" data-toggle="tab">
-                                    
-                                    Response
-                                    
-                                </a>
-                            </li>
-                            
-                        </ul>
-                        <div class="tab-content">
-                            
-                            <div class="tab-pane active" id="request-people-search-responses-382e1511-4edb-92cd-20a5-2a9fdde5124d">
-                                <table class="table table-bordered">
-                                    <tr><th style="width: 20%;">Status</th><td>200 </td></tr>
-                                    
-                                    <tr><th style="width: 20%;">cache-control</th><td>max-age=0, private, must-revalidate</td></tr>
-                                    
-                                    <tr><th style="width: 20%;">content-type</th><td>application/json; charset=utf-8</td></tr>
-                                    
-                                    <tr><th style="width: 20%;">etag</th><td>W/"78a1d38faf8ab140822f822ee1fd1d15"</td></tr>
-                                    
-                                    <tr><th style="width: 20%;">transfer-encoding</th><td>chunked</td></tr>
-                                    
-                                    <tr><th style="width: 20%;">vary</th><td>Origin</td></tr>
-                                    
-                                    <tr><th style="width: 20%;">x-request-id</th><td>e56ee22a-1911-4d82-984e-bd2e80827e5f</td></tr>
-                                    
-                                    <tr><th style="width: 20%;">x-runtime</th><td>0.189721</td></tr>
-                                    
-                                    
-                                    
-                                    <tr><td class="response-text-sample" colspan="2">
-                                        <pre><code>[
-    {
-        "person_id": 2304,
-        "gender": "M",
-        "birthdate": "1989-07-01",
-        "birthdate_estimated": 1,
-        "dead": 0,
-        "death_date": null,
-        "cause_of_death": null,
-        "creator": 6,
-        "date_created": "2011-09-17T00:00:00.000Z",
-        "changed_by": null,
-        "date_changed": null,
-        "voided": 0,
-        "voided_by": null,
-        "date_voided": null,
-        "void_reason": null,
-        "uuid": "0d8c03de-59cc-11e3-b7e9-003018a9e11f",
-        "names": [
-            {
-                "person_name_id": 2383,
-                "preferred": 0,
-                "person_id": 2304,
-                "prefix": null,
-                "given_name": "Julius",
-                "middle_name": null,
-                "family_name_prefix": null,
-                "family_name": "Phiri",
-                "family_name2": null,
-                "family_name_suffix": null,
-                "degree": null,
-                "creator": 6,
-                "date_created": "2011-09-17T00:00:00.000Z",
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "changed_by": null,
-                "date_changed": null,
-                "uuid": "0d8c0771-59cc-11e3-b7e9-003018a9e11f"
-            }
-        ],
-        "addresses": [
-            {
-                "person_address_id": 1195,
-                "person_id": 2304,
-                "preferred": 0,
-                "address1": "School",
-                "address2": null,
-                "city_village": "Chileka",
-                "state_province": null,
-                "postal_code": null,
-                "country": null,
-                "latitude": null,
-                "longitude": null,
-                "creator": 6,
-                "date_created": "2011-09-17T00:00:00.000Z",
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "county_district": null,
-                "neighborhood_cell": null,
-                "region": null,
-                "subregion": null,
-                "township_division": null,
-                "uuid": "0d8c153d-59cc-11e3-b7e9-003018a9e11f"
-            }
-        ],
-        "person_attributes": [
-            {
-                "person_attribute_id": 4954,
-                "person_id": 2304,
-                "value": "Chileka",
-                "person_attribute_type_id": 18,
-                "creator": 6,
-                "date_created": "2011-09-17T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "0d8c15f6-59cc-11e3-b7e9-003018a9e11f"
-            },
-            {
-                "person_attribute_id": 4955,
-                "person_id": 2304,
-                "value": "School",
-                "person_attribute_type_id": 19,
-                "creator": 6,
-                "date_created": "2011-09-17T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "0d8c153d-59cc-11e3-b7e9-003018a9e11f"
-            },
-            {
-                "person_attribute_id": 4956,
-                "person_id": 2304,
-                "value": "Other",
-                "person_attribute_type_id": 13,
-                "creator": 6,
-                "date_created": "2011-09-17T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "0d8c1eeb-59cc-11e3-b7e9-003018a9e11f"
-            },
-            {
-                "person_attribute_id": 4957,
-                "person_id": 2304,
-                "value": "Not Available",
-                "person_attribute_type_id": 14,
-                "creator": 6,
-                "date_created": "2011-09-17T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "0d8c20be-59cc-11e3-b7e9-003018a9e11f"
-            }
-        ]
-    },
-    {
-        "person_id": 4956,
-        "gender": "M",
-        "birthdate": "1980-07-21",
-        "birthdate_estimated": 1,
-        "dead": 0,
-        "death_date": null,
-        "cause_of_death": null,
-        "creator": 1,
-        "date_created": "2011-12-06T00:00:00.000Z",
-        "changed_by": null,
-        "date_changed": null,
-        "voided": 0,
-        "voided_by": null,
-        "date_voided": null,
-        "void_reason": null,
-        "uuid": "a844a1ea-59cd-11e3-b7e9-003018a9e11f",
-        "names": [
-            {
-                "person_name_id": 5001,
-                "preferred": 0,
-                "person_id": 4956,
-                "prefix": null,
-                "given_name": "Julius",
-                "middle_name": null,
-                "family_name_prefix": null,
-                "family_name": "Phiri",
-                "family_name2": null,
-                "family_name_suffix": null,
-                "degree": null,
-                "creator": 1,
-                "date_created": "2011-12-06T00:00:00.000Z",
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "changed_by": null,
-                "date_changed": null,
-                "uuid": "a844a4d1-59cd-11e3-b7e9-003018a9e11f"
-            }
-        ],
-        "addresses": [
-            {
-                "person_address_id": 2959,
-                "person_id": 4956,
-                "preferred": 0,
-                "address1": "School",
-                "address2": null,
-                "city_village": "Dowa",
-                "state_province": null,
-                "postal_code": null,
-                "country": null,
-                "latitude": null,
-                "longitude": null,
-                "creator": 1,
-                "date_created": "2011-12-06T00:00:00.000Z",
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "county_district": null,
-                "neighborhood_cell": null,
-                "region": null,
-                "subregion": null,
-                "township_division": null,
-                "uuid": "a844b56a-59cd-11e3-b7e9-003018a9e11f"
-            }
-        ],
-        "person_attributes": [
-            {
-                "person_attribute_id": 12010,
-                "person_id": 4956,
-                "value": "Dowa",
-                "person_attribute_type_id": 18,
-                "creator": 1,
-                "date_created": "2011-12-06T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "a844b62b-59cd-11e3-b7e9-003018a9e11f"
-            },
-            {
-                "person_attribute_id": 12011,
-                "person_id": 4956,
-                "value": "School",
-                "person_attribute_type_id": 19,
-                "creator": 1,
-                "date_created": "2011-12-06T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "a844b56a-59cd-11e3-b7e9-003018a9e11f"
-            },
-            {
-                "person_attribute_id": 12012,
-                "person_id": 4956,
-                "value": "Farmer",
-                "person_attribute_type_id": 13,
-                "creator": 1,
-                "date_created": "2011-12-06T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "a844beeb-59cd-11e3-b7e9-003018a9e11f"
-            },
-            {
-                "person_attribute_id": 12013,
-                "person_id": 4956,
-                "value": "Not Available",
-                "person_attribute_type_id": 14,
-                "creator": 1,
-                "date_created": "2011-12-06T00:00:00.000Z",
-                "changed_by": null,
-                "date_changed": null,
-                "voided": 0,
-                "voided_by": null,
-                "date_voided": null,
-                "void_reason": null,
-                "uuid": "a844c0b6-59cd-11e3-b7e9-003018a9e11f"
-            }
-        ]
-    }
-]</code></pre>
-                                    </td></tr>
-                                    
-                                    
-                                </table>
-                            </div>
-                            
-                        </div>
-                    </div>
                     
 
                     <hr>
@@ -3709,7 +2217,7 @@ Authorization: JDIt0GpZyR3I</code></pre>
                         <ul class="nav nav-tabs" role="tablist">
                             
                             <li role="presentation" class="active">
-                                <a href="#request-retrieve-encounter-types-responses-a63b6666-0d66-33d9-bdbc-2c69e37a987a" data-toggle="tab">
+                                <a href="#request-retrieve-encounter-types-responses-ae111080-49c1-4e1b-be73-d0c00d3e9052" data-toggle="tab">
                                     
                                     Response
                                     
@@ -3719,9 +2227,9 @@ Authorization: JDIt0GpZyR3I</code></pre>
                         </ul>
                         <div class="tab-content">
                             
-                            <div class="tab-pane active" id="request-retrieve-encounter-types-responses-a63b6666-0d66-33d9-bdbc-2c69e37a987a">
+                            <div class="tab-pane active" id="request-retrieve-encounter-types-responses-ae111080-49c1-4e1b-be73-d0c00d3e9052">
                                 <table class="table table-bordered">
-                                    <tr><th style="width: 20%;">Status</th><td>200 </td></tr>
+                                    <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
                                     
                                     <tr><th style="width: 20%;">cache-control</th><td>max-age=0, private, must-revalidate</td></tr>
                                     
@@ -3893,7 +2401,7 @@ Authorization: JDIt0GpZyR3I</code></pre>
                         <ul class="nav nav-tabs" role="tablist">
                             
                             <li role="presentation" class="active">
-                                <a href="#request-retrieve-observations-responses-26358244-1034-cfe5-102f-d101efe58a42" data-toggle="tab">
+                                <a href="#request-retrieve-observations-responses-440f4e2d-fa9b-4c4f-831a-d0a9ce11033b" data-toggle="tab">
                                     
                                     Response
                                     
@@ -3903,9 +2411,9 @@ Authorization: JDIt0GpZyR3I</code></pre>
                         </ul>
                         <div class="tab-content">
                             
-                            <div class="tab-pane active" id="request-retrieve-observations-responses-26358244-1034-cfe5-102f-d101efe58a42">
+                            <div class="tab-pane active" id="request-retrieve-observations-responses-440f4e2d-fa9b-4c4f-831a-d0a9ce11033b">
                                 <table class="table table-bordered">
-                                    <tr><th style="width: 20%;">Status</th><td>200 </td></tr>
+                                    <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
                                     
                                     <tr><th style="width: 20%;">cache-control</th><td>max-age=0, private, must-revalidate</td></tr>
                                     
@@ -4133,7 +2641,7 @@ Authorization: LkBuS3be13tX
                         <ul class="nav nav-tabs" role="tablist">
                             
                             <li role="presentation" class="active">
-                                <a href="#request-create-program-responses-45862150-ba8d-42e2-9e2d-63dcc004aabe" data-toggle="tab">
+                                <a href="#request-create-program-responses-e7bd5cdb-b57e-4e1a-9d13-f9018e184329" data-toggle="tab">
                                     
                                     Response
                                     
@@ -4143,9 +2651,9 @@ Authorization: LkBuS3be13tX
                         </ul>
                         <div class="tab-content">
                             
-                            <div class="tab-pane active" id="request-create-program-responses-45862150-ba8d-42e2-9e2d-63dcc004aabe">
+                            <div class="tab-pane active" id="request-create-program-responses-e7bd5cdb-b57e-4e1a-9d13-f9018e184329">
                                 <table class="table table-bordered">
-                                    <tr><th style="width: 20%;">Status</th><td>201 </td></tr>
+                                    <tr><th style="width: 20%;">Status</th><td>201 Created</td></tr>
                                     
                                     <tr><th style="width: 20%;">Cache-Control</th><td>max-age=0, private, must-revalidate</td></tr>
                                     
@@ -4223,7 +2731,7 @@ Content-Type: application/json</code></pre>
                         <ul class="nav nav-tabs" role="tablist">
                             
                             <li role="presentation" class="active">
-                                <a href="#request-retrieve-programs-responses-88654e60-80f2-1190-ebba-1eb23ef75a34" data-toggle="tab">
+                                <a href="#request-retrieve-programs-responses-822745c8-77c3-4ea5-9406-ec468049a9e0" data-toggle="tab">
                                     
                                     Retrieve all programs
                                     
@@ -4231,7 +2739,7 @@ Content-Type: application/json</code></pre>
                             </li>
                             
                             <li role="presentation">
-                                <a href="#request-retrieve-programs-responses-c74fb713-6dd2-b726-0087-0a7d483165c4" data-toggle="tab">
+                                <a href="#request-retrieve-programs-responses-3faaafb4-3f10-439a-b7f6-a108ed9e1015" data-toggle="tab">
                                     
                                     Retrieve all programs
                                     
@@ -4241,9 +2749,9 @@ Content-Type: application/json</code></pre>
                         </ul>
                         <div class="tab-content">
                             
-                            <div class="tab-pane active" id="request-retrieve-programs-responses-88654e60-80f2-1190-ebba-1eb23ef75a34">
+                            <div class="tab-pane active" id="request-retrieve-programs-responses-822745c8-77c3-4ea5-9406-ec468049a9e0">
                                 <table class="table table-bordered">
-                                    <tr><th style="width: 20%;">Status</th><td>200 </td></tr>
+                                    <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
                                     
                                     <tr><th style="width: 20%;">cache-control</th><td>max-age=0, private, must-revalidate</td></tr>
                                     
@@ -4318,9 +2826,9 @@ Content-Type: application/json</code></pre>
                                 </table>
                             </div>
                             
-                            <div class="tab-pane" id="request-retrieve-programs-responses-c74fb713-6dd2-b726-0087-0a7d483165c4">
+                            <div class="tab-pane" id="request-retrieve-programs-responses-3faaafb4-3f10-439a-b7f6-a108ed9e1015">
                                 <table class="table table-bordered">
-                                    <tr><th style="width: 20%;">Status</th><td>200 </td></tr>
+                                    <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
                                     
                                     <tr><th style="width: 20%;">cache-control</th><td>max-age=0, private, must-revalidate</td></tr>
                                     
@@ -4436,7 +2944,7 @@ Accept: application/json</code></pre>
                         <ul class="nav nav-tabs" role="tablist">
                             
                             <li role="presentation" class="active">
-                                <a href="#request-retrieve-program-workflows-and-states-responses-d29ad9d1-e8db-8fdf-5317-8fc3c3ed8104" data-toggle="tab">
+                                <a href="#request-retrieve-program-workflows-and-states-responses-22434119-39a1-4360-9a37-503b902a1fb0" data-toggle="tab">
                                     
                                     Response
                                     
@@ -4446,9 +2954,9 @@ Accept: application/json</code></pre>
                         </ul>
                         <div class="tab-content">
                             
-                            <div class="tab-pane active" id="request-retrieve-program-workflows-and-states-responses-d29ad9d1-e8db-8fdf-5317-8fc3c3ed8104">
+                            <div class="tab-pane active" id="request-retrieve-program-workflows-and-states-responses-22434119-39a1-4360-9a37-503b902a1fb0">
                                 <table class="table table-bordered">
-                                    <tr><th style="width: 20%;">Status</th><td>200 </td></tr>
+                                    <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
                                     
                                     <tr><th style="width: 20%;">cache-control</th><td>max-age=0, private, must-revalidate</td></tr>
                                     
@@ -5120,7 +3628,7 @@ Authorization: wUO8OFXAoZZT
                         <ul class="nav nav-tabs" role="tablist">
                             
                             <li role="presentation" class="active">
-                                <a href="#request-creating-drug-orders-responses-d62c2e7f-27a0-c583-7942-117e9e7c38b3" data-toggle="tab">
+                                <a href="#request-creating-drug-orders-responses-f9949fff-e999-4261-990c-dc5d69f977da" data-toggle="tab">
                                     
                                     Response
                                     
@@ -5130,9 +3638,9 @@ Authorization: wUO8OFXAoZZT
                         </ul>
                         <div class="tab-content">
                             
-                            <div class="tab-pane active" id="request-creating-drug-orders-responses-d62c2e7f-27a0-c583-7942-117e9e7c38b3">
+                            <div class="tab-pane active" id="request-creating-drug-orders-responses-f9949fff-e999-4261-990c-dc5d69f977da">
                                 <table class="table table-bordered">
-                                    <tr><th style="width: 20%;">Status</th><td>201 </td></tr>
+                                    <tr><th style="width: 20%;">Status</th><td>201 Created</td></tr>
                                     
                                     <tr><th style="width: 20%;">access-control-allow-methods</th><td>GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD</td></tr>
                                     
@@ -5360,7 +3868,7 @@ Content-Type: application/json
                         <ul class="nav nav-tabs" role="tablist">
                             
                             <li role="presentation" class="active">
-                                <a href="#request-create-dispensations-responses-c3741563-e920-44fe-a42a-ecceff6c8cd9" data-toggle="tab">
+                                <a href="#request-create-dispensations-responses-b6a3945d-596a-42fc-b71a-4c5c4c92bc5c" data-toggle="tab">
                                     
                                     Response
                                     
@@ -5370,9 +3878,9 @@ Content-Type: application/json
                         </ul>
                         <div class="tab-content">
                             
-                            <div class="tab-pane active" id="request-create-dispensations-responses-c3741563-e920-44fe-a42a-ecceff6c8cd9">
+                            <div class="tab-pane active" id="request-create-dispensations-responses-b6a3945d-596a-42fc-b71a-4c5c4c92bc5c">
                                 <table class="table table-bordered">
-                                    <tr><th style="width: 20%;">Status</th><td>201 </td></tr>
+                                    <tr><th style="width: 20%;">Status</th><td>201 Created</td></tr>
                                     
                                     <tr><th style="width: 20%;">Cache-Control</th><td>max-age=0, private, must-revalidate</td></tr>
                                     
@@ -5573,7 +4081,7 @@ Authorization: fbRRafA9Y2Gc</code></pre>
                         <ul class="nav nav-tabs" role="tablist">
                             
                             <li role="presentation" class="active">
-                                <a href="#request-retrieve-dispensations-responses-1f91eb38-d983-4e9a-9e5f-cf52e44e3b42" data-toggle="tab">
+                                <a href="#request-retrieve-dispensations-responses-e9a9fd01-30fb-41e8-b840-3c5e5ec66bab" data-toggle="tab">
                                     
                                     Response
                                     
@@ -5583,9 +4091,9 @@ Authorization: fbRRafA9Y2Gc</code></pre>
                         </ul>
                         <div class="tab-content">
                             
-                            <div class="tab-pane active" id="request-retrieve-dispensations-responses-1f91eb38-d983-4e9a-9e5f-cf52e44e3b42">
+                            <div class="tab-pane active" id="request-retrieve-dispensations-responses-e9a9fd01-30fb-41e8-b840-3c5e5ec66bab">
                                 <table class="table table-bordered">
-                                    <tr><th style="width: 20%;">Status</th><td>200 </td></tr>
+                                    <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
                                     
                                     <tr><th style="width: 20%;">Cache-Control</th><td>max-age=0, private, must-revalidate</td></tr>
                                     
@@ -7001,7 +5509,7 @@ Authorization: c2t0QXtnOWEB</code></pre>
                         <ul class="nav nav-tabs" role="tablist">
                             
                             <li role="presentation" class="active">
-                                <a href="#request-retrieve-appointments-responses-0a6c8622-a17c-4c3c-8511-f56343de7e21" data-toggle="tab">
+                                <a href="#request-retrieve-appointments-responses-552918e5-ca99-4783-9e45-2e7de7f2eb6f" data-toggle="tab">
                                     
                                     Response
                                     
@@ -7011,9 +5519,9 @@ Authorization: c2t0QXtnOWEB</code></pre>
                         </ul>
                         <div class="tab-content">
                             
-                            <div class="tab-pane active" id="request-retrieve-appointments-responses-0a6c8622-a17c-4c3c-8511-f56343de7e21">
+                            <div class="tab-pane active" id="request-retrieve-appointments-responses-552918e5-ca99-4783-9e45-2e7de7f2eb6f">
                                 <table class="table table-bordered">
-                                    <tr><th style="width: 20%;">Status</th><td>200 </td></tr>
+                                    <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
                                     
                                     <tr><th style="width: 20%;">Cache-Control</th><td>max-age=0, private, must-revalidate</td></tr>
                                     
@@ -7179,7 +5687,7 @@ Authorization: kqpBzH1K6rYN</code></pre>
                         <ul class="nav nav-tabs" role="tablist">
                             
                             <li role="presentation" class="active">
-                                <a href="#request-retrieve-relationship-types-responses-ae7d44e0-a050-47be-9e63-049d2ba6e143" data-toggle="tab">
+                                <a href="#request-retrieve-relationship-types-responses-0a979294-376f-4459-afcf-7140b83066c9" data-toggle="tab">
                                     
                                     Response
                                     
@@ -7189,9 +5697,9 @@ Authorization: kqpBzH1K6rYN</code></pre>
                         </ul>
                         <div class="tab-content">
                             
-                            <div class="tab-pane active" id="request-retrieve-relationship-types-responses-ae7d44e0-a050-47be-9e63-049d2ba6e143">
+                            <div class="tab-pane active" id="request-retrieve-relationship-types-responses-0a979294-376f-4459-afcf-7140b83066c9">
                                 <table class="table table-bordered">
-                                    <tr><th style="width: 20%;">Status</th><td>200 </td></tr>
+                                    <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
                                     
                                     <tr><th style="width: 20%;">Cache-Control</th><td>max-age=0, private, must-revalidate</td></tr>
                                     
@@ -7242,6 +5750,1874 @@ Authorization: kqpBzH1K6rYN</code></pre>
                 
 
 
+                
+                
+                <div class="endpoints-group">
+                    <h3 id="folder-stock-management">
+                        Stock Management
+                        <a href="#folder-stock-management"><i class="glyphicon glyphicon-link"></i></a>
+                    </h3>
+
+                    <div></div>
+
+                    
+                    
+                    <div class="request">
+
+                        <h4 id="request-stock-management-retrieve-all-batches-in-pharmacy-stock">
+                            Retrieve all batches in pharmacy stock
+                            <a href="#request-stock-management-retrieve-all-batches-in-pharmacy-stock"><i class="glyphicon glyphicon-link"></i></a>
+                        </h4>
+
+                        <div></div>
+
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#request-stock-management-retrieve-all-batches-in-pharmacy-stock-example-curl" data-toggle="tab">Curl</a></li>
+                                <li role="presentation"><a href="#request-stock-management-retrieve-all-batches-in-pharmacy-stock-example-http" data-toggle="tab">HTTP</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="request-stock-management-retrieve-all-batches-in-pharmacy-stock-example-curl">
+                                    <pre><code class="hljs curl">curl -X GET -H "Authorization: M9mEO1jNftvs" -H "Content-Type: application/json" -H "Referer: http://localhost:5984" "http://localhost:3000/api/v1/pharmacy/batches"</code></pre>
+                                </div>
+                                <div class="tab-pane" id="request-stock-management-retrieve-all-batches-in-pharmacy-stock-example-http">
+                                    <pre><code class="hljs http">GET /api/v1/pharmacy/batches HTTP/1.1
+Host: localhost:3000
+Authorization: M9mEO1jNftvs
+Content-Type: application/json
+Referer: http://localhost:5984</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                
+                                <li role="presentation" class="active">
+                                    <a href="#request-stock-management-retrieve-all-batches-in-pharmacy-stock-responses-9dfde9c9-501f-4b75-860b-3144b35adfa6" data-toggle="tab">
+                                        
+                                            Response
+                                        
+                                    </a>
+                                </li>
+                                
+                            </ul>
+                            <div class="tab-content">
+                                
+                                <div class="tab-pane active" id="request-stock-management-retrieve-all-batches-in-pharmacy-stock-responses-9dfde9c9-501f-4b75-860b-3144b35adfa6">
+                                    <table class="table table-bordered">
+                                        <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Content-Type</th><td>application/json; charset=utf-8</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">ETag</th><td>W/"c459a64a2f28f6d2b6e1aaccde88d2ae"</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Cache-Control</th><td>max-age=0, private, must-revalidate</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Request-Id</th><td>3e42263f-d773-48b5-adc4-9c2669e83744</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Runtime</th><td>0.107010</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Transfer-Encoding</th><td>chunked</td></tr>
+                                        
+                                        
+                                            
+                                            <tr><td class="response-text-sample" colspan="2">
+                                                <pre><code>[
+    {
+        "id": 1,
+        "batch_number": "1234567890",
+        "creator": 1,
+        "date_created": "2019-05-09T15:01:26.000+02:00",
+        "date_changed": null,
+        "voided": false,
+        "voided_by": null,
+        "void_reason": null,
+        "date_voided": null,
+        "items": [
+            {
+                "id": 1,
+                "pharmacy_batch_id": 1,
+                "drug_id": 901,
+                "delivered_quantity": 1000,
+                "current_quantity": 0,
+                "delivery_date": "2019-05-09",
+                "expiry_date": null,
+                "creator": 1,
+                "date_created": "2019-05-09T15:06:03.000+02:00",
+                "date_changed": "2019-05-09T15:06:03.000+02:00",
+                "voided": false,
+                "voided_by": null,
+                "void_reason": null,
+                "date_voided": null
+            },
+            {
+                "id": 2,
+                "pharmacy_batch_id": 1,
+                "drug_id": 901,
+                "delivered_quantity": 1000,
+                "current_quantity": 0,
+                "delivery_date": "2019-05-09",
+                "expiry_date": null,
+                "creator": 1,
+                "date_created": "2019-05-09T15:06:06.000+02:00",
+                "date_changed": "2019-05-09T15:06:06.000+02:00",
+                "voided": false,
+                "voided_by": null,
+                "void_reason": null,
+                "date_voided": null
+            },
+            {
+                "id": 3,
+                "pharmacy_batch_id": 1,
+                "drug_id": 901,
+                "delivered_quantity": 1000,
+                "current_quantity": 0,
+                "delivery_date": "2019-05-09",
+                "expiry_date": null,
+                "creator": 1,
+                "date_created": "2019-05-09T15:06:08.000+02:00",
+                "date_changed": "2019-05-09T15:06:08.000+02:00",
+                "voided": false,
+                "voided_by": null,
+                "void_reason": null,
+                "date_voided": null
+            },
+            {
+                "id": 4,
+                "pharmacy_batch_id": 1,
+                "drug_id": 901,
+                "delivered_quantity": 1000,
+                "current_quantity": 0,
+                "delivery_date": "2019-05-09",
+                "expiry_date": "2020-12-31",
+                "creator": 1,
+                "date_created": "2019-05-09T15:34:15.000+02:00",
+                "date_changed": "2019-05-09T15:34:15.000+02:00",
+                "voided": false,
+                "voided_by": null,
+                "void_reason": null,
+                "date_voided": null
+            },
+            {
+                "id": 5,
+                "pharmacy_batch_id": 1,
+                "drug_id": 901,
+                "delivered_quantity": 500,
+                "current_quantity": 0,
+                "delivery_date": "2019-05-09",
+                "expiry_date": "2020-12-31",
+                "creator": 1,
+                "date_created": "2019-05-10T01:57:07.000+02:00",
+                "date_changed": "2019-05-10T01:57:07.000+02:00",
+                "voided": false,
+                "voided_by": null,
+                "void_reason": null,
+                "date_voided": null
+            },
+            {
+                "id": 6,
+                "pharmacy_batch_id": 1,
+                "drug_id": 901,
+                "delivered_quantity": 500,
+                "current_quantity": 0,
+                "delivery_date": "2019-05-09",
+                "expiry_date": "2020-12-31",
+                "creator": 1,
+                "date_created": "2019-05-10T01:58:12.000+02:00",
+                "date_changed": "2019-05-10T01:58:12.000+02:00",
+                "voided": false,
+                "voided_by": null,
+                "void_reason": null,
+                "date_voided": null
+            },
+            {
+                "id": 7,
+                "pharmacy_batch_id": 1,
+                "drug_id": 901,
+                "delivered_quantity": 1000,
+                "current_quantity": 0,
+                "delivery_date": "2019-05-09",
+                "expiry_date": "2020-12-31",
+                "creator": 1,
+                "date_created": "2019-05-16T15:21:20.000+02:00",
+                "date_changed": "2019-05-16T15:21:20.000+02:00",
+                "voided": false,
+                "voided_by": null,
+                "void_reason": null,
+                "date_voided": null
+            }
+        ]
+    }
+]</code></pre>
+                                            </td></tr>
+                                            
+                                        
+                                    </table>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+
+                        <hr>
+                    </div>
+                    
+                    
+                    <div class="request">
+
+                        <h4 id="request-stock-management-create-or-add-items-to-batch">
+                            Create or add items to batch
+                            <a href="#request-stock-management-create-or-add-items-to-batch"><i class="glyphicon glyphicon-link"></i></a>
+                        </h4>
+
+                        <div></div>
+
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#request-stock-management-create-or-add-items-to-batch-example-curl" data-toggle="tab">Curl</a></li>
+                                <li role="presentation"><a href="#request-stock-management-create-or-add-items-to-batch-example-http" data-toggle="tab">HTTP</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="request-stock-management-create-or-add-items-to-batch-example-curl">
+                                    <pre><code class="hljs curl">curl -X POST -H "Authorization: M9mEO1jNftvs" -H "Content-Type: application/json" -d '{
+	"batch_number": "1234567890",
+	"items": [{"drug_id": 901, "quantity": 1000, "expiry_date": "2020-12-31", "delivery_date": "2019-05-09"}]
+}' "http://localhost:3000/api/v1/pharmacy/batches"</code></pre>
+                                </div>
+                                <div class="tab-pane" id="request-stock-management-create-or-add-items-to-batch-example-http">
+                                    <pre><code class="hljs http">POST /api/v1/pharmacy/batches HTTP/1.1
+Host: localhost:3000
+Authorization: M9mEO1jNftvs
+Content-Type: application/json
+
+{
+	"batch_number": "1234567890",
+	"items": [{"drug_id": 901, "quantity": 1000, "expiry_date": "2020-12-31", "delivery_date": "2019-05-09"}]
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                
+                                <li role="presentation" class="active">
+                                    <a href="#request-stock-management-create-or-add-items-to-batch-responses-ad2bec60-6663-4413-adc8-4a0ea2ba8599" data-toggle="tab">
+                                        
+                                            Response
+                                        
+                                    </a>
+                                </li>
+                                
+                            </ul>
+                            <div class="tab-content">
+                                
+                                <div class="tab-pane active" id="request-stock-management-create-or-add-items-to-batch-responses-ad2bec60-6663-4413-adc8-4a0ea2ba8599">
+                                    <table class="table table-bordered">
+                                        <tr><th style="width: 20%;">Status</th><td>201 Created</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Content-Type</th><td>application/json; charset=utf-8</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">ETag</th><td>W/"9247348e0b615145b43e58086788fa2c"</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Cache-Control</th><td>max-age=0, private, must-revalidate</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Request-Id</th><td>c20b8b6c-cac5-4db3-8a32-d881f429bff9</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Runtime</th><td>0.348698</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Transfer-Encoding</th><td>chunked</td></tr>
+                                        
+                                        
+                                            
+                                            <tr><td class="response-text-sample" colspan="2">
+                                                <pre><code>{
+    "id": 2,
+    "batch_number": "1234567890",
+    "creator": 1,
+    "date_created": "2019-05-17T09:11:03.000+02:00",
+    "date_changed": null,
+    "voided": false,
+    "voided_by": null,
+    "void_reason": null,
+    "date_voided": null,
+    "items": [
+        {
+            "id": 9,
+            "pharmacy_batch_id": 2,
+            "drug_id": 901,
+            "delivered_quantity": 1000,
+            "current_quantity": 0,
+            "delivery_date": "2019-05-09",
+            "expiry_date": "2020-12-31",
+            "creator": 1,
+            "date_created": "2019-05-17T09:11:03.000+02:00",
+            "date_changed": "2019-05-17T09:11:03.000+02:00",
+            "voided": false,
+            "voided_by": null,
+            "void_reason": null,
+            "date_voided": null
+        }
+    ]
+}</code></pre>
+                                            </td></tr>
+                                            
+                                        
+                                    </table>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+
+                        <hr>
+                    </div>
+                    
+                    
+                    <div class="request">
+
+                        <h4 id="request-stock-management-retrieve-specific-pharmacy-batch-item">
+                            Retrieve specific pharmacy batch item
+                            <a href="#request-stock-management-retrieve-specific-pharmacy-batch-item"><i class="glyphicon glyphicon-link"></i></a>
+                        </h4>
+
+                        <div></div>
+
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#request-stock-management-retrieve-specific-pharmacy-batch-item-example-curl" data-toggle="tab">Curl</a></li>
+                                <li role="presentation"><a href="#request-stock-management-retrieve-specific-pharmacy-batch-item-example-http" data-toggle="tab">HTTP</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="request-stock-management-retrieve-specific-pharmacy-batch-item-example-curl">
+                                    <pre><code class="hljs curl">curl -X GET -H "Authorization: M9mEO1jNftvs" "http://localhost:3000/api/v1/pharmacy/items/9"</code></pre>
+                                </div>
+                                <div class="tab-pane" id="request-stock-management-retrieve-specific-pharmacy-batch-item-example-http">
+                                    <pre><code class="hljs http">GET /api/v1/pharmacy/items/9 HTTP/1.1
+Host: localhost:3000
+Authorization: M9mEO1jNftvs</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                
+                                <li role="presentation" class="active">
+                                    <a href="#request-stock-management-retrieve-specific-pharmacy-batch-item-responses-31af276c-1a16-4da0-beab-cb2921b4492f" data-toggle="tab">
+                                        
+                                            Response
+                                        
+                                    </a>
+                                </li>
+                                
+                            </ul>
+                            <div class="tab-content">
+                                
+                                <div class="tab-pane active" id="request-stock-management-retrieve-specific-pharmacy-batch-item-responses-31af276c-1a16-4da0-beab-cb2921b4492f">
+                                    <table class="table table-bordered">
+                                        <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Content-Type</th><td>application/json; charset=utf-8</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">ETag</th><td>W/"86daa0fe67078d5d4f84c41a1bbb1339"</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Cache-Control</th><td>max-age=0, private, must-revalidate</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Request-Id</th><td>0afb6b02-be72-47e4-b939-266e90e73db6</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Runtime</th><td>0.007616</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Transfer-Encoding</th><td>chunked</td></tr>
+                                        
+                                        
+                                            
+                                            <tr><td class="response-text-sample" colspan="2">
+                                                <pre><code>{
+    "id": 9,
+    "pharmacy_batch_id": 2,
+    "drug_id": 901,
+    "delivered_quantity": 1000,
+    "current_quantity": 0,
+    "delivery_date": "2019-05-09",
+    "expiry_date": "2020-12-31",
+    "creator": 1,
+    "date_created": "2019-05-17T09:11:03.000+02:00",
+    "date_changed": "2019-05-17T09:11:03.000+02:00",
+    "voided": false,
+    "voided_by": null,
+    "void_reason": null,
+    "date_voided": null
+}</code></pre>
+                                            </td></tr>
+                                            
+                                        
+                                    </table>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+
+                        <hr>
+                    </div>
+                    
+                    
+                    <div class="request">
+
+                        <h4 id="request-stock-management-retrieve-all-pharmacy-batch-items">
+                            Retrieve all pharmacy batch items
+                            <a href="#request-stock-management-retrieve-all-pharmacy-batch-items"><i class="glyphicon glyphicon-link"></i></a>
+                        </h4>
+
+                        <div></div>
+
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#request-stock-management-retrieve-all-pharmacy-batch-items-example-curl" data-toggle="tab">Curl</a></li>
+                                <li role="presentation"><a href="#request-stock-management-retrieve-all-pharmacy-batch-items-example-http" data-toggle="tab">HTTP</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="request-stock-management-retrieve-all-pharmacy-batch-items-example-curl">
+                                    <pre><code class="hljs curl">curl -X GET -H "Authorization: M9mEO1jNftvs" "http://localhost:3000/api/v1/pharmacy/items?drug_id=901"</code></pre>
+                                </div>
+                                <div class="tab-pane" id="request-stock-management-retrieve-all-pharmacy-batch-items-example-http">
+                                    <pre><code class="hljs http">GET /api/v1/pharmacy/items?drug_id=901 HTTP/1.1
+Host: localhost:3000
+Authorization: M9mEO1jNftvs</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                
+                                <li role="presentation" class="active">
+                                    <a href="#request-stock-management-retrieve-all-pharmacy-batch-items-responses-08870d0c-98df-47ba-ab94-c3eadeef046e" data-toggle="tab">
+                                        
+                                            Retrieve all pharmacy batch items
+                                        
+                                    </a>
+                                </li>
+                                
+                                <li role="presentation">
+                                    <a href="#request-stock-management-retrieve-all-pharmacy-batch-items-responses-89043b08-6017-41db-9196-b5bc28108c3b" data-toggle="tab">
+                                        
+                                            Retrieve all pharmacy batch items
+                                        
+                                    </a>
+                                </li>
+                                
+                                <li role="presentation">
+                                    <a href="#request-stock-management-retrieve-all-pharmacy-batch-items-responses-25d8edcf-b612-4664-b5c9-c45fc9fac616" data-toggle="tab">
+                                        
+                                            Retrieve all pharmacy batch items
+                                        
+                                    </a>
+                                </li>
+                                
+                            </ul>
+                            <div class="tab-content">
+                                
+                                <div class="tab-pane active" id="request-stock-management-retrieve-all-pharmacy-batch-items-responses-08870d0c-98df-47ba-ab94-c3eadeef046e">
+                                    <table class="table table-bordered">
+                                        <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Content-Type</th><td>application/json; charset=utf-8</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">ETag</th><td>W/"6fff4b375c99204f2bc224f2c26661a5"</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Cache-Control</th><td>max-age=0, private, must-revalidate</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Request-Id</th><td>db397909-6107-4f7b-89f0-69cfdb8ace9b</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Runtime</th><td>0.042295</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Transfer-Encoding</th><td>chunked</td></tr>
+                                        
+                                        
+                                            
+                                            <tr><td class="response-text-sample" colspan="2">
+                                                <pre><code>[
+    {
+        "id": 10,
+        "pharmacy_batch_id": 2,
+        "drug_id": 901,
+        "delivered_quantity": 500,
+        "current_quantity": 0,
+        "delivery_date": "2019-05-09",
+        "expiry_date": "2020-12-31",
+        "creator": 1,
+        "date_created": "2019-05-17T09:11:58.000+02:00",
+        "date_changed": "2019-05-17T09:11:58.000+02:00",
+        "voided": false,
+        "voided_by": null,
+        "void_reason": null,
+        "date_voided": null
+    },
+    {
+        "id": 9,
+        "pharmacy_batch_id": 2,
+        "drug_id": 901,
+        "delivered_quantity": 1000,
+        "current_quantity": 0,
+        "delivery_date": "2019-05-09",
+        "expiry_date": "2020-12-31",
+        "creator": 1,
+        "date_created": "2019-05-17T09:11:03.000+02:00",
+        "date_changed": "2019-05-17T09:11:03.000+02:00",
+        "voided": false,
+        "voided_by": null,
+        "void_reason": null,
+        "date_voided": null
+    }
+]</code></pre>
+                                            </td></tr>
+                                            
+                                        
+                                    </table>
+                                </div>
+                                
+                                <div class="tab-pane" id="request-stock-management-retrieve-all-pharmacy-batch-items-responses-89043b08-6017-41db-9196-b5bc28108c3b">
+                                    <table class="table table-bordered">
+                                        <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Content-Type</th><td>application/json; charset=utf-8</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">ETag</th><td>W/"6fff4b375c99204f2bc224f2c26661a5"</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Cache-Control</th><td>max-age=0, private, must-revalidate</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Request-Id</th><td>db397909-6107-4f7b-89f0-69cfdb8ace9b</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Runtime</th><td>0.042295</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Transfer-Encoding</th><td>chunked</td></tr>
+                                        
+                                        
+                                            
+                                            <tr><td class="response-text-sample" colspan="2">
+                                                <pre><code>[
+    {
+        "id": 10,
+        "pharmacy_batch_id": 2,
+        "drug_id": 901,
+        "delivered_quantity": 500,
+        "current_quantity": 0,
+        "delivery_date": "2019-05-09",
+        "expiry_date": "2020-12-31",
+        "creator": 1,
+        "date_created": "2019-05-17T09:11:58.000+02:00",
+        "date_changed": "2019-05-17T09:11:58.000+02:00",
+        "voided": false,
+        "voided_by": null,
+        "void_reason": null,
+        "date_voided": null
+    },
+    {
+        "id": 9,
+        "pharmacy_batch_id": 2,
+        "drug_id": 901,
+        "delivered_quantity": 1000,
+        "current_quantity": 0,
+        "delivery_date": "2019-05-09",
+        "expiry_date": "2020-12-31",
+        "creator": 1,
+        "date_created": "2019-05-17T09:11:03.000+02:00",
+        "date_changed": "2019-05-17T09:11:03.000+02:00",
+        "voided": false,
+        "voided_by": null,
+        "void_reason": null,
+        "date_voided": null
+    }
+]</code></pre>
+                                            </td></tr>
+                                            
+                                        
+                                    </table>
+                                </div>
+                                
+                                <div class="tab-pane" id="request-stock-management-retrieve-all-pharmacy-batch-items-responses-25d8edcf-b612-4664-b5c9-c45fc9fac616">
+                                    <table class="table table-bordered">
+                                        <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Content-Type</th><td>application/json; charset=utf-8</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">ETag</th><td>W/"6fff4b375c99204f2bc224f2c26661a5"</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Cache-Control</th><td>max-age=0, private, must-revalidate</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Request-Id</th><td>db397909-6107-4f7b-89f0-69cfdb8ace9b</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Runtime</th><td>0.042295</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Transfer-Encoding</th><td>chunked</td></tr>
+                                        
+                                        
+                                            
+                                            <tr><td class="response-text-sample" colspan="2">
+                                                <pre><code>[
+    {
+        "id": 10,
+        "pharmacy_batch_id": 2,
+        "drug_id": 901,
+        "delivered_quantity": 500,
+        "current_quantity": 0,
+        "delivery_date": "2019-05-09",
+        "expiry_date": "2020-12-31",
+        "creator": 1,
+        "date_created": "2019-05-17T09:11:58.000+02:00",
+        "date_changed": "2019-05-17T09:11:58.000+02:00",
+        "voided": false,
+        "voided_by": null,
+        "void_reason": null,
+        "date_voided": null
+    },
+    {
+        "id": 9,
+        "pharmacy_batch_id": 2,
+        "drug_id": 901,
+        "delivered_quantity": 1000,
+        "current_quantity": 0,
+        "delivery_date": "2019-05-09",
+        "expiry_date": "2020-12-31",
+        "creator": 1,
+        "date_created": "2019-05-17T09:11:03.000+02:00",
+        "date_changed": "2019-05-17T09:11:03.000+02:00",
+        "voided": false,
+        "voided_by": null,
+        "void_reason": null,
+        "date_voided": null
+    }
+]</code></pre>
+                                            </td></tr>
+                                            
+                                        
+                                    </table>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+
+                        <hr>
+                    </div>
+                    
+                    
+                    <div class="request">
+
+                        <h4 id="request-stock-management-update-batch">
+                            Update batch
+                            <a href="#request-stock-management-update-batch"><i class="glyphicon glyphicon-link"></i></a>
+                        </h4>
+
+                        <div></div>
+
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#request-stock-management-update-batch-example-curl" data-toggle="tab">Curl</a></li>
+                                <li role="presentation"><a href="#request-stock-management-update-batch-example-http" data-toggle="tab">HTTP</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="request-stock-management-update-batch-example-curl">
+                                    <pre><code class="hljs curl">curl -X PUT -H "Content-Type: application/json" -H "Authorization: M9mEO1jNftvs" -d '{
+	"items": [{"drug_id": 901, "quantity": 500, "expiry_date": "2020-12-31", "delivery_date": "2019-05-09"}]
+}' "http://localhost:3000/api/v1/pharmacy/batches/1234567890"</code></pre>
+                                </div>
+                                <div class="tab-pane" id="request-stock-management-update-batch-example-http">
+                                    <pre><code class="hljs http">PUT /api/v1/pharmacy/batches/1234567890 HTTP/1.1
+Host: localhost:3000
+Content-Type: application/json
+Authorization: M9mEO1jNftvs
+
+{
+	"items": [{"drug_id": 901, "quantity": 500, "expiry_date": "2020-12-31", "delivery_date": "2019-05-09"}]
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                
+                                <li role="presentation" class="active">
+                                    <a href="#request-stock-management-update-batch-responses-0419277c-4a4a-4cfc-b873-8d9f0d0c01c1" data-toggle="tab">
+                                        
+                                            Response
+                                        
+                                    </a>
+                                </li>
+                                
+                            </ul>
+                            <div class="tab-content">
+                                
+                                <div class="tab-pane active" id="request-stock-management-update-batch-responses-0419277c-4a4a-4cfc-b873-8d9f0d0c01c1">
+                                    <table class="table table-bordered">
+                                        <tr><th style="width: 20%;">Status</th><td>201 Created</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Content-Type</th><td>application/json; charset=utf-8</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">ETag</th><td>W/"44875dbaf028a4f718ba3b86496ad641"</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Cache-Control</th><td>max-age=0, private, must-revalidate</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Request-Id</th><td>e7ca64f5-c24b-4437-b5b8-db973b4870bf</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Runtime</th><td>0.036926</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Transfer-Encoding</th><td>chunked</td></tr>
+                                        
+                                        
+                                            
+                                            <tr><td class="response-text-sample" colspan="2">
+                                                <pre><code>{
+    "id": 2,
+    "batch_number": "1234567890",
+    "creator": 1,
+    "date_created": "2019-05-17T09:11:03.000+02:00",
+    "date_changed": null,
+    "voided": false,
+    "voided_by": null,
+    "void_reason": null,
+    "date_voided": null,
+    "items": [
+        {
+            "id": 9,
+            "pharmacy_batch_id": 2,
+            "drug_id": 901,
+            "delivered_quantity": 1000,
+            "current_quantity": 0,
+            "delivery_date": "2019-05-09",
+            "expiry_date": "2020-12-31",
+            "creator": 1,
+            "date_created": "2019-05-17T09:11:03.000+02:00",
+            "date_changed": "2019-05-17T09:11:03.000+02:00",
+            "voided": false,
+            "voided_by": null,
+            "void_reason": null,
+            "date_voided": null
+        },
+        {
+            "id": 10,
+            "pharmacy_batch_id": 2,
+            "drug_id": 901,
+            "delivered_quantity": 500,
+            "current_quantity": 0,
+            "delivery_date": "2019-05-09",
+            "expiry_date": "2020-12-31",
+            "creator": 1,
+            "date_created": "2019-05-17T09:11:58.000+02:00",
+            "date_changed": "2019-05-17T09:11:58.000+02:00",
+            "voided": false,
+            "voided_by": null,
+            "void_reason": null,
+            "date_voided": null
+        }
+    ]
+}</code></pre>
+                                            </td></tr>
+                                            
+                                        
+                                    </table>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+
+                        <hr>
+                    </div>
+                    
+                    
+                    <div class="request">
+
+                        <h4 id="request-stock-management-retrieve-batch-by-batch-number">
+                            Retrieve batch by batch number
+                            <a href="#request-stock-management-retrieve-batch-by-batch-number"><i class="glyphicon glyphicon-link"></i></a>
+                        </h4>
+
+                        <div></div>
+
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#request-stock-management-retrieve-batch-by-batch-number-example-curl" data-toggle="tab">Curl</a></li>
+                                <li role="presentation"><a href="#request-stock-management-retrieve-batch-by-batch-number-example-http" data-toggle="tab">HTTP</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="request-stock-management-retrieve-batch-by-batch-number-example-curl">
+                                    <pre><code class="hljs curl">curl -X GET -H "Authorization: M9mEO1jNftvs" "http://localhost:3000/api/v1/pharmacy/batches/1234567890"</code></pre>
+                                </div>
+                                <div class="tab-pane" id="request-stock-management-retrieve-batch-by-batch-number-example-http">
+                                    <pre><code class="hljs http">GET /api/v1/pharmacy/batches/1234567890 HTTP/1.1
+Host: localhost:3000
+Authorization: M9mEO1jNftvs</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                
+                                <li role="presentation" class="active">
+                                    <a href="#request-stock-management-retrieve-batch-by-batch-number-responses-b5d41678-59ae-460d-aacc-0d1bf13f17b5" data-toggle="tab">
+                                        
+                                            Response
+                                        
+                                    </a>
+                                </li>
+                                
+                            </ul>
+                            <div class="tab-content">
+                                
+                                <div class="tab-pane active" id="request-stock-management-retrieve-batch-by-batch-number-responses-b5d41678-59ae-460d-aacc-0d1bf13f17b5">
+                                    <table class="table table-bordered">
+                                        <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Content-Type</th><td>application/json; charset=utf-8</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">ETag</th><td>W/"9247348e0b615145b43e58086788fa2c"</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Cache-Control</th><td>max-age=0, private, must-revalidate</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Request-Id</th><td>c075f4a2-d481-44c1-a607-a3306ad571d8</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Runtime</th><td>0.024095</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Transfer-Encoding</th><td>chunked</td></tr>
+                                        
+                                        
+                                            
+                                            <tr><td class="response-text-sample" colspan="2">
+                                                <pre><code>{
+    "id": 2,
+    "batch_number": "1234567890",
+    "creator": 1,
+    "date_created": "2019-05-17T09:11:03.000+02:00",
+    "date_changed": null,
+    "voided": false,
+    "voided_by": null,
+    "void_reason": null,
+    "date_voided": null,
+    "items": [
+        {
+            "id": 9,
+            "pharmacy_batch_id": 2,
+            "drug_id": 901,
+            "delivered_quantity": 1000,
+            "current_quantity": 0,
+            "delivery_date": "2019-05-09",
+            "expiry_date": "2020-12-31",
+            "creator": 1,
+            "date_created": "2019-05-17T09:11:03.000+02:00",
+            "date_changed": "2019-05-17T09:11:03.000+02:00",
+            "voided": false,
+            "voided_by": null,
+            "void_reason": null,
+            "date_voided": null
+        }
+    ]
+}</code></pre>
+                                            </td></tr>
+                                            
+                                        
+                                    </table>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+
+                        <hr>
+                    </div>
+                    
+                    
+                    <div class="request">
+
+                        <h4 id="request-stock-management-retrieve-earliest-expiring-item">
+                            Retrieve earliest expiring item
+                            <a href="#request-stock-management-retrieve-earliest-expiring-item"><i class="glyphicon glyphicon-link"></i></a>
+                        </h4>
+
+                        <div></div>
+
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#request-stock-management-retrieve-earliest-expiring-item-example-curl" data-toggle="tab">Curl</a></li>
+                                <li role="presentation"><a href="#request-stock-management-retrieve-earliest-expiring-item-example-http" data-toggle="tab">HTTP</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="request-stock-management-retrieve-earliest-expiring-item-example-curl">
+                                    <pre><code class="hljs curl">curl -X GET -H "Authorization: 58L9eHzOh7Mi" "http://localhost:3000/api/v1/pharmacy/earliest_expiring_item"</code></pre>
+                                </div>
+                                <div class="tab-pane" id="request-stock-management-retrieve-earliest-expiring-item-example-http">
+                                    <pre><code class="hljs http">GET /api/v1/pharmacy/earliest_expiring_item HTTP/1.1
+Host: localhost:3000
+Authorization: 58L9eHzOh7Mi</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                
+                                <li role="presentation" class="active">
+                                    <a href="#request-stock-management-retrieve-earliest-expiring-item-responses-a7723ca8-6399-43b4-90ee-064112a3a04e" data-toggle="tab">
+                                        
+                                            Response
+                                        
+                                    </a>
+                                </li>
+                                
+                            </ul>
+                            <div class="tab-content">
+                                
+                                <div class="tab-pane active" id="request-stock-management-retrieve-earliest-expiring-item-responses-a7723ca8-6399-43b4-90ee-064112a3a04e">
+                                    <table class="table table-bordered">
+                                        <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Content-Type</th><td>application/json; charset=utf-8</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">ETag</th><td>W/"c72960b0169371af80f87b9f7f70972c"</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Cache-Control</th><td>max-age=0, private, must-revalidate</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Request-Id</th><td>8effb353-b0d7-41e1-b4a3-3c76d2c525ce</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Runtime</th><td>0.048205</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Transfer-Encoding</th><td>chunked</td></tr>
+                                        
+                                        
+                                            
+                                            <tr><td class="response-text-sample" colspan="2">
+                                                <pre><code>{
+    "id": 1,
+    "pharmacy_batch_id": 1,
+    "drug_id": 901,
+    "delivered_quantity": 1000,
+    "current_quantity": 0,
+    "delivery_date": "2019-05-09",
+    "expiry_date": null,
+    "creator": 1,
+    "date_created": "2019-05-09T15:06:03.000+02:00",
+    "date_changed": "2019-05-09T15:06:03.000+02:00",
+    "voided": false,
+    "voided_by": null,
+    "void_reason": null,
+    "date_voided": null
+}</code></pre>
+                                            </td></tr>
+                                            
+                                        
+                                    </table>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+
+                        <hr>
+                    </div>
+                    
+                    
+                    <div class="request">
+
+                        <h4 id="request-stock-management-delete-batch">
+                            Delete batch
+                            <a href="#request-stock-management-delete-batch"><i class="glyphicon glyphicon-link"></i></a>
+                        </h4>
+
+                        <div></div>
+
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#request-stock-management-delete-batch-example-curl" data-toggle="tab">Curl</a></li>
+                                <li role="presentation"><a href="#request-stock-management-delete-batch-example-http" data-toggle="tab">HTTP</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="request-stock-management-delete-batch-example-curl">
+                                    <pre><code class="hljs curl">curl -X DELETE -H "Authorization: M9mEO1jNftvs" "http://localhost:3000/api/v1/pharmacy/batches/1234567890?reason=I+Hate+This+Batch"</code></pre>
+                                </div>
+                                <div class="tab-pane" id="request-stock-management-delete-batch-example-http">
+                                    <pre><code class="hljs http">DELETE /api/v1/pharmacy/batches/1234567890?reason=I+Hate+This+Batch HTTP/1.1
+Host: localhost:3000
+Authorization: M9mEO1jNftvs</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+
+                        <hr>
+                    </div>
+                    
+                    
+                    <div class="request">
+
+                        <h4 id="request-stock-management-reallocate-batch-item-to-another-site">
+                            Reallocate batch item to another site
+                            <a href="#request-stock-management-reallocate-batch-item-to-another-site"><i class="glyphicon glyphicon-link"></i></a>
+                        </h4>
+
+                        <div></div>
+
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#request-stock-management-reallocate-batch-item-to-another-site-example-curl" data-toggle="tab">Curl</a></li>
+                                <li role="presentation"><a href="#request-stock-management-reallocate-batch-item-to-another-site-example-http" data-toggle="tab">HTTP</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="request-stock-management-reallocate-batch-item-to-another-site-example-curl">
+                                    <pre><code class="hljs curl">curl -X POST -H "Content-Type: application/json" -H "Authorization: 58L9eHzOh7Mi" -d '{
+	"reallocation_code": "1234567890",
+	"quantity": 0,
+	"location_id": 701
+}' "http://localhost:3000/api/v1/pharmacy/items/5/reallocate"</code></pre>
+                                </div>
+                                <div class="tab-pane" id="request-stock-management-reallocate-batch-item-to-another-site-example-http">
+                                    <pre><code class="hljs http">POST /api/v1/pharmacy/items/5/reallocate HTTP/1.1
+Host: localhost:3000
+Content-Type: application/json
+Authorization: 58L9eHzOh7Mi
+
+{
+	"reallocation_code": "1234567890",
+	"quantity": 0,
+	"location_id": 701
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                
+                                <li role="presentation" class="active">
+                                    <a href="#request-stock-management-reallocate-batch-item-to-another-site-responses-026c5cf5-e7b5-422c-9c19-3d5a38b5ff93" data-toggle="tab">
+                                        
+                                            Reallocate batch item to another site
+                                        
+                                    </a>
+                                </li>
+                                
+                                <li role="presentation">
+                                    <a href="#request-stock-management-reallocate-batch-item-to-another-site-responses-669892f5-373d-4570-81a7-e9b25fed3689" data-toggle="tab">
+                                        
+                                            Reallocate batch item to another site
+                                        
+                                    </a>
+                                </li>
+                                
+                            </ul>
+                            <div class="tab-content">
+                                
+                                <div class="tab-pane active" id="request-stock-management-reallocate-batch-item-to-another-site-responses-026c5cf5-e7b5-422c-9c19-3d5a38b5ff93">
+                                    <table class="table table-bordered">
+                                        <tr><th style="width: 20%;">Status</th><td>201 Created</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Content-Type</th><td>application/json; charset=utf-8</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">ETag</th><td>W/"5bbbc83f4a4e5bf94f264e571548ab1e"</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Cache-Control</th><td>max-age=0, private, must-revalidate</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Request-Id</th><td>f7441784-ef67-43e4-abad-acb865f3a1c2</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Runtime</th><td>0.843913</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Transfer-Encoding</th><td>chunked</td></tr>
+                                        
+                                        
+                                            
+                                            <tr><td class="response-text-sample" colspan="2">
+                                                <pre><code>{
+    "id": 1,
+    "reallocation_code": "1234567890",
+    "batch_item_id": 5,
+    "quantity": 0,
+    "location_id": 701,
+    "created_at": "2019-05-16T15:56:16.000+02:00",
+    "updated_at": "2019-05-16T15:56:16.000+02:00"
+}</code></pre>
+                                            </td></tr>
+                                            
+                                        
+                                    </table>
+                                </div>
+                                
+                                <div class="tab-pane" id="request-stock-management-reallocate-batch-item-to-another-site-responses-669892f5-373d-4570-81a7-e9b25fed3689">
+                                    <table class="table table-bordered">
+                                        <tr><th style="width: 20%;">Status</th><td>201 Created</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Content-Type</th><td>application/json; charset=utf-8</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">ETag</th><td>W/"5bbbc83f4a4e5bf94f264e571548ab1e"</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Cache-Control</th><td>max-age=0, private, must-revalidate</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Request-Id</th><td>f7441784-ef67-43e4-abad-acb865f3a1c2</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Runtime</th><td>0.843913</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Transfer-Encoding</th><td>chunked</td></tr>
+                                        
+                                        
+                                            
+                                            <tr><td class="response-text-sample" colspan="2">
+                                                <pre><code>{
+    "id": 1,
+    "reallocation_code": "1234567890",
+    "batch_item_id": 5,
+    "quantity": 0,
+    "location_id": 701,
+    "created_at": "2019-05-16T15:56:16.000+02:00",
+    "updated_at": "2019-05-16T15:56:16.000+02:00"
+}</code></pre>
+                                            </td></tr>
+                                            
+                                        
+                                    </table>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+
+                        <hr>
+                    </div>
+                    
+
+                </div>
+                
+                
+                <div class="endpoints-group">
+                    <h3 id="folder-search">
+                        Search
+                        <a href="#folder-search"><i class="glyphicon glyphicon-link"></i></a>
+                    </h3>
+
+                    <div><p>This section contains endpoints for searching various entities in the database.
+These routes are meant to compliment the rudimentary search available for the
+various high level entities (eg /observations?encounter_id=query).</p>
+</div>
+
+                    
+                    
+                    <div class="request">
+
+                        <h4 id="request-search-find-duplicate-identifiers-of-a-given-type">
+                            Find duplicate identifiers of a given type
+                            <a href="#request-search-find-duplicate-identifiers-of-a-given-type"><i class="glyphicon glyphicon-link"></i></a>
+                        </h4>
+
+                        <div></div>
+
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#request-search-find-duplicate-identifiers-of-a-given-type-example-curl" data-toggle="tab">Curl</a></li>
+                                <li role="presentation"><a href="#request-search-find-duplicate-identifiers-of-a-given-type-example-http" data-toggle="tab">HTTP</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="request-search-find-duplicate-identifiers-of-a-given-type-example-curl">
+                                    <pre><code class="hljs curl">curl -X GET -H "Authorization: 8Azu1BYHc2r0" "http://localhost:3000/api/v1/search/identifiers/duplicates?type=3"</code></pre>
+                                </div>
+                                <div class="tab-pane" id="request-search-find-duplicate-identifiers-of-a-given-type-example-http">
+                                    <pre><code class="hljs http">GET /api/v1/search/identifiers/duplicates?type=3 HTTP/1.1
+Host: localhost:3000
+Authorization: 8Azu1BYHc2r0</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                
+                                <li role="presentation" class="active">
+                                    <a href="#request-search-find-duplicate-identifiers-of-a-given-type-responses-b870c94f-f7ce-4b26-808e-055a913cb980" data-toggle="tab">
+                                        
+                                            Response
+                                        
+                                    </a>
+                                </li>
+                                
+                            </ul>
+                            <div class="tab-content">
+                                
+                                <div class="tab-pane active" id="request-search-find-duplicate-identifiers-of-a-given-type-responses-b870c94f-f7ce-4b26-808e-055a913cb980">
+                                    <table class="table table-bordered">
+                                        <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Content-Type</th><td>application/json; charset=utf-8</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">ETag</th><td>W/"35c607667efb4c06f2f533ae6f9f1a90"</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Cache-Control</th><td>max-age=0, private, must-revalidate</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Request-Id</th><td>f383cb2b-4157-44be-91d8-1a964fa4860b</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Runtime</th><td>0.938342</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Transfer-Encoding</th><td>chunked</td></tr>
+                                        
+                                        
+                                            
+                                            <tr><td class="response-text-sample" colspan="2">
+                                                <pre><code>[
+    {
+        "count": 2,
+        "identifier": "P170100202393"
+    },
+    {
+        "count": 2,
+        "identifier": "P170100293696"
+    },
+    {
+        "count": 2,
+        "identifier": "P170100370503"
+    },
+    {
+        "count": 2,
+        "identifier": "P170100370674"
+    },
+    {
+        "count": 2,
+        "identifier": "P170100370692"
+    },
+    {
+        "count": 2,
+        "identifier": "P170100376570"
+    },
+    {
+        "count": 2,
+        "identifier": "P170100376669"
+    },
+    {
+        "count": 2,
+        "identifier": "P170100376678"
+    },
+    {
+        "count": 2,
+        "identifier": "P170100376703"
+    },
+    {
+        "count": 2,
+        "identifier": "P170100376712"
+    },
+    {
+        "count": 2,
+        "identifier": "P170100378934"
+    },
+    {
+        "count": 2,
+        "identifier": "P170100379014"
+    },
+    {
+        "count": 2,
+        "identifier": "P170100379381"
+    },
+    {
+        "count": 2,
+        "identifier": "P170100379390"
+    },
+    {
+        "count": 2,
+        "identifier": "P170100379620"
+    },
+    {
+        "count": 2,
+        "identifier": "P170100379648"
+    },
+    {
+        "count": 2,
+        "identifier": "P170100380191"
+    },
+    {
+        "count": 2,
+        "identifier": "P170100380583"
+    },
+    {
+        "count": 2,
+        "identifier": "P170100380592"
+    },
+    {
+        "count": 2,
+        "identifier": "P170100388460"
+    },
+    {
+        "count": 2,
+        "identifier": "P170100395005"
+    },
+    {
+        "count": 2,
+        "identifier": "P170100422100"
+    }
+]</code></pre>
+                                            </td></tr>
+                                            
+                                        
+                                    </table>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+
+                        <hr>
+                    </div>
+                    
+                    
+                    <div class="request">
+
+                        <h4 id="request-search-find-patients-by-identifier">
+                            Find patients by identifier
+                            <a href="#request-search-find-patients-by-identifier"><i class="glyphicon glyphicon-link"></i></a>
+                        </h4>
+
+                        <div></div>
+
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#request-search-find-patients-by-identifier-example-curl" data-toggle="tab">Curl</a></li>
+                                <li role="presentation"><a href="#request-search-find-patients-by-identifier-example-http" data-toggle="tab">HTTP</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="request-search-find-patients-by-identifier-example-curl">
+                                    <pre><code class="hljs curl">curl -X GET -H "Authorization: 3rGfPFwKcmd3" "http://localhost:3000/api/v1/search/patients/by_identifier?type_id=3&identifier=P112000000023"</code></pre>
+                                </div>
+                                <div class="tab-pane" id="request-search-find-patients-by-identifier-example-http">
+                                    <pre><code class="hljs http">GET /api/v1/search/patients/by_identifier?type_id=3&identifier=P112000000023 HTTP/1.1
+Host: localhost:3000
+Authorization: 3rGfPFwKcmd3</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                
+                                <li role="presentation" class="active">
+                                    <a href="#request-search-find-patients-by-identifier-responses-2fbeea60-0d64-4ace-92f2-65777244d402" data-toggle="tab">
+                                        
+                                            Response
+                                        
+                                    </a>
+                                </li>
+                                
+                            </ul>
+                            <div class="tab-content">
+                                
+                                <div class="tab-pane active" id="request-search-find-patients-by-identifier-responses-2fbeea60-0d64-4ace-92f2-65777244d402">
+                                    <table class="table table-bordered">
+                                        <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Content-Type</th><td>application/json; charset=utf-8</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">ETag</th><td>W/"c7e3263bf83c8d56f03371b0ea1cec22"</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Cache-Control</th><td>max-age=0, private, must-revalidate</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Request-Id</th><td>11faf7f3-f81f-4ab9-9733-899954f50245</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Runtime</th><td>0.076544</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Transfer-Encoding</th><td>chunked</td></tr>
+                                        
+                                        
+                                            
+                                            <tr><td class="response-text-sample" colspan="2">
+                                                <pre><code>[
+    {
+        "patient_id": 8304,
+        "tribe": null,
+        "creator": 1,
+        "date_created": "2020-03-06T08:58:29.000+02:00",
+        "changed_by": 1,
+        "date_changed": "2020-03-06T08:58:29.000+02:00",
+        "voided": 0,
+        "voided_by": null,
+        "date_voided": null,
+        "void_reason": null,
+        "person": {
+            "person_id": 8304,
+            "gender": "M",
+            "birthdate": "1990-07-01",
+            "birthdate_estimated": 1,
+            "dead": 0,
+            "death_date": null,
+            "cause_of_death": null,
+            "creator": 1,
+            "date_created": "2020-03-06T08:58:29.000+02:00",
+            "changed_by": 1,
+            "date_changed": "2020-03-06T08:58:29.000+02:00",
+            "voided": 0,
+            "voided_by": null,
+            "date_voided": null,
+            "void_reason": null,
+            "uuid": "27dbeddc-3b83-41c1-b927-69e39849f70a",
+            "names": [
+                {
+                    "person_name_id": 8304,
+                    "preferred": 0,
+                    "person_id": 8304,
+                    "prefix": null,
+                    "given_name": "AnotherTest",
+                    "middle_name": null,
+                    "family_name_prefix": null,
+                    "family_name": "Patient",
+                    "family_name2": null,
+                    "family_name_suffix": null,
+                    "degree": null,
+                    "creator": 1,
+                    "date_created": "2020-03-06T08:58:29.000+02:00",
+                    "voided": 0,
+                    "voided_by": null,
+                    "date_voided": null,
+                    "void_reason": null,
+                    "changed_by": 1,
+                    "date_changed": "2020-03-06T08:58:29.000+02:00",
+                    "uuid": "0ed48de5-bfe9-473c-94c0-470d08dbf75c"
+                }
+            ],
+            "addresses": [
+                {
+                    "person_address_id": 25,
+                    "person_id": 8304,
+                    "preferred": 0,
+                    "address1": null,
+                    "address2": "Likoma",
+                    "city_village": "Bonongwe",
+                    "state_province": "Balaka",
+                    "postal_code": null,
+                    "country": null,
+                    "latitude": null,
+                    "longitude": null,
+                    "creator": 1,
+                    "date_created": "2020-03-06T08:58:29.000+02:00",
+                    "voided": 0,
+                    "voided_by": null,
+                    "date_voided": null,
+                    "void_reason": null,
+                    "county_district": "Mkumpha",
+                    "neighborhood_cell": "Edward Nkhwemba",
+                    "region": null,
+                    "subregion": null,
+                    "township_division": "Kalembo",
+                    "uuid": "2c31d6fd-55f5-4886-94b0-54f1eff529e8"
+                }
+            ],
+            "person_attributes": [
+                {
+                    "person_attribute_id": 9406,
+                    "person_id": 8304,
+                    "value": "Borehole",
+                    "person_attribute_type_id": 19,
+                    "creator": 1,
+                    "date_created": "2020-03-06T08:58:29.000+02:00",
+                    "changed_by": 1,
+                    "date_changed": "2020-03-06T08:58:29.000+02:00",
+                    "voided": 0,
+                    "voided_by": null,
+                    "date_voided": null,
+                    "void_reason": null,
+                    "uuid": "dc7a1603-a267-4852-908b-5948b75c692d",
+                    "type": {
+                        "person_attribute_type_id": 19,
+                        "name": "Landmark Or Plot Number",
+                        "description": "Landmark or plot number",
+                        "format": "java.lang.String",
+                        "foreign_key": null,
+                        "searchable": 0,
+                        "creator": 1,
+                        "date_created": "2010-11-02T11:19:43.000+02:00",
+                        "changed_by": 1,
+                        "date_changed": "2010-11-02T11:19:55.000+02:00",
+                        "retired": 0,
+                        "retired_by": null,
+                        "date_retired": null,
+                        "retire_reason": null,
+                        "edit_privilege": null,
+                        "uuid": "ba35ece0-8d80-11d8-abbb-0024217bb78e",
+                        "sort_weight": 16
+                    }
+                },
+                {
+                    "person_attribute_id": 9407,
+                    "person_id": 8304,
+                    "value": "Unknown",
+                    "person_attribute_type_id": 12,
+                    "creator": 1,
+                    "date_created": "2020-03-06T08:58:29.000+02:00",
+                    "changed_by": 1,
+                    "date_changed": "2020-03-06T08:58:29.000+02:00",
+                    "voided": 0,
+                    "voided_by": null,
+                    "date_voided": null,
+                    "void_reason": null,
+                    "uuid": "50a43668-a82f-4d63-b0c6-f7ab8252b5c0",
+                    "type": {
+                        "person_attribute_type_id": 12,
+                        "name": "Cell Phone Number",
+                        "description": "Person primary cell phone number",
+                        "format": "java.lang.String",
+                        "foreign_key": null,
+                        "searchable": 0,
+                        "creator": 1,
+                        "date_created": "2009-10-07T15:44:33.000+02:00",
+                        "changed_by": 1,
+                        "date_changed": "2011-02-09T11:04:35.000+02:00",
+                        "retired": 0,
+                        "retired_by": null,
+                        "date_retired": null,
+                        "retire_reason": null,
+                        "edit_privilege": null,
+                        "uuid": "ba35e3da-8d80-11d8-abbb-0024217bb78e",
+                        "sort_weight": 5
+                    }
+                }
+            ]
+        },
+        "patient_identifiers": [
+            {
+                "patient_identifier_id": 3671,
+                "patient_id": 8304,
+                "identifier": "P112000000023",
+                "identifier_type": 3,
+                "preferred": 0,
+                "location_id": 120,
+                "creator": 1,
+                "date_created": "2020-03-06T08:58:29.000+02:00",
+                "voided": 0,
+                "voided_by": null,
+                "date_voided": null,
+                "void_reason": null,
+                "uuid": "fafe235b-7224-48e9-a9e1-a9a1eefef3e7",
+                "type": {
+                    "patient_identifier_type_id": 3,
+                    "name": "National id",
+                    "description": "National ID number developed by Baobab",
+                    "format": "",
+                    "check_digit": 0,
+                    "creator": 1,
+                    "date_created": "2007-11-29T22:12:34.000+02:00",
+                    "required": 0,
+                    "format_description": "P-175-0000004-5",
+                    "validator": null,
+                    "retired": 0,
+                    "retired_by": null,
+                    "date_retired": null,
+                    "retire_reason": null,
+                    "uuid": "ba2f69d8-8d80-11d8-abbb-0024217bb78e"
+                }
+            }
+        ]
+    }
+]</code></pre>
+                                            </td></tr>
+                                            
+                                        
+                                    </table>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+
+                        <hr>
+                    </div>
+                    
+
+                </div>
+                
+                
+                <div class="endpoints-group">
+                    <h3 id="folder-registry-management">
+                        Registry Management
+                        <a href="#folder-registry-management"><i class="glyphicon glyphicon-link"></i></a>
+                    </h3>
+
+                    <div></div>
+
+                    
+                    
+                    <div class="request">
+
+                        <h4 id="request-registry-management-create-register">
+                            Create Register
+                            <a href="#request-registry-management-create-register"><i class="glyphicon glyphicon-link"></i></a>
+                        </h4>
+
+                        <div></div>
+
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#request-registry-management-create-register-example-curl" data-toggle="tab">Curl</a></li>
+                                <li role="presentation"><a href="#request-registry-management-create-register-example-http" data-toggle="tab">HTTP</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="request-registry-management-create-register-example-curl">
+                                    <pre><code class="hljs curl">curl -X POST -H "Authorization: zdeRDBHCl4zD" -H "Content-Type: application/json" -d '{
+	"number": "1234567890",
+	"service_delivery_point_id": 10,
+	"location_type_id": 1,
+	"register_type": "Register type"
+}' "http://localhost:3000/api/v1/registers"</code></pre>
+                                </div>
+                                <div class="tab-pane" id="request-registry-management-create-register-example-http">
+                                    <pre><code class="hljs http">POST /api/v1/registers HTTP/1.1
+Host: localhost:3000
+Authorization: zdeRDBHCl4zD
+Content-Type: application/json
+
+{
+	"number": "1234567890",
+	"service_delivery_point_id": 10,
+	"location_type_id": 1,
+	"register_type": "Register type"
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                
+                                <li role="presentation" class="active">
+                                    <a href="#request-registry-management-create-register-responses-4addfeb4-d290-41e2-b99c-f0ac104d2d82" data-toggle="tab">
+                                        
+                                            Response
+                                        
+                                    </a>
+                                </li>
+                                
+                            </ul>
+                            <div class="tab-content">
+                                
+                                <div class="tab-pane active" id="request-registry-management-create-register-responses-4addfeb4-d290-41e2-b99c-f0ac104d2d82">
+                                    <table class="table table-bordered">
+                                        <tr><th style="width: 20%;">Status</th><td>201 Created</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Content-Type</th><td>application/json; charset=utf-8</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Transfer-Encoding</th><td>chunked</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Connection</th><td>keep-alive</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Status</th><td>201 Created</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Cache-Control</th><td>max-age=0, private, must-revalidate</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">ETag</th><td>W/"9ee55bdb9970cc4e359475e58db5678e"</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Runtime</th><td>0.666850</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Request-Id</th><td>cf7be1be-c0e7-425d-8ca3-87e180bda64c</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Date</th><td>Tue, 16 Jul 2019 09:58:16 GMT</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Powered-By</th><td>Phusion Passenger 6.0.2</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Server</th><td>nginx/1.15.8 + Phusion Passenger 6.0.2</td></tr>
+                                        
+                                        
+                                            
+                                            <tr><td class="response-text-sample" colspan="2">
+                                                <pre><code>{
+    "id": 2,
+    "uuid": "b614d1ef-0d7e-41f8-8836-b1982803803d",
+    "number": "1234567890",
+    "location_type_id": 1,
+    "service_delivery_point_id": 10,
+    "location_id": 120,
+    "register_type": "Register type",
+    "closed": false,
+    "date_closed": null,
+    "closed_by": null,
+    "close_reason": null,
+    "date_created": null,
+    "created_at": "2019-07-16T11:58:16.000+02:00",
+    "updated_at": "2019-07-16T11:58:16.000+02:00"
+}</code></pre>
+                                            </td></tr>
+                                            
+                                        
+                                    </table>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+
+                        <hr>
+                    </div>
+                    
+                    
+                    <div class="request">
+
+                        <h4 id="request-registry-management-binding-an-encounter-to-a-register">
+                            Binding an encounter to a register
+                            <a href="#request-registry-management-binding-an-encounter-to-a-register"><i class="glyphicon glyphicon-link"></i></a>
+                        </h4>
+
+                        <div></div>
+
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#request-registry-management-binding-an-encounter-to-a-register-example-curl" data-toggle="tab">Curl</a></li>
+                                <li role="presentation"><a href="#request-registry-management-binding-an-encounter-to-a-register-example-http" data-toggle="tab">HTTP</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="request-registry-management-binding-an-encounter-to-a-register-example-curl">
+                                    <pre><code class="hljs curl">curl -X POST -H "Authorization: zdeRDBHCl4zD" -H "Content-Type: application/json" -d '{
+	"register_id": 2
+}' "http://localhost:3000/api/v1/encounters/1/register"</code></pre>
+                                </div>
+                                <div class="tab-pane" id="request-registry-management-binding-an-encounter-to-a-register-example-http">
+                                    <pre><code class="hljs http">POST /api/v1/encounters/1/register HTTP/1.1
+Host: localhost:3000
+Authorization: zdeRDBHCl4zD
+Content-Type: application/json
+
+{
+	"register_id": 2
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                
+                                <li role="presentation" class="active">
+                                    <a href="#request-registry-management-binding-an-encounter-to-a-register-responses-6b17c1f3-e37a-4631-85a4-65ad0b209581" data-toggle="tab">
+                                        
+                                            Response
+                                        
+                                    </a>
+                                </li>
+                                
+                            </ul>
+                            <div class="tab-content">
+                                
+                                <div class="tab-pane active" id="request-registry-management-binding-an-encounter-to-a-register-responses-6b17c1f3-e37a-4631-85a4-65ad0b209581">
+                                    <table class="table table-bordered">
+                                        <tr><th style="width: 20%;">Status</th><td>201 Created</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Content-Type</th><td>application/json; charset=utf-8</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Transfer-Encoding</th><td>chunked</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Connection</th><td>keep-alive</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Status</th><td>201 Created</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Cache-Control</th><td>max-age=0, private, must-revalidate</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">ETag</th><td>W/"693b1c8a71d6cea76e6d367807cb8c1d"</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Runtime</th><td>0.060411</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Request-Id</th><td>4a958d7a-8e4e-4427-a6eb-7fbc77770c5a</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Date</th><td>Tue, 16 Jul 2019 09:59:49 GMT</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">X-Powered-By</th><td>Phusion Passenger 6.0.2</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Server</th><td>nginx/1.15.8 + Phusion Passenger 6.0.2</td></tr>
+                                        
+                                        
+                                            
+                                            <tr><td class="response-text-sample" colspan="2">
+                                                <pre><code>{
+    "id": 1,
+    "encounter_id": 1,
+    "register_id": 2,
+    "date_created": null,
+    "creator": 1
+}</code></pre>
+                                            </td></tr>
+                                            
+                                        
+                                    </table>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+
+                        <hr>
+                    </div>
+                    
+
+                </div>
+                
+                
+                <div class="endpoints-group">
+                    <h3 id="folder-hts">
+                        HTS
+                        <a href="#folder-hts"><i class="glyphicon glyphicon-link"></i></a>
+                    </h3>
+
+                    <div></div>
+
+                    
+
+                </div>
+                
+                
+                <div class="endpoints-group">
+                    <h3 id="folder-programs">
+                        Programs
+                        <a href="#folder-programs"><i class="glyphicon glyphicon-link"></i></a>
+                    </h3>
+
+                    <div></div>
+
+                    
+
+                </div>
                 
             </div>
         </div>
