@@ -97,20 +97,17 @@ module ARTService
 
       obs = obs_list[0]
 
-      reason_concept = Concept.find_by_concept_id(obs.value_coded.to_i)
-      return 'N/A' unless reason_concept
-
-      reason_concept\
-        .concept_names\
-        .where(concept_name_type: 'FULLY_SPECIFIED')\
-        .first\
-        .name
+      reason_concept = ConceptName.unscoped.find_by(concept_id: obs.value_coded.to_i,
+                                                    concept_name_type: 'FULLY_SPECIFIED')
+      reason_concept&.name || 'N/A'
     end
 
     def art_period
-      start_date = (recent_value_datetime('ART start date')\
-                    || recent_value_datetime('Date antiretrovirals started')\
-                    || earliest_start_date_at_clinic)
+      sdate = ActiveRecord::Base.connection.select_one <<EOF
+      SELECT date_antiretrovirals_started(#{patient.patient_id}, current_date()) AS earliest_date;
+EOF
+
+      start_date = sdate['earliest_date'].to_time rescue nil
 
       return [nil, nil] unless start_date
 

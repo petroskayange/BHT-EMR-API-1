@@ -138,6 +138,15 @@ module ARTService
       ARTService::PatientHistory.new(patient, date)
     end
 
+    def medication_side_effects(patient, date)
+      service = ARTService::PatientSideEffect.new(patient, date)
+      service.side_effects
+    end
+
+    def saved_encounters(patient, date)
+      return []
+    end
+
     private
 
     NPID_TYPE = 'National id'

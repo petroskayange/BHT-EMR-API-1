@@ -10,7 +10,12 @@ module ARTService
       'COHORT' => ARTService::Reports::Cohort,
       'COHORT_DISAGGREGATED' => ARTService::Reports::CohortDisaggregated,
       'COHORT_SURVIVAL_ANALYSIS' => ARTService::Reports::CohortSurvivalAnalysis,
-      'VISITS' => ARTService::Reports::VisitsReport
+      'VISITS' => ARTService::Reports::VisitsReport,
+      'APPOINTMENTS' => ARTService::Reports::AppointmentsReport,
+      'IPT' => ARTService::Reports::IPTReport,
+      'REGIMEN_SWITCH' => ARTService::Reports::RegimenSwitch,
+      'COHORT_DISAGGREGATED_ADDITIONS' => ARTService::Reports::CohortDisaggregatedAdditions,
+      'ARV_REFILL_PERIODS' => ARTService::Reports::ArvRefillPeriods
     }.freeze
 
     def generate_report(type:, **kwargs)
@@ -21,16 +26,12 @@ module ARTService
       call_report_manager(:find_report, type: type, **kwargs)
     end
 
-    def cohort_report_raw_data(l1, l2)
-      REPORTS['COHORT'].new(type: 'raw data', 
-        name: 'raw data', start_date: Date.today,
-        end_date: Date.today).raw_data(l1, l2)
-    end
+    def cohort_disaggregated(quarter, age_group, start_date, end_date, rebuild, init)
+      cohort = REPORTS['COHORT_DISAGGREGATED'].new(type: 'disaggregated',
+        name: 'disaggregated', start_date: start_date,
+        end_date: end_date, rebuild: rebuild)
 
-    def cohort_disaggregated(quarter, age_group)
-      cohort = REPORTS['COHORT_DISAGGREGATED'].new(type: 'disaggregated', 
-        name: 'disaggregated', start_date: Date.today,
-        end_date: Date.today)
+      return cohort.initialize_disaggregated if init
       cohort.disaggregated(quarter, age_group)
     end
 
@@ -41,12 +42,60 @@ module ARTService
       cohort.survival_analysis(quarter, age_group)
     end
 
+    def defaulter_list(start_date, end_date, pepfar)
+      REPORTS['COHORT'].new(type: 'defaulter_list',
+        name: 'defaulter_list', start_date: start_date,
+        end_date: end_date).defaulter_list(pepfar)
+    end
+
+    def missed_appointments(start_date, end_date)
+      REPORTS['APPOINTMENTS'].new(start_date: start_date.to_date,
+        end_date: end_date.to_date).missed_appointments
+    end
+
+    def ipt_coverage(start_date, end_date)
+      REPORTS['IPT'].new(start_date: start_date.to_date,
+        end_date: end_date.to_date).ipt_coverage
+    end
+
+    def cohort_report_drill_down(id)
+      REPORTS['COHORT'].new(type: 'drill_down',
+        name: 'drill_down', start_date: Date.today,
+        end_date: Date.today).cohort_report_drill_down(id)
+    end
+    
+    def regimen_switch(start_date, end_date, pepfar)
+      REPORTS['REGIMEN_SWITCH'].new(start_date: start_date.to_date,
+        end_date: end_date.to_date).regimen_switch(pepfar)
+    end
+
+    def regimen_report(start_date, end_date)
+      REPORTS['REGIMEN_SWITCH'].new(start_date: start_date.to_date,
+        end_date: end_date.to_date).regimen_report
+    end
+
+    def screened_for_tb(start_date, end_date, gender, age_group, outcome_table)
+      REPORTS['COHORT_DISAGGREGATED_ADDITIONS'].new(start_date: start_date.to_date,
+        end_date: end_date.to_date, age_group: age_group, gender: gender, outcome_table: outcome_table).screened_for_tb
+    end
+
+    def clients_given_ipt(start_date, end_date, gender, age_group, outcome_table)
+      REPORTS['COHORT_DISAGGREGATED_ADDITIONS'].new(start_date: start_date.to_date,
+        end_date: end_date.to_date, age_group: age_group, gender: gender, outcome_table: outcome_table).clients_given_ipt
+    end
+
+    def arv_refill_periods(start_date, end_date, min_age, max_age)
+      REPORTS['ARV_REFILL_PERIODS'].new(start_date: start_date.to_date,
+        end_date: end_date.to_date, min_age: min_age, max_age: max_age).arv_refill_periods
+    end
+
     private
 
     def call_report_manager(method, type:, **kwargs)
       start_date = kwargs.delete(:start_date)
       end_date = kwargs.delete(:end_date)
       name = kwargs.delete(:name)
+      type  = report_type(type)
 
       report_manager = REPORTS[type.name.upcase].new(
         type: type, name: name, start_date: start_date, end_date: end_date
@@ -58,5 +107,14 @@ module ARTService
         method.call(**kwargs)
       end
     end
+
+    def report_type(name)
+      type  = ReportType.find_by_name(name)
+      raise NotFoundError, "Report, #{name}, not found" unless type
+
+      type
+    end
+
+
   end
 end

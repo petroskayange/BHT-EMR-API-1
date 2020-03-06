@@ -48,6 +48,10 @@ class Api::V1::ProgramPatientsController < ApplicationController
     end
   end
 
+  def void_arv_number
+    render json: service.void_arv_number(params[:arv_number])
+  end
+
   def print_visit_label
     label_commands = service.visit_summary_label(patient, date).print
     send_data label_commands, type: 'application/label; charset=utf-8',
@@ -119,12 +123,25 @@ class Api::V1::ProgramPatientsController < ApplicationController
 
   # Check if the visit is subsequent
   def subsequent_visit
-    render json: service.subsequent_visit(patient)
+    date = params[:date]&.to_date || Date.today
+    render json: service.subsequent_visit(patient, date)
   end
 
   # Get surgical history for ANC
   def surgical_history
     render json: service.surgical_history(patient, date)
+  end
+
+  def medication_side_effects
+    render json: service.medication_side_effects(patient, date)
+  end
+
+  def is_due_lab_order
+    if (service.due_lab_order?(patient: patient))
+      render json: { message: true }
+    else
+      render json: { message: false }
+    end
   end
 
   protected

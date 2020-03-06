@@ -69,14 +69,19 @@ $ vim config/database.yml   # Edit configuration
     ```bash
     cat db/sql/add_regimens_13_and_above.sql | mysql -u <username> -p <database>
     ```
+4. For TB app: Load ntp regimen tables into your database:
 
-4. Set up the test database as follows:
+    ```bash
+    cat db/sql/ntp_regimens.sql | mysql -u <username> -p <database>
+    ```
+
+5. Set up the test database as follows:
 
     ```bash
     bin/initial_database_setup.sh test mpc
     ```
 
-5. Run the following to run tests (if all goes well you are good to go):
+6. Run the following to run tests (if all goes well you are good to go):
 
     ```bash
     bin/rspec
@@ -154,6 +159,11 @@ You can do the following (don't run it like this in production):
 ```sh
 bin/rails server
 ```
+
+## Raw Data Store
+
+The BHT-EMR-API is capable of pushing data to the Raw Data Store.
+More information on how to get it to do this can be found [here](./doc/rds/index.md)
 
 ## For developers
 

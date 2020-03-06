@@ -22,7 +22,7 @@ export RAILS_ENV=$ENV
 rails db:environment:set RAILS_ENV=$ENV
 
 #Creat Database
-bundle exec rake db:drop db:create # db:schema:load
+bundle exec rake db:drop db:create db:seed # db:schema:load
 
 USERNAME=`ruby -ryaml -e "puts YAML::load_file('config/database.yml')['${ENV}']['username']"`
 PASSWORD=`ruby -ryaml -e "puts YAML::load_file('config/database.yml')['${ENV}']['password']"`
@@ -60,6 +60,7 @@ mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/migrate/
 mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/migrate/insert_weight_for_ages.sql
 mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/sql/openmrs_metadata_1_7.sql
 mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/initial_setup/regimens.sql
+mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/sql/ntp_regimens.sql
 
 mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/initial_setup/modular_tables.sql
 
@@ -75,8 +76,11 @@ bundle exec rake db:migrate
 
 # The following must run after all migrations have been run
 
-mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/sql/add_regimens_13_and_above.sql
-mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/sql/add_cpt_and_inh_to_regimen_ingredients.sql
+mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/sql/moh_regimens_v2020.sql
+
+# For applications with long list of encounters e.g. ANC
+mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/sql/alter_user_property_table.sql
+
 
 echo "After completing database setup, you are advised to run the following:"
 echo "rake test"

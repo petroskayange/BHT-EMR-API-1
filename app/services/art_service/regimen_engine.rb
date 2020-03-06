@@ -3,8 +3,12 @@
 require 'set'
 
 module ARTService
+  # TODO: This module reads like noise, it needs a re-write or even better,
+  #       a complete rewrite.
   class RegimenEngine
     include ModelUtils
+
+    LOGGER = Rails.logger
 
     def initialize(program:)
       @program = program
@@ -27,17 +31,30 @@ module ARTService
       ingredients.collect { |ingredient| ingredient_to_drug(ingredient) }
     end
 
-    def find_regimens(patient, pellets: false)
+    def find_regimens_by_patient(patient, lpv_drug_type: 'tabs')
+      use_tb_dosage = use_tb_patient_dosage?(dtg_drugs.first, patient)
+      find_regimens(patient.weight, use_tb_dosage: use_tb_dosage,
+                                    lpv_drug_type: lpv_drug_type)
+    end
+
+    def find_regimens(patient_weight, use_tb_dosage: false, lpv_drug_type: 'tabs')
       ingredients = MohRegimenIngredient.where(
         '(CAST(min_weight AS DECIMAL(4, 1)) <= :weight
          AND CAST(max_weight AS DECIMAL(4, 1)) >= :weight)',
-        weight: patient.weight.to_f.round(1)
+        weight: patient_weight.to_f.round(1)
       )
 
-      categorise_regimens(regimens_from_ingredients(ingredients))
+      raw_regimens = regimens_from_ingredients(ingredients, lpv_drug_type: lpv_drug_type)
+      regimens = categorise_regimens(raw_regimens)
+
+      if use_tb_dosage
+        repackage_regimens_for_tb_patients!(regimens, patient_weight)
+      end
+
+      regimens
     end
 
-    def pellets_regimen(patient, regimen_index, use_pellets)
+    def regimen(patient, regimen_index, lpv_drug_type: 'tabs')
       ingredients = MohRegimenIngredient.joins(:regimen)\
                                         .where(moh_regimens: { regimen_index: regimen_index })\
                                         .where(
@@ -46,7 +63,7 @@ module ARTService
                                           weight: patient.weight.to_f.round(1)
                                         )
 
-      regimens_from_ingredients(ingredients, use_pellets: use_pellets)
+      regimens_from_ingredients(ingredients, lpv_drug_type: lpv_drug_type, patient: patient)
     end
 
     # Returns dosages for patients prescribed ARVs
@@ -56,37 +73,33 @@ module ARTService
       # Make sure it has been stated explicitly that drug are getting prescribed
       # to this patient
       prescribe_drugs = Observation.where(person_id: patient.patient_id,
-                                          concept: concept('Prescribe drugs'),
-                                          value_coded: concept('Yes').concept_id)\
+                                          concept_id: ConceptName.find_by_name('Prescribe drugs').concept_id,
+                                          value_coded: ConceptName.find_by_name('Yes').concept_id)\
                                    .where('obs_datetime BETWEEN ? AND ?', *TimeUtils.day_bounds(date))
                                    .order(obs_datetime: :desc)
                                    .first
 
       return {} unless prescribe_drugs
 
-      arv_extras_concepts = [concept('CPT'), concept('INH')]
+      arv_extras_concept_ids = [ConceptName.find_by_name('CPT').concept_id, ConceptName.find_by_name('INH').concept_id]
 
-      orders = Observation.where(concept: concept('Medication orders'),
+      orders = Observation.where(concept: ConceptName.find_by_name('Medication orders').concept_id,
                                  person: patient.person)
                           .where('obs_datetime BETWEEN ? AND ?', *TimeUtils.day_bounds(date))
 
       orders.each_with_object({}) do |order, dosages|
         next unless order.value_coded # Raise a warning here
 
-        drug_concept = Concept.find_by(concept_id: order.value_coded)
-        unless drug_concept
-          Rails.logger.warn "Couldn't find drug concept using value_coded ##{order.value_coded} of order ##{order.order_id}"
-          next
-        end
+        drug_concept_id = order.value_coded.to_i
 
-        next unless arv_extras_concepts.include?(drug_concept)
+        next unless arv_extras_concept_ids.include?(drug_concept_id)
 
         # HACK: Retrieve Pyridoxine 25 mg in addition to Isoniazed when
         # we detect INH drug concept
-        drugs = if drug_concept.concept_id == arv_extras_concepts[1].concept_id
-                  Drug.where(concept: [drug_concept, concept('Pyridoxine')])
+        drugs = if drug_concept_id == arv_extras_concept_ids[1]
+                  Drug.where(concept: [drug_concept_id, ConceptName.find_by_name('Pyridoxine').concept_id])
                 else
-                  Drug.where(concept: drug_concept)
+                  Drug.where(concept: drug_concept_id)
                 end
 
         ingredients = MohRegimenIngredient.where(drug: drugs)\
@@ -95,7 +108,10 @@ module ARTService
                                                  weight: patient.weight.to_f.round(1))
 
         ingredients.each do |ingredient|
-          dosages[ingredient.drug.concept.concept_names.first.name] = ingredient_to_drug(ingredient)
+          drug_name = ConceptName.where(concept_id: ingredient.drug.concept_id,
+                                        concept_name_type: 'FULLY_SPECIFIED')\
+                                 .first
+          dosages[drug_name.name] = ingredient_to_drug(ingredient)
         end
       end
     end
@@ -113,39 +129,49 @@ module ARTService
     #     pm: xx,
     #     category: xx
     #   }
-    def regimens_from_ingredients(ingredients, use_pellets: false)
+    def regimens_from_ingredients(ingredients, lpv_drug_type: 'tabs', patient: nil)
+      LOGGER.debug(ingredients.collect{ |i| [i.drug.id, i.drug.name] }.as_json)
       ingredients.each_with_object({}) do |ingredient, regimens|
         # Have some CPT & INH that do not belong to any regimen
         # but have a weight - dosage mapping hence being lumped
         # together with the regimen ingredients
         next unless ingredient.regimen
 
+        LOGGER.debug([lpv_drug_type, ingredient.drug.name])
+
         regimen_index = ingredient.regimen.regimen_index
         regimen = regimens[regimen_index] || []
 
         drug_name = ingredient.drug.name
-        if /^LPV\/r/.match?(drug_name)
-          includes_pellets = drug_name.match?(/pellets/i)
-          next if (use_pellets && !includes_pellets) || (!use_pellets && includes_pellets)
+        if %r{^LPV/r}.match?(drug_name)\
+            && %w[pellets granules].include?(lpv_drug_type)\
+            && find_drug_type(ingredient.drug) != lpv_drug_type
+          LOGGER.debug(find_drug_type(ingredient.drug))
+          # For LPV/r there is the option of giving out pellets or granules
+          # instead of the usual tabs if clinician explicitly specifies it.
+          LOGGER.debug("Skipping non #{lpv_drug_type}, #{drug_name}...")
+          next
         end
 
         regimen << ingredient_to_drug(ingredient)
+
         regimens[regimen_index] = regimen
-        # add_category_to_regimen! regimen, ingredient
       end
     end
 
     def categorise_regimens(regimens)
       regimens.values.each_with_object({}) do |drugs, categorised_regimens|
-        Rails.logger.debug "Interpreting drug list: #{drugs.collect { |drug| drug[:drug_id] }}"
-        (0..(drugs.size - 1)).each do |i|
-          ((i + 1)..(drugs.size)).each do |j|
-            trial_regimen = drugs[i...j]
+        Rails.logger.debug "Interpreting drug list: #{drugs.collect { |drug| [drug[:drug_id], drug[:drug_name]] }}"
+        (0...drugs.size).each do |pivot|
+          (pivot...drugs.size).each do |combo_start|
+            (combo_start..drugs.size).each do |combo_end|
+              trial_regimen = [drugs[pivot], *drugs[combo_start...combo_end]]
 
-            regimen_name = classify_regimen_combo(trial_regimen.map { |t| t[:drug_id] })
-            next unless regimen_name
+              regimen_name = classify_regimen_combo(trial_regimen.map { |t| t[:drug_id] })
+              next unless regimen_name
 
-            categorised_regimens[regimen_name] = trial_regimen
+              categorised_regimens[regimen_name] = Set.new(trial_regimen)
+            end
           end
         end
       end
@@ -170,6 +196,38 @@ module ARTService
         barcodes: drug.barcodes.collect { |barcode| { tabs: barcode.tabs } },
         regimen_category: regimen_category
       }
+    end
+
+    def use_tb_patient_dosage?(drug, patient)
+      dtg_concept_id = ConceptName.find_by(name: 'Dolutegravir').concept_id
+
+      return false unless patient && drug.concept_id == dtg_concept_id
+
+      tb_status_concept_id = ConceptName.find_by_name('TB Status').concept_id
+      on_tb_treatment_concept_ids = ConceptName.where(name: 'RX').collect(&:concept_id)
+
+      tb_status_max = Observation.joins(:encounter)\
+                                              .where(person_id: patient.id,
+                                                     concept_id: tb_status_concept_id)\
+                                              .select('MAX(obs_datetime) AS obs_datetime')
+
+      tb_status_max_datetime = tb_status_max.first&.obs_datetime&.to_time
+      return false unless tb_status_max_datetime
+
+      patient_is_on_tb_treatment = Observation.joins(:encounter)\
+                                              .where(person_id: patient.id,
+                                                     concept_id: tb_status_concept_id,
+                                                     obs_datetime: tb_status_max_datetime,
+                                                     encounter: {
+                                                       program_id: @program.program_id
+                                                     })\
+                                              .order('obs_datetime DESC')
+                                              .limit(1)
+
+      return false if patient_is_on_tb_treatment.blank?
+      return false unless on_tb_treatment_concept_ids.include?(patient_is_on_tb_treatment.first.value_coded)
+
+      return drug.concept_id == dtg_concept_id
     end
 
     def regimen_interpreter(medication_ids = [])
@@ -267,6 +325,69 @@ module ARTService
       obs.value_coded == concept('Yes').concept_id
     end
 
+    # Repackages some regimens for patients on TB treatment.
+    #
+    # Patient's on TB treatment require custom prescriptions for DTG
+    # than what is prescribed normally. This function takes a regimens
+    # structure and repackages the relevant regimens.
+    def repackage_regimens_for_tb_patients!(regimens, patient_weight)
+      %w[12A 13A 14A 15A].each do |regimen_name|
+        regimen = regimens[regimen_name]
+        next unless regimen
+
+        if regimen_name == '13A'
+          inject_dtg_into_regimen!(regimen, patient_weight)
+        else
+          double_dose_dtg_in_regimen!(regimen)
+        end
+      end
+    end
+
+    def dtg_drugs
+      @dtg_drugs ||= Drug.where(concept: concept('Dolutegravir'))
+    end
+
+    # Doubles the daily dosage for DTG if present in the regimen.
+    def double_dose_dtg_in_regimen!(regimen)
+      @dtg_drug_ids ||= dtg_drugs.collect(&:drug_id)
+
+      regimen.each do |drug|
+        next unless @dtg_drug_ids.include?(drug[:drug_id])
+
+        drug[:pm] = drug[:am]
+      end
+    end
+
+    # Adds DTG to the regimen for the non-standard double dosing of
+    # drugs containing a DTG component (eg 13A).
+    def inject_dtg_into_regimen!(regimen, patient_weight)
+      @dtg_drug_ids ||= dtg_drugs.collect(&:drug_id)
+
+      dtg_ingredient = MohRegimenIngredient.where(
+        'drug_inventory_id IN (:drugs) AND CAST(min_weight AS DECIMAL(4, 1)) <= :weight
+          AND CAST(max_weight AS DECIMAL(4, 1)) >= :weight',
+        drugs: @dtg_drug_ids,
+        weight: patient_weight
+      ).first
+
+      dtg = ingredient_to_drug(dtg_ingredient)
+
+      # Normally DTG is taken in the morning, it has to be inverted...
+      dtg[:am], dtg[:pm] = dtg[:pm], dtg[:am]
+
+      regimen << dtg
+    end
+
+    def find_drug_type(drug)
+      if drug.name.match?(/\s+pellets\s*/i)
+        'pellets'
+      elsif drug.name.match?(/\s+granules\s*/i)
+        'granules'
+      else
+        'tabs'
+      end
+    end
+
     REGIMEN_CODES = {
       # ABC/3TC (Abacavir and Lamivudine 60/30mg tablet) = 733
       # NVP (Nevirapine 50 mg tablet) = 968
@@ -289,20 +410,22 @@ module ARTService
       # RAL (Raltegravir 400mg) = 954
       # NVP (Nevirapine 200 mg tablet) = 22
       # LPV/r pellets = 979
-      '0' => [Set.new([733, 968]), Set.new([733, 22]), Set.new([969, 22]), Set.new([969, 968])],
+      '0' => [Set.new([1044, 968]), Set.new([1044, 22]), Set.new([969, 22]), Set.new([969, 968])],
       '2' => [Set.new([732]), Set.new([732, 736]), Set.new([732, 39]), Set.new([731]), Set.new([731, 39]), Set.new([731, 736])],
       '4' => [Set.new([736, 30]), Set.new([736, 11]), Set.new([39, 11]), Set.new([39, 30])],
       '5' => [Set.new([735])],
       '6' => [Set.new([734, 22])],
       '7' => [Set.new([734, 932])],
       '8' => [Set.new([39, 932])],
-      '9' => [Set.new([733, 979]), Set.new([733, 74]), Set.new([733, 73]), Set.new([969, 73]), Set.new([969, 74])],
+      '9' => [Set.new([1044, 979]), Set.new([1044, 74]), Set.new([1044, 73]), Set.new([969, 73]), Set.new([969, 74])],
       '10' => [Set.new([734, 73])],
-      '11' => [Set.new([736, 74]), Set.new([736, 73]), Set.new([39, 73]), Set.new([39, 74])],
+      '11' => [Set.new([736, 74]), Set.new([736, 73]), Set.new([736, 1044]), Set.new([39, 73]), Set.new([39, 74])],
       '12' => [Set.new([976, 977, 982])],
       '13' => [Set.new([983])],
       '14' => [Set.new([984, 982])],
-      '15' => [Set.new([969, 982])]
+      '15' => [Set.new([969, 982])],
+      '16' => [Set.new([1043,1044]), Set.new([954,969])],
+      '17' => [Set.new([30,1044]), Set.new([11,969])]
     }.freeze
   end
 end

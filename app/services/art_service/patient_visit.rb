@@ -3,6 +3,9 @@
 module ARTService
   # A summary of a patient's ART clinic visit
   class PatientVisit
+    LOGGER = Rails.logger
+    TIME_EPOCH = '1970-01-01'.to_time
+
     include ModelUtils
 
     attr_reader :patient, :date
@@ -50,22 +53,24 @@ module ARTService
     end
 
     def tb_status
-      state = begin
-                Concept.find(Observation.where(['person_id = ? AND concept_id = ? AND DATE(obs_datetime) <= ? AND value_coded IS NOT NULL',
-                                                patient.id, ConceptName.find_by_name('TB STATUS').concept_id,
-                                                visit_date.to_date]).order('obs_datetime DESC, date_created DESC').first.value_coded).fullname
-              rescue StandardError
-                'Unk'
-              end
+      tb_status = PatientState.joins(:patient_program)\
+                              .merge(PatientProgram.where(patient: patient, program: program('tb_program')))\
+                              .where('start_date <= ?', date.to_date)\
+                              .order(:start_date)\
+                              .last\
+                              &.name
 
-      program_id = Program.find_by_name('TB PROGRAM').id
-      patient_state = PatientState.where(["patient_state.voided = 0 AND p.voided = 0
-         AND p.program_id = ? AND DATE(start_date) <= DATE('#{date}') AND p.patient_id =?",
-                                          program_id, patient.id]).joins('INNER JOIN patient_program p  ON p.patient_program_id = patient_state.patient_program_id').order('start_date DESC').first
+      return tb_status if tb_status
 
-      return state if patient_state.blank?
+      tb_status_value = Observation.where(person_id: patient.id, concept: concept('TB Status'))\
+                                   .where('DATE(obs_datetime) <= ? AND value_coded IS NOT NULL', date.to_date)\
+                                   .order(:obs_datetime)\
+                                   .last\
+                                   &.value_coded
 
-      ConceptName.find_by_concept_id(patient_state.program_workflow_state.concept_id).name
+      return 'Unk' unless tb_status_value
+
+      ConceptName.find_by(concept_id: tb_status_value, concept_name_type: 'SHORT')&.name || 'Unk'
     end
 
     def height
@@ -111,11 +116,11 @@ module ARTService
                                        person: patient.person)\
                                 .where('obs_datetime BETWEEN ? AND ?', *TimeUtils.day_bounds(date))
 
-      @pills_brought = observations.collect do |observation|
+      @pills_brought = observations.each_with_object([]) do |observation, pills_brought|
         drug = observation&.order&.drug_order&.drug
         next unless drug
 
-        [format_drug_name(drug), observation.value_numeric]
+        pills_brought << [format_drug_name(drug), observation.value_numeric]
       end
     end
 
@@ -166,27 +171,24 @@ module ARTService
     end
 
     def viral_load_result
-      lab_tests_engine.find_orders_by_patient(patient).each do |order|
-        order.tests.each do |test|
-          next unless test[:test_type].match?(/viral load/i)
+      orders = lab_tests_engine.find_orders_by_patient(patient)
+      result = find_recent_viral_load_result(orders)
+      return 'N/A' unless result
 
-          values = test[:test_values].collect do |test_value|
-            next if test_value[:indicator].match?(/result_date/i)
-
-            test_value[:value]
-          end
-
-          values.join(', ')
-        end
-      end
-    rescue StandardError => e
-      Rails.logger.error "Failed to retrieve viral load result from LIMS: #{e}"
+      "#{result.value}(#{result.date.strftime('%d/%b/%y')})"
+    rescue RestClient::Exception => e
+      # Handle failed lims connections
+      LOGGER.error("Failed to communicate with LIMS: #{e}")
       'N/A'
     end
 
     def cpt; end
 
     private
+
+    def lab_tests_engine
+      @lab_tests_engine = ARTService::LabTestsEngine.new(program: program('HIV Program'))
+    end
 
     def calculate_bmi(weight, height)
       return 'N/A' if weight.zero? || height.zero?
@@ -201,6 +203,37 @@ module ARTService
       name = 'CPT' if name.match?('Cotrimoxazole')
       name = 'INH' if name.match?('INH')
       name
+    end
+
+    # Finds the most recent viral load among a bunch of LIMS orders
+    def find_recent_viral_load_result(orders)
+      recent_vl = OpenStruct.new(date: TIME_EPOCH, result: nil)
+
+      orders.each do |order|
+        order[:tests].each do |test|
+          result = parse_lims_viral_load_result(test[:test_values])
+          next if result.value.nil? || result.date < recent_vl.date
+
+          recent_vl.date = result.date
+          recent_vl.result = result
+        end
+      end
+
+      recent_vl.result
+    end
+
+    def parse_lims_viral_load_result(result_values)
+      LOGGER.debug("Parsing LIMS viral load result: #{result_values}")
+      result_values.each_with_object(OpenStruct.new) do |test_value, result|
+        case test_value[:indicator]
+        when /result_date/i
+          result.date = test_value[:value]&.to_date || Date.today
+        when /Viral Load/i
+          result.value = test_value[:value]
+        else
+          LOGGER.warn("Unknown indicator (#{test_value[:indicator]}) in viral load result")
+        end
+      end
     end
   end
 end
