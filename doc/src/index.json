@@ -2891,7 +2891,7 @@
 									]
 								},
 								{
-									"name": "Retrieve patients with 1, 3, and 6 months drug retention.",
+									"name": "Retrieve patients on n-months drug retetion in a reporting period.",
 									"protocolProfileBehavior": {
 										"disableBodyPruning": true
 									},
@@ -2900,7 +2900,7 @@
 										"header": [
 											{
 												"key": "Authorization",
-												"value": "tcgEYgZ7nj5i",
+												"value": "TqPKmsO2swYt",
 												"type": "text"
 											}
 										],
@@ -2914,7 +2914,7 @@
 											}
 										},
 										"url": {
-											"raw": "http://localhost:3000/api/v1/programs/1/reports/retention?start_date=2019-10-01&end_date=2019-10-31",
+											"raw": "http://localhost:3000/api/v1/programs/1/reports/retention?start_date=2019-10-01&end_date=2019-10-31&months=6",
 											"protocol": "http",
 											"host": [
 												"localhost"
@@ -2936,20 +2936,24 @@
 												{
 													"key": "end_date",
 													"value": "2019-10-31"
+												},
+												{
+													"key": "months",
+													"value": "6"
 												}
 											]
 										},
-										"description": "Retrieves patients with 1, 3, and 6 months drug retention in a given period. The patients selected are at maximum patients who started medication 6 months before the start_date."
+										"description": "For a given reporting period, retrieve all patients who are completing their initial n-months on treatment.\n\nParameters:\n    - start_date: Start of the reporting period.\n    - end_date: End of the reporting period.\n    - months: Number of retention months (n-months)"
 									},
 									"response": [
 										{
-											"name": "Retrieve patients with 1, 3, and 6 months drug retention.",
+											"name": "Retrieve patients on n-months drug retetion in a reporting period.",
 											"originalRequest": {
 												"method": "GET",
 												"header": [
 													{
 														"key": "Authorization",
-														"value": "tcgEYgZ7nj5i",
+														"value": "TqPKmsO2swYt",
 														"type": "text"
 													}
 												],
@@ -2963,7 +2967,7 @@
 													}
 												},
 												"url": {
-													"raw": "http://localhost:3000/api/v1/programs/1/reports/retention?start_date=2019-10-01&end_date=2019-10-31",
+													"raw": "http://localhost:3000/api/v1/programs/1/reports/retention?start_date=2019-10-01&end_date=2019-10-31&months=6",
 													"protocol": "http",
 													"host": [
 														"localhost"
@@ -2985,6 +2989,10 @@
 														{
 															"key": "end_date",
 															"value": "2019-10-31"
+														},
+														{
+															"key": "months",
+															"value": "6"
 														}
 													]
 												}
@@ -2999,7 +3007,7 @@
 												},
 												{
 													"key": "ETag",
-													"value": "W/\"97045ef0e6446c87ddd53bf8573cf553\""
+													"value": "W/\"7a7d7cd3c4b94d03f33a4874c1a2b8c4\""
 												},
 												{
 													"key": "Cache-Control",
@@ -3007,11 +3015,11 @@
 												},
 												{
 													"key": "X-Request-Id",
-													"value": "bd371386-5c0f-4717-b98e-5e49c03bf765"
+													"value": "d07f2065-6c80-4842-9310-6ea5cd9bfd88"
 												},
 												{
 													"key": "X-Runtime",
-													"value": "0.806612"
+													"value": "0.064705"
 												},
 												{
 													"key": "Vary",
@@ -3023,7 +3031,7 @@
 												}
 											],
 											"cookie": [],
-											"body": "{\n    \"1\": {\n        \"retained\": [\n            {\n                \"patient_id\": 1576,\n                \"arv_number\": \"MTTL-ARV-1610\",\n                \"start_date\": \"2019-09-02T17:27:29.000+02:00\",\n                \"end_date\": \"2019-10-02T17:27:29.000+02:00\"\n            },\n            {\n                \"patient_id\": 1582,\n                \"arv_number\": \"MTTL-ARV-1618\",\n                \"start_date\": \"2019-09-16T17:27:30.000+02:00\",\n                \"end_date\": \"2019-10-16T17:27:30.000+02:00\"\n            },\n            {\n                \"patient_id\": 1586,\n                \"arv_number\": \"MTTL-ARV-1621\",\n                \"start_date\": \"2019-09-23T17:27:31.000+02:00\",\n                \"end_date\": \"2019-10-23T17:27:31.000+02:00\"\n            },\n            {\n                \"patient_id\": 1590,\n                \"arv_number\": \"MTTL-ARV-1622\",\n                \"start_date\": \"2019-09-30T17:27:31.000+02:00\",\n                \"end_date\": \"2019-10-30T17:27:31.000+02:00\"\n            },\n            {\n                \"patient_id\": 1610,\n                \"arv_number\": \"MTTL-ARV-1615\",\n                \"start_date\": \"2019-09-09T17:27:30.000+02:00\",\n                \"end_date\": \"2019-10-09T17:27:30.000+02:00\"\n            },\n            {\n                \"patient_id\": 2931,\n                \"arv_number\": \"MTTL-ARV-1613\",\n                \"start_date\": \"2019-09-05T17:28:36.000+02:00\",\n                \"end_date\": \"2019-10-05T17:28:36.000+02:00\"\n            }\n        ],\n        \"all\": [\n            {\n                \"patient_id\": 1576,\n                \"arv_number\": \"MTTL-ARV-1610\",\n                \"start_date\": \"2019-09-02T17:27:29.000+02:00\"\n            },\n            {\n                \"patient_id\": 1582,\n                \"arv_number\": \"MTTL-ARV-1618\",\n                \"start_date\": \"2019-09-16T17:27:30.000+02:00\"\n            },\n            {\n                \"patient_id\": 1586,\n                \"arv_number\": \"MTTL-ARV-1621\",\n                \"start_date\": \"2019-09-23T17:27:31.000+02:00\"\n            },\n            {\n                \"patient_id\": 1590,\n                \"arv_number\": \"MTTL-ARV-1622\",\n                \"start_date\": \"2019-09-30T17:27:31.000+02:00\"\n            },\n            {\n                \"patient_id\": 1610,\n                \"arv_number\": \"MTTL-ARV-1615\",\n                \"start_date\": \"2019-09-09T17:27:30.000+02:00\"\n            },\n            {\n                \"patient_id\": 2931,\n                \"arv_number\": \"MTTL-ARV-1613\",\n                \"start_date\": \"2019-09-05T17:28:36.000+02:00\"\n            }\n        ]\n    },\n    \"3\": {\n        \"retained\": [\n            {\n                \"patient_id\": 1512,\n                \"arv_number\": \"MTTL-ARV-1566\",\n                \"start_date\": \"2019-07-09T17:27:21.000+02:00\",\n                \"end_date\": \"2019-10-09T17:27:21.000+02:00\"\n            },\n            {\n                \"patient_id\": 1519,\n                \"arv_number\": \"MTTL-ARV-1578\",\n                \"start_date\": \"2019-07-24T17:27:22.000+02:00\",\n                \"end_date\": \"2019-10-24T17:27:22.000+02:00\"\n            },\n            {\n                \"patient_id\": 1525,\n                \"arv_number\": \"MTTL-ARV-1575\",\n                \"start_date\": \"2019-07-18T17:27:23.000+02:00\",\n                \"end_date\": \"2019-10-18T17:27:23.000+02:00\"\n            },\n            {\n                \"patient_id\": 2974,\n                \"arv_number\": \"MTTL-ARV-1576\",\n                \"start_date\": \"2019-07-22T17:28:40.000+02:00\",\n                \"end_date\": \"2019-10-22T17:28:40.000+02:00\"\n            }\n        ],\n        \"all\": [\n            {\n                \"patient_id\": 1503,\n                \"arv_number\": \"MTTL-ARV-1570\",\n                \"start_date\": \"2019-07-15T17:27:21.000+02:00\"\n            },\n            {\n                \"patient_id\": 1505,\n                \"arv_number\": \"MTTL-ARV-1572\",\n                \"start_date\": \"2019-07-18T17:27:21.000+02:00\"\n            },\n            {\n                \"patient_id\": 1512,\n                \"arv_number\": \"MTTL-ARV-1566\",\n                \"start_date\": \"2019-07-09T17:27:21.000+02:00\"\n            },\n            {\n                \"patient_id\": 1519,\n                \"arv_number\": \"MTTL-ARV-1578\",\n                \"start_date\": \"2019-07-24T17:27:22.000+02:00\"\n            },\n            {\n                \"patient_id\": 1521,\n                \"arv_number\": \"MTTL-ARV-1580\",\n                \"start_date\": \"2019-07-29T17:27:23.000+02:00\"\n            },\n            {\n                \"patient_id\": 1525,\n                \"arv_number\": \"MTTL-ARV-1575\",\n                \"start_date\": \"2019-07-18T17:27:23.000+02:00\"\n            },\n            {\n                \"patient_id\": 1529,\n                \"arv_number\": \"MTTL-ARV-1583\",\n                \"start_date\": \"2019-07-29T17:27:23.000+02:00\"\n            },\n            {\n                \"patient_id\": 2974,\n                \"arv_number\": \"MTTL-ARV-1576\",\n                \"start_date\": \"2019-07-22T17:28:40.000+02:00\"\n            },\n            {\n                \"patient_id\": 2976,\n                \"arv_number\": \"MTTL-ARV-1565\",\n                \"start_date\": \"2019-07-04T17:28:40.000+02:00\"\n            }\n        ]\n    },\n    \"6\": {\n        \"retained\": [\n            {\n                \"patient_id\": 1396,\n                \"arv_number\": \"MTTL-ARV-1507\",\n                \"start_date\": \"2019-04-04T17:27:10.000+02:00\",\n                \"end_date\": \"2019-10-04T17:27:10.000+02:00\"\n            },\n            {\n                \"patient_id\": 1411,\n                \"arv_number\": \"MTTL-ARV-1523\",\n                \"start_date\": \"2019-04-24T17:27:13.000+02:00\",\n                \"end_date\": \"2019-10-24T17:27:13.000+02:00\"\n            }\n        ],\n        \"all\": [\n            {\n                \"patient_id\": 1386,\n                \"arv_number\": \"MTTL-ARV-1508\",\n                \"start_date\": \"2019-04-11T17:27:10.000+02:00\"\n            },\n            {\n                \"patient_id\": 1396,\n                \"arv_number\": \"MTTL-ARV-1507\",\n                \"start_date\": \"2019-04-04T17:27:10.000+02:00\"\n            },\n            {\n                \"patient_id\": 1411,\n                \"arv_number\": \"MTTL-ARV-1523\",\n                \"start_date\": \"2019-04-24T17:27:13.000+02:00\"\n            },\n            {\n                \"patient_id\": 2172,\n                \"arv_number\": \"MTTL-ARV-1513\",\n                \"start_date\": \"2019-04-17T17:28:00.000+02:00\"\n            },\n            {\n                \"patient_id\": 2816,\n                \"arv_number\": \"MTTL-ARV-1510\",\n                \"start_date\": \"2019-04-12T17:28:28.000+02:00\"\n            },\n            {\n                \"patient_id\": 2978,\n                \"arv_number\": \"MTTL-ARV-1517\",\n                \"start_date\": \"2019-04-18T17:28:40.000+02:00\"\n            }\n        ]\n    }\n}"
+											"body": "{\n    \"retained\": [\n        {\n            \"patient_id\": 1396,\n            \"arv_number\": \"TEST-ARV-1507\",\n            \"gender\": \"F\",\n            \"age_group\": \"50 plus years\",\n            \"start_date\": \"2019-04-04T17:27:10.000+02:00\",\n            \"end_date\": \"2019-10-04T17:27:10.000+02:00\"\n        },\n        {\n            \"patient_id\": 1411,\n            \"arv_number\": \"TEST-ARV-1523\",\n            \"gender\": \"M\",\n            \"age_group\": \"40-44 years\",\n            \"start_date\": \"2019-04-24T17:27:13.000+02:00\",\n            \"end_date\": \"2019-10-24T17:27:13.000+02:00\"\n        }\n    ],\n    \"all\": [\n        {\n            \"patient_id\": 1386,\n            \"arv_number\": \"TEST-ARV-1508\",\n            \"gender\": \"F\",\n            \"age_group\": \"5-9 years\",\n            \"start_date\": \"2019-04-11T17:27:10.000+02:00\"\n        },\n        {\n            \"patient_id\": 1396,\n            \"arv_number\": \"TEST-ARV-1507\",\n            \"gender\": \"F\",\n            \"age_group\": \"50 plus years\",\n            \"start_date\": \"2019-04-04T17:27:10.000+02:00\"\n        },\n        {\n            \"patient_id\": 1411,\n            \"arv_number\": \"TEST-ARV-1523\",\n            \"gender\": \"M\",\n            \"age_group\": \"40-44 years\",\n            \"start_date\": \"2019-04-24T17:27:13.000+02:00\"\n        },\n        {\n            \"patient_id\": 2172,\n            \"arv_number\": \"TEST-ARV-1513\",\n            \"gender\": \"F\",\n            \"age_group\": \"35-39 years\",\n            \"start_date\": \"2019-04-17T17:28:00.000+02:00\"\n        },\n        {\n            \"patient_id\": 2816,\n            \"arv_number\": \"TEST-ARV-1510\",\n            \"gender\": \"M\",\n            \"age_group\": \"25-29 years\",\n            \"start_date\": \"2019-04-12T17:28:28.000+02:00\"\n        },\n        {\n            \"patient_id\": 2978,\n            \"arv_number\": \"TEST-ARV-1517\",\n            \"gender\": \"M\",\n            \"age_group\": \"45-49 years\",\n            \"start_date\": \"2019-04-18T17:28:40.000+02:00\"\n        }\n    ]\n}"
 										}
 									]
 								}
