@@ -46,6 +46,7 @@ module ARTService
         def tx_rtt_patients
           patients_who_received_art.keep_if do |patient|
             on_art_date_ranges = parse_str_on_art_periods(patient.on_art_date_ranges)
+            pp on_art_date_ranges
 
             patient_defaulted_and_restarted?(patient.patient_id, on_art_date_ranges)
           end
@@ -59,7 +60,16 @@ module ARTService
                      person.birthdate AS birthdate,
                      person.gender AS gender,
                      cohort_disaggregated_age_group(person.birthdate, DATE('#{end_date}')) AS age_group,
-                     GROUP_CONCAT(CONCAT(orders.start_date, ' - ', orders.auto_expire_date)
+                     GROUP_CONCAT(CONCAT(orders.start_date,
+                                         ' - ',
+                                         COALESCE(orders.auto_expire_date,
+                                                  (SELECT value_datetime FROM obs
+                                                   WHERE person_id = patient.patient_id
+                                                     AND DATE(obs_datetime) = DATE(orders.start_date)
+                                                     AND concept_id = #{appointment_date_concept_id}
+                                                     AND voided = 0
+                                                   LIMIT 1),
+                                                   DATE_ADD(orders.start_date, INTERVAL drug_order.quantity DAY)))
                                   ORDER BY orders.start_date ASC
                                   SEPARATOR ',') AS on_art_date_ranges,
                      CAST(patient_date_enrolled(patient.patient_id) AS DATE) AS date_enrolled
@@ -71,7 +81,6 @@ module ARTService
                 AND patient.voided = 0
                 AND orders.order_type_id = #{drug_order_type_id}
                 AND orders.start_date BETWEEN '#{start_date}' AND '#{end_date}'
-                AND orders.auto_expire_date IS NOT NULL
                 AND orders.voided = 0
                 AND drug_order.drug_inventory_id IN (#{arv_drugs})
                 AND drug_order.quantity > 0
@@ -90,7 +99,10 @@ module ARTService
                            auto_expire_date: dates[1].to_date)
           end
 
-          str_periods.split(',').map(&parse_str_period)
+          return [] unless str_periods
+
+          parsed_periods = str_periods.split(',').map(&parse_str_period)
+          Set.new(parsed_periods).to_a.sort_by(&:start_date)
         end
 
         # Check if patient defaulted in between the on treatment periods
@@ -100,6 +112,8 @@ module ARTService
         #   patient_id: Is the id of the patient in the database
         #   periods_on_art: A sorted (ascending) list of drug order start and auto_expire_dates.
         def patient_defaulted_and_restarted?(patient_id, periods_on_art)
+          return false if periods_on_art.empty?
+
           return true if patient_defaulted_in_between_treatment?(periods_on_art)
 
           patient_defaulted_prior_to_treatment?(patient_id, periods_on_art[0].start_date)
@@ -109,6 +123,8 @@ module ARTService
         #
         # See: patient_defaulted_and_restarted?
         def patient_defaulted_in_between_treatment?(periods_on_art)
+          pp periods_on_art
+
           (0...periods_on_art.size - 1).each do |i|
             if thirty_days_after?(periods_on_art[i].auto_expire_date,
                                   periods_on_art[i + 1].start_date)
@@ -137,7 +153,9 @@ module ARTService
 
         # Checks if next date is at least 30 days after the initial date.
         def thirty_days_after?(initial_date, next_date)
-          next_date - initial_date >= 30
+          return false unless initial_date && next_date
+
+          (next_date - initial_date) >= 30
         end
 
         def hiv_program_id
@@ -150,6 +168,10 @@ module ARTService
 
         def arv_drugs
           Drug.arv_drugs.select(:drug_id).to_sql
+        end
+
+        def appointment_date_concept_id
+          ConceptName.find_by_name('Appointment date').concept_id
         end
 
       #   def get_potential_tx_rtt_clients
