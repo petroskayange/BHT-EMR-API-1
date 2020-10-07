@@ -115,7 +115,7 @@ Rails.application.routes.draw do
 
       resources :programs do
         resources :program_workflows, path: :workflows
-        resources :program_regimens, path: :regimens
+        resource :program_regimens, path: :regimens, only: %i[show]
         get 'regimen_extras' => 'program_regimens#regimen_extras'
 
         get 'booked_appointments' => 'program_appointments#booked_appointments'
@@ -130,6 +130,7 @@ Rails.application.routes.draw do
         post 'void_arv_number/:arv_number' => 'program_patients#void_arv_number'
 
         resources :program_patients, path: :patients do
+          resources :regimens, controller: 'programs/patients/regimens'
           get '/next_appointment_date' => 'patient_appointments#next_appointment_date'
           get '/last_drugs_received' => 'program_patients#last_drugs_received'
           get '/dosages' => 'program_patients#find_dosages'
