@@ -60,8 +60,29 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
   config.include FactoryBot::Syntax::Methods
+
+  config.before(:example, type: :request) do
+    allow(Rails.application.config.action_dispatch).to receive(:show_exceptions).and_return(nil)
+  end
 end
 
 # Required by Auditable model concern...
 Location.current = Location.find(700)
 User.current = User.find(1)
+
+def login_as(user: nil, at: nil)
+  User.current = user || User.find_by_username!('admin')
+  Location.current = at || Location.first
+end
+
+def parse_response(response)
+  json = JSON.parse(response.body)
+
+  yield json if block_given?
+
+  json
+end
+
+def api_route(path)
+  "/api/v1/#{path}".gsub('//', '/')
+end
