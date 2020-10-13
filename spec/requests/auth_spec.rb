@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe '/auth', type: :request do
-  describe '/login' do
+  describe 'POST /login' do
     it 'creates auth token on login' do
       post api_route('auth/login'), params: { username: 'admin', password: 'test' }
 

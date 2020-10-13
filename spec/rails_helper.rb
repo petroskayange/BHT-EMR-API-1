@@ -62,7 +62,10 @@ RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
 
   config.before(:example, type: :request) do
+    # Have Rails catch exceptions and respond with appropriate status codes.
     allow(Rails.application.config.action_dispatch).to receive(:show_exceptions).and_return(nil)
+
+    allow_any_instance_of(ApplicationController).to receive(:authenticate) { true }
   end
 end
 
