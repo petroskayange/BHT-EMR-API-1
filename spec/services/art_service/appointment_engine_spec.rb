@@ -130,7 +130,7 @@ RSpec.describe ARTService::AppointmentEngine do
                                  value_datetime: epoch + i.days
       end
 
-      retrieved = appointment_service.appointments person: created[0].person
+      retrieved = appointment_service.appointments(person: created[0].person)
       expect(retrieved.size).to be(1)
       expect(retrieved[0].obs_id).to eq(created[0].obs_id)
     end
@@ -145,8 +145,8 @@ RSpec.describe ARTService::AppointmentEngine do
       end
 
       # Odd numbered appointments in created belong to our `person`
-      retrieved = appointment_service.appointments person: created[1].person,
-                                                   value_datetime: created[1].value_datetime.to_date
+      retrieved = appointment_service.appointments(person: created[1].person,
+                                                   value_datetime: created[1].value_datetime.to_date)
       expect(retrieved.size).to be(1)
       expect(retrieved[0].person_id).to eq(created[1].person_id)
       expect(retrieved[0].obs_id).to eq(created[1].obs_id)
@@ -157,14 +157,14 @@ RSpec.describe ARTService::AppointmentEngine do
     it 'uses existing appointment encounter for new appointments' do
       encounter = create :encounter_appointment, encounter_datetime: epoch,
                                                  patient: patient
-      created = appointment_service.create_appointment patient, epoch
+      created = appointment_service.create_appointment(patient, epoch)
       expect(created.encounter).to eq(encounter)
     end
 
     it 'creates appointment encounter if one on given date does not exist' do
       get_appointment_encounter = proc do
         Encounter.where(
-          type: encounter_type('Appointment'), patient: patient
+          type: EncounterType.find_by_name('Appointment'), patient: patient
         ).where(
           'DATE(encounter_datetime) = DATE(?)', epoch
         )[0]
@@ -180,15 +180,18 @@ RSpec.describe ARTService::AppointmentEngine do
     it 'creates appointment for given date and patient' do
       (1...10).each do |dt|
         appointment_date = epoch + dt.days
-        created = appointment_service.create_appointment patient, appointment_date
+        created = appointment_service.create_appointment(patient, appointment_date)
         expect(created.person).to be(patient.person)
         expect(created.value_datetime.to_date).to eq(appointment_date)
       end
     end
 
-    it 'creates appointment on bound retro date' do
-      created = appointment_service.create_appointment patient, epoch + 10.days
-      retrieved = Observation.where concept: concept('Appointment date')
+    it 'creates appointment on specified retrospective date' do
+      created = appointment_service.create_appointment(patient, epoch + 10.days)
+
+      appointment_date_concept = ConceptName.where(name: 'Appointment date')
+                                            .select(:concept_id)
+      retrieved = Observation.where(concept: appointment_date_concept)
 
       expect(retrieved.size).to be(1)
       expect(created.value_datetime).to be(created.value_datetime)
@@ -197,9 +200,9 @@ RSpec.describe ARTService::AppointmentEngine do
       expect((epoch - retro_date).abs).to be < MINUTE
     end
 
-    it 'can not create if given date is before bound date' do
+    it 'can not create if given date is before specified date' do
       create_routine = proc do
-        appointment_service.create_appointment patient, epoch - 1.day
+        appointment_service.create_appointment(patient, epoch - 1.day)
       end
 
       expect(&create_routine).to raise_error(ArgumentError)
