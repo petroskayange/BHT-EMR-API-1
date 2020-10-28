@@ -9,22 +9,16 @@ describe ARTService::WorkflowEngine do
 
   HIV_PROGRAM_ID = 1
 
-  let(:epoch) { Time.now }
-  let(:art_program) { program 'HIV Program' }
-  let(:patient) { create :patient }
-  let(:engine) do
-    UserProperty.create(user: User.current, property: 'Activities',
+  before :each do
+    UserProperty.create(user: User.current,
+                        property: 'Activities',
                         property_value: ACTIVITIES)
-
-    ARTService::WorkflowEngine.new program: art_program,
-                                   patient: patient,
-                                   date: epoch
   end
 
-  let(:no_activity_engine) do
-    # Initialise an engine without any user activities
-    user_property('Activities')&.delete
-
+  let(:epoch) { Time.now }
+  let(:art_program) { Program.find_by_name!('HIV Program') }
+  let(:patient) { create :patient }
+  let(:engine) do
     ARTService::WorkflowEngine.new program: art_program,
                                    patient: patient,
                                    date: epoch
@@ -32,10 +26,30 @@ describe ARTService::WorkflowEngine do
 
   let(:constrained_engine) { raise :not_implemented }
 
+  def encounter_type(name)
+    EncounterType.find_by_name!(name)
+  end
+
+  def concept(name)
+    Concept.joins(:concept_names)
+           .merge(ConceptName.where(name: name))
+           .first
+  end
+
   describe :next_encounter do
     it 'returns nil if no activity is enabled' do
-      expect(engine.next_encounter).not_to be_nil
-      expect(no_activity_engine.next_encounter).to be_nil
+      create_engine = lambda do
+        ARTService::WorkflowEngine.new(program: art_program,
+                                       patient: patient,
+                                       date: epoch)
+      end
+
+      # Control... Created using user properties set by before :each
+      expect(create_engine[].next_encounter).not_to be_nil
+
+      UserProperty.find_by(user: User.current, property: 'Activities')
+                  &.delete
+      expect(create_engine[].next_encounter).to be_nil
     end
 
     it 'returns HIV CLINIC REGISTRATION for patient not in ART programme' do
@@ -220,7 +234,7 @@ describe ARTService::WorkflowEngine do
 
     create :observation, concept: concept('Guardian present'),
                          encounter: reception,
-                         value_coded: concept('Yes'),
+                         value_coded: concept('Yes').concept_id,
                          person: patient.person
     reception
   end
@@ -234,12 +248,12 @@ describe ARTService::WorkflowEngine do
 
     create :observation, encounter: encounter,
                          person_id: encounter.patient_id,
-                         concept_id: ConceptName.find_by_name('Weight').concept_id,
+                         concept_id: ConceptName.find_by_name!('Weight').concept_id,
                          value_numeric: 50
 
     create :observation, encounter: encounter,
                          person_id: encounter.patient_id,
-                         concept_id: ConceptName.find_by_name('Height (cm)').concept_id,
+                         concept_id: ConceptName.find_by_name!('Height (cm)').concept_id,
                          value_numeric: 50
   end
 
