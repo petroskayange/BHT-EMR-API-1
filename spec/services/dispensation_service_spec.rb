@@ -42,7 +42,7 @@ RSpec.describe DispensationService do
 
       obs = DispensationService.dispense_drug(program, drug_order, 10)
 
-      expect(obs.concept_id).to eq(concept('AMOUNT DISPENSED').concept_id)
+      expect(obs.concept_id).to eq(ConceptName.find_by_name('AMOUNT DISPENSED').concept_id)
       expect(obs.order).to eq(order)
       expect(obs.order.drug_order.quantity).to eq(10)
     end
