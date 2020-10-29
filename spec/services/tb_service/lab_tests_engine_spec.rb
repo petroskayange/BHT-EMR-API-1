@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-describe TBService::LabTestsEngine do
+xdescribe TBService::LabTestsEngine do
   let(:date) { Time.now }
   let(:program) { Program.find_by_name 'TB PROGRAM' }
   let(:engine) do

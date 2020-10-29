@@ -5,7 +5,7 @@ require 'rails_helper'
 require_relative '../../../app/services/drug_order_service'
 require_relative '../../../app/services/nlims'
 
-describe TBService::RegimenEngine do
+xdescribe TBService::RegimenEngine do
   include DrugOrderService
 
   let(:date) { Time.now }

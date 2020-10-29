@@ -4,7 +4,7 @@ require 'rails_helper'
 require_relative '../../../app/services/drug_order_service'
 require_relative '../../../app/services/dispensation_service'
 
-describe TBService::PatientsEngine do
+xdescribe TBService::PatientsEngine do
 	include DrugOrderService
 
   let(:epoch) { Time.now }

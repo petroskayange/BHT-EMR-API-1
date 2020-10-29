@@ -4,7 +4,7 @@ require 'rails_helper'
 require_relative '../../../app/services/drug_order_service'
 
 
-describe TBService::WorkflowEngine do
+xdescribe TBService::WorkflowEngine do
   include DrugOrderService
 
   let(:epoch) { Time.now }
@@ -30,7 +30,7 @@ describe TBService::WorkflowEngine do
 
   let(:constrained_engine) { raise :not_implemented }
 
-  describe :next_encounter do
+  xdescribe :next_encounter do
 
     it 'returns TB_INITIAL for a patient not a TB suspect in the TB programme' do
       encounter_type = engine.next_encounter

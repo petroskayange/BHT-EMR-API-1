@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe TBService::AppointmentEngine do
+RSpec.xdescribe TBService::AppointmentEngine do
   subject { TBService::AppointmentEngine }
   let(:patient) { create :patient }
   let(:program) { Program.find_by_name('TB Program') }
