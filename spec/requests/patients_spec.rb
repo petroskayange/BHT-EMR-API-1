@@ -90,7 +90,7 @@ RSpec.describe '/patients', type: :request do
 
     let(:national_identifier_type) { PatientIdentifierType.find_by_name!('National id') }
 
-    it 'registers a new patients' do
+    it 'registers a new patient' do
       post api_route('patients'), params: {
         'program_id' => program.program_id,
         'person_id' => person.person_id
