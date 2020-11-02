@@ -3,11 +3,12 @@
 require 'rails_helper'
 
 RSpec.describe '/patients', type: :request do
-  describe 'GET /patients' do
-    let(:person) { create(:person) }
-    let(:program) { create(:program) }
-    let(:service) { PatientService.new }
+  let(:service) { PatientService.new }
+  let(:national_identifier_type) { PatientIdentifierType.find_by!(name: 'National ID') }
+  let(:person) { create(:person) }
+  let(:program) { create(:program) }
 
+  describe 'GET /patients' do
     it 'returns all patients in the database' do
       patient = service.create_patient(program, person)
 
@@ -23,11 +24,6 @@ RSpec.describe '/patients', type: :request do
   end
 
   describe 'GET /patients/:patient_id' do
-    let(:person) { create(:person) }
-    let(:program) { create(:program) }
-    let(:service) { PatientService.new }
-    let(:national_identifier_type) { PatientIdentifierType.find_by!(name: 'National ID') }
-
     it 'returns an existing patient by id' do
       patient = service.create_patient(program, person)
 
@@ -58,6 +54,69 @@ RSpec.describe '/patients', type: :request do
       get api_route("patients/#{patient.patient_id}")
 
       expect(response).to have_http_status(404)
+    end
+  end
+
+  describe 'POST /patients' do
+    it 'requires program_id' do
+      post api_route('patients'), params: { 'person_id' => person.person_id }
+
+      expect(response).to have_http_status(:bad_request)
+    end
+
+    it 'requires person_id' do
+      post api_route('patients'), params: { 'program_id' => program.program_id }
+
+      expect(response).to have_http_status(:bad_request)
+    end
+
+    it 'requires person_id to exist' do
+      post api_route('patients'), params: {
+        'program_id' => program.program_id,
+        'person_id' => 'non-existent-id'
+      }
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it 'requires program_id to exist' do
+      post api_route('patients'), params: {
+        'program_id' => 'non-existent-id',
+        'person_id' => person.person_id
+      }
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    let(:national_identifier_type) { PatientIdentifierType.find_by_name!('National id') }
+
+    it 'registers a new patients' do
+      post api_route('patients'), params: {
+        'program_id' => program.program_id,
+        'person_id' => person.person_id
+      }
+
+      expect(response).to have_http_status(:created)
+
+      parse_response(response) do |json|
+        national_ids = json['patient_identifiers'].select do |identifier|
+          identifier['identifier_type'] == national_identifier_type.id
+        end
+
+        expect(national_ids.size).to eq 1
+        expect(national_ids.first['identifier']).not_to be_blank
+      end
+    end
+
+    it 'does not allow duplicate patient creation' do
+      service.create_patient(program, person)
+
+      post api_route('patients'), params: {
+        'program_id' => program.program_id,
+        'person_id' => person.person_id
+      }
+
+      expect(response).to have_http_status(:bad_request)
     end
   end
 end
